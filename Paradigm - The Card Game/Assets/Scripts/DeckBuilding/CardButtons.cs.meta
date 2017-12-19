@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9b8dd62155d30ff4e9b10c9f6c1bd10e
+timeCreated: 1482012806
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - cardButton: {fileID: 114455313444003918, guid: ffb6af893eb921143b36f88465e7046e,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

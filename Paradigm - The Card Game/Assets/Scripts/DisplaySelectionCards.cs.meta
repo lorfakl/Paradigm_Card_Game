@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7ec8d62095580ee46a4af2de900f8d66
+timeCreated: 1511541102
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - panel: {fileID: 1159463552240254, guid: 5750ff3ce31f66243adaf5451da7d281, type: 2}
+  - prefabCard: {fileID: 1506235710346808, guid: f850c9c90c85bb4449e1eaa7e79c0446,
+      type: 2}
+  - selectedSprite: {fileID: 21300000, guid: aa8faaca32bab244db18aa611627f68c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

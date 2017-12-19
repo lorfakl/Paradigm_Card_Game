@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 61bc8f129d2b1ae48b7c848bc372810e
+timeCreated: 1481822507
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Comic Sans MS
+  fontNames:
+  - Comic Sans MS
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 59ee50622c8baab469bc924305c77d98, type: 3}
+  - {fileID: 12800000, guid: 0d161ede29498f24191731ef52ea2e75, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

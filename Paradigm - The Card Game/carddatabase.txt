@@ -1,0 +1,639 @@
+Calligrapher of the Heavens 
+Paradigm Shifter
+When this card is spawned, place cards from your Necronet into your Shard Collection equal to the amount of Accessors on your opponent’s battlefield. 
+2000
+8000
+1
+Elemental
+Celestial
+
+Planetary Drifter, Sai Dez
+Paradigm Shifter
+This card gets attacks equal to the amount of Shards in your Shard Collection. You may send all Shards in your Shard Collection back to your Network; return an Accessor on your opponent’s field to the Network for each.
+4500
+6500
+1
+Accessor
+Celestial
+
+Krace, Sage Of Equinox
+Paradigm Shifter
+Once per turn, you may put one Shard in your Shard Collection on the bottom of your Network to draw 2 cards.
+3000
+6500
+1
+Elemental
+Celestial
+
+Vander The Matter Collector 
+Paradigm Shifter
+Shards sent to the Necronet return to your hand instead.
+2500
+6500
+1
+Accessor
+Celestial
+
+Elemental of the Heavens 
+Paradigm Shifter
+You may spawn Elements from your Shard Collection. If you do, they are sent to the Necronet. They cannot return to the Shard Collection during this turn.
+2500
+8000
+1
+Elemental
+Celestial
+
+Celestial Guardian
+Paradigm Shifter
+When a Paradigm Shifter Accessor would be attacked, you may send 1 Shard from your Shard Collection to the Necronet to nullify any damage.
+0
+8000 
+1
+Elemental
+Celestial
+
+Sentinel of Deadly Hallucinations 
+Quasar Trigger, 
+When this card is spawned, move all Accessors to the Shard Collection. At the end of this turn, return this card to the Network.
+10000 
+1000 
+1
+Accessor
+Celestial
+
+Oblivion Gatekeeper 
+Paradigm Shifter
+When this card is spawned, send all Shards in your opponent’s Shard Collection to the Necronet. While this card is on the battlefield, your opponent cannot collect Shards.
+4000 
+9000 
+0
+Accessor
+Celestial
+
+Dezun, Mirage Reanimator
+Paradigm Shifter
+Once per turn, you may select one Accessor in your Shard Collection and move it to the battlefield.
+4000 
+6500
+1
+Accessor
+Celestial
+
+Genesis, The Celestial Majesty 
+Majesty
+When this card is spawned, move all Accessors to the Shard Collection. Once per turn, you may move all Shards in your Shard Collection to your hand, then send the top card of your Element Network to your Shard Collection for each card moved.
+10000
+40000
+0
+Accessor
+Celestial
+
+Oblivion 
+Circle
+Send 5 cards from your Network to your Shard Collection at the start. At the start of each turn, place 3 cards from your Network into your Shard Collection, then add 2 Shards to your hand.
+0
+0
+0
+Landscape
+Celestial 
+
+Celestial Heavens
+Square 
+Select any 7 cards from your Network and add them to your hand at start. At the start of each turn, Reveal the top 3 cards from each Network Section, choose 1 from each, and place them in your hand. The remaining cards are put on the bottom of the Network in any order. Whenever a Shard is placed into the Shard Collection, a player may move a Paradigm Shifter Accessor from their battlefield to their Shard Collection to draw 3 cards. At the end of each of their turns, players must place all cards in their hand on the bottom of their Network in any order.
+0
+0
+0
+Landscape
+Celestial 
+
+Aurora Skies
+Triangle
+Add any 3 cards from your Network to your hand, place any 3 cards from your Network into your Shard Collection, and send any 3 cards from your Network to your Necronet at start. At the start of each turn, draw 2 cards. Once per turn, you may send one Shard to the Necronet, then add 2 cards from your Necronet to your hand.  All Paradigm Shifter Accessors are granted 4000 HP. 
+0
+0
+0
+Landscape
+Celestial 
+
+Celestial Mind The 1st: Dedication
+Philosopher 1
+When Shards are added to your hand, All Paradigm Shifter Accessors are granted 3000 P when they attack until the end of this turn (This effect is only applied once per turn). Before beginning Crystallization, if you have 2 or less cards in your Shard Collection, move cards from your Network to your Shard Collection until you have 3.
+0
+0
+0
+Philosopher
+Celestial 
+
+Celestial Mind The 2nd: Passion
+Philosopher 2
+Whenever cards are added from either players’ Network to their hand (including drawing), you may move the same amount of cards from either players’ Necronet to the bottom of the Network. Once during your turn, if your opponent has no cards in their hand, you may draw 2 cards. During your opponent’s turn, if you have no cards in your hand, your Paradigm Shifter Accessors are granted 4000 HP.
+0
+0
+0
+Philosopher
+Celestial 
+
+Celestial Mind The 3rd: Inheritance
+Philosopher 3
+Whenever a Shard(s) is/are sent to the Necronet, move one Accessor on your opponent’s battlefield to bottom of their Network. Whenever you return cards from the Necronet to your hand, place 2 cards from your Network to your Shard Collection.
+0
+0
+0
+Philosopher
+Celestial 
+
+Paradigm Relay 
+Element
+Select any number of Shards in your Shard Collection; Swap them with cards in your network
+0
+0
+1
+Element
+Celestial 
+
+Paradigm Spectrum
+Element
+Place the top 4 Elements from your Network into your Shard Collection. Send them to the Necronet before Crystallization.
+0
+0
+1
+Element
+Celestial 
+
+Mentality Shatter
+Element
+After damaging the enemy/breaking the barrier(s), send 2 of your opponent’s Shards to the Necronet.
+4000
+0
+1
+Element
+Celestial
+
+Celestial Burst
+Element
+Send any number of Shards from your Shard Collection to the Necronet; this card’s damage variable is equal to the amount of Shards sent this way. 
+3000
+0
+1
+Element
+Celestial
+
+OmniREversal
+Lingering Element 
+Once per turn, switch all the cards in your hand with all the cards in your Shard Collection. If the amount of cards in your hand afterwards is greater than before initiating, despawn this card
+0
+0
+1
+Element
+Celestial
+
+OmniResonance 
+Element 
+This card’s damage variable is equal to the amount of Paradigm Shifters on the battlefield. 
+2000
+0
+1
+Element
+Celestial
+
+Celestial Encounter
+Element
+Play this immediately after an Accessor is spawned on the battlefield; spawn 2 Paradigm Shifter Accessors from your Network. Place them on the bottom of your Network at the end of this turn.
+0
+0
+1
+Element
+Celestial
+
+Heaven’s Blade
+Bond Mechanism
+Grants a Paradigm Shifter Accessor 3000 P. Once per turn, when the bonded Accessor attacks, look at the top 3 cards of each Network Section, and place 1 of those cards into your hand. Return the others to the bottom of your Network.
+0
+0
+1
+Mechanism
+Celestial
+
+OmniBarrier
+Lingering Mechanism
+While you control no Accessors, whenever your opponent attacks, you may move the top 3 Accessors from your Network into your Shard Collection.
+0
+0
+1
+Mechanism
+Celestial
+
+Paradigm Collidescope
+Lingering Mechanism
+You may send 5 Shards to the Necronet to twist the Dimensions.
+0
+0
+1
+Mechanism
+Celestial
+
+Sentinel of Lifestreams 
+Respirator 
+You may spawn this card when you have 6 Barriers left. Once per turn, you may return all cards in your Necronet into the Network and draw 2 cards for each. You may send all Accessors on your battlefield to the Shard Collection to fully heal a Celestial Majesty (You can only do this once).
+0
+0
+0
+Respirator 
+Celestial
+
+Solar Cube Phoenix – Gaiyasou 
+Genesis
+If your opponent despawns this card, spawn a Lunar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Solar Phoenix on your battlefield at a time. When this card is spawned, if you currently have a spawned landscape, immediately twist dimensions to a square landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Lunar Cube Phoenix – Aldeross
+Armageddon
+If your opponent despawns this card, spawn a Solar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Lunar Phoenix on your battlefield at a time. When this card is spawned, if your opponent currently has a spawned square landscape, immediately twist dimensions to a square landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Solar Cube Phoenix – Desunae
+Genesis
+If your opponent despawns this card, spawn a Lunar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Solar Phoenix on your battlefield at a time. When this card is spawned, if you have a spawned Lunar landscape, immediately twist dimensions to a Solar Landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Lunar Cube Phoenix – Horakune
+Armageddon
+If your opponent despawns this card, spawn a Solar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Lunar Phoenix on your battlefield at a time. When this card is spawned, if you have a spawned Solar landscape, immediately twist dimensions to a Lunar landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Solar Cube Phoenix – Wulan
+Genesis
+If your opponent despawns this card, spawn a Lunar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Solar Phoenix on your battlefield at a time. When this card is spawned, if you currently have a spawned landscape, immediately twist dimensions into that landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Lunar Cube Phoenix – Seroph
+Armageddon
+If your opponent despawns this card, spawn a Solar Cube Phoenix accessor from your Necronet at the end of that turn. You can only have one Lunar Phoenix on your battlefield at a time. When this card is spawned, if your opponent currently has a spawned landscape, immediately spawn into your previously spawned landscape.
+8000
+8000
+0
+Accessor
+Cube
+
+Larquinn, Phoenix of Cubic Geometry
+Majesty
+While this card is spawned, it is treated as a Solar and Lunar accessor, dimensions cannot be twisted, and no other Phoenix accessors can be spawned onto your battlefield. When this card is spawned, despawn all other Phoenix accessors, then you may initiate each possible following effect for each kind sent: Solar: Add cards from your Network to your hand equal to the amount of Solar accessors in your Necronet. Lunar: Send cards in your opponent’s Network to the Necronet equal to the amount of Lunar accessors in your Necronet. Cube: You may make this card dormant and lock it; spawn an equal number of Solar and Lunar Cube Phoenix accessors from your Necronet ignoring other card text. If you do this, despawn this card at the end of that turn.
+18000
+50000
+0
+Accessor
+Cube
+
+Solar & Lunar Temples of Sacred Geometry
+Square
+At the start, spawn 2 accessors from your network and send 2 accessors from your network to your Necronet. Draw 3 cards at the beginning of each turn. Phoenix accessors cannot be moved from the field except by being despawned. At the end of each turn, if you have 1 or less accessors in your Necronet, send accessors from your network to your Necronet until there are 2.
+0
+0
+0
+Landscape
+Cube
+
+Solar Phoenixian Inferno
+Square
+At the start, send 6 accessors from your network to your Necronet, then spawn one accessor from your network. Accessors cannot be spawned from anywhere except the Necronet. Each time a Phoenix is spawned from the Necronet, despawn an opponent’s spawned card. Despawn all Phoenix accessors at the end of each of your opponent’s turns.
+0
+0
+0
+Landscape
+Cube
+
+Lunar Atmoscube
+Square
+At the start, spawn 1 Solar Cube Phoenix and 1 Lunar Cube Phoenix from your Network. When Cube Phoenix accessors would spawn accessor(s) from the Necronet, you may spawn from the Network instead. Cube Phoenix accessors can only be damaged by attacks.
+0
+0
+0
+Landscape
+Cube
+
+Spirit Alter of Mirages
+Lingering Mechanism
+You may move 1 Solar Phoenix and 1 Lunar Phoenix that were spawned this turn from your battlefield to your Network; Spawn your Majesty. It becomes dormant at the end of this turn. If it would be despawned this turn, it becomes dormant instead. There can only be one Alter card on the field at a time.
+0
+0
+0
+Mechanism
+Cube
+
+Spirit Alter of Fables
+Lingering Mechanism
+You may move 1 Solar Phoenix and 1 Lunar Phoenix that were spawned this turn from your battlefield to your Network; Initiate each following effect for each kind moved; Solar: Add cards from your Network to your hand equal to the amount of Solar accessors in your Necronet. Lunar: Send cards in your opponent’s Network to the Necronet equal to the amount of Lunar accessors in your Necronet. There can only be one Alter card on the field at a time.
+0
+0
+0
+Mechanism
+Cube
+
+Shrine of the Trinity – 
+Lingering Mechanism 
+While you have one or more of the following kinds of Phoenix accessors in your Necronet, you may initiate each appropriate effect; Cube: Once per turn, an opponent’s attack does no damage. Sphere: Once per turn, if the dimensions are twisted, each player shuffles their hand into their Network and draws 4 cards. Prism: Once per turn, you may despawn an accessor from each side of the battlefield. There can only be one Shrine card on the field at a time.
+0
+0
+0
+Mechanism
+Cube
+
+Shrine of the Phoenixian Lifeline
+Lingering Mechanism 
+Once per turn, you may initiate one of the following effects when the appropriate accessor is despawned: Cube: Spawn 1 Sphere Pheonix or Prism Phoenix from your Network Sphere: Spawn 1 Cube Phoenix or Prism Phoenix from your Network Prism: Spawn 1 Cube Phoenix or Sphere Phoenix from your Network. There can only be one Shrine card on the field at a time.
+0
+0
+0
+Mechanism
+Cube
+
+Phoenixian Burst
+Bond Mechanism
+When the bonded accessor is despawned, damage an opponent’s accessor by 2000P. If the bonded accessor spawns an accessor with its own effect, bond this card to the spawned accessor.
+0
+0
+0
+Mechanism
+Cube
+
+Aged Wisdom of Majesty
+Secret Element
+This card cannot be spawned unless you have a spawned Majesty on your battlefield. Until the end of this turn, after this card is despawned, ignore all effects in card text.
+0
+0
+0
+Element
+Cube
+
+Tri-Unity
+Secret Element
+This card cannot be spawned unless you have a spawned Majesty on your battlefield, control a landscape, and have both a spawned Shrine and Alter card. Lock a Cube Phoenix, Sphere Phoenix, and Prism Phoenix in the Necronet. If you do, break all of your opponent’s barrier, switch your Majesty’s power with its HP and it does not take damage this turn.
+0
+0
+0
+Element
+Cube
+
+Vortex Duocaster
+Wind/Water Mystic
+At the start of your turn, you may add 1 wind element and 1 water element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Vortex Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Meteora Duocaster
+(Fire/Earth Mystic)
+At the start of your turn, you may add 1 fire element and 1 earth element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Meteora Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Crystal Duocaster
+(Water/Earth Mystic)
+At the start of your turn, you may add 1 water element and 1 earth element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Crystal Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Flare Duocaster
+(Fire/Wind Mystic)
+At the start of your turn, you may add 1 wind element and 1 fire element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Flare Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Debris Duocaster
+(Wind/Earth Mystic)
+At the start of your turn, you may add 1 wind element and 1 earth element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Debris Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Steam Duocaster
+(Fire/Water Mystic)
+At the start of your turn, you may add 1 water element and 1 fire element from your network to your hand. Each time a card is drawn, you may shuffle this card into your network; spawn a caster from your network except for Steam Duocaster. You can only have one caster on your field at a time.
+0
+5000
+0
+Accessor
+Duomystic
+
+Tempest Mirage Dragon
+(Water/Wind Dragon)
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock a water dragon and a wind dragon from your necronet. Each time a wind element initiates, move an opponent’s accessor on the field to their hand. Each time a water element initiates, move an opponent’s accessor on their field into their shard collection. Immediately move this card from your field to your hand if there is no Wind or Water Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Comet Mirage Dragon
+(Fire/Earth Dragon)  
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock a fire dragon and an earth dragon from your necronet. Each time a fire element initiates, despawn an opponent’s accessor. Each time an earth element initiates, shuffle an opponent’s accessor into their network. Immediately move this card from your field to your hand if there is no Fire or Earth Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Soulcore Mirage Dragon
+(Water/Earth Dragon)
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock a water dragon and an earth dragon from your necronet. Each time a water element initiates, move an opponent’s accessor on their field into their shard collection. Each time an earth element initiates, shuffle an opponent’s accessor into their network. Immediately move this card from your field to your hand if there is no Water or Earth Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Heatwave Mirage Dragon 
+(Fire/Wind Dragon) 
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock a fire dragon and a wind dragon from your necronet. Each time a fire element initiates, despawn an opponent’s accessor. Each time a wind element initiates, move an opponent’s accessor on the field to their hand. Immediately move this card from your field to your hand if there is no Fire or Wind Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Wreckage Mirage Dragon 
+(Wind/Earth Dragon)
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock an earth dragon and a wind dragon from your necronet. Each time an earth element initiates, shuffle an opponent’s accessor into their network. Each time a wind element initiates, move an opponent’s accessor on the field to their hand. Immediately move this card from your field to your hand if there is no Earth or Wind Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Cloud Mirage Dragon
+(Fire/Water Dragon)
+If this card is in your hand, you may lock this card to draw 1 card. If this card would be spawned, reveal it before you spawn it and lock a fire dragon and a water dragon from your necronet. Each time a fire element initiates, despawn an opponent’s accessor. Each time a water element initiates, move an opponent’s accessor on their field into their shard collection. Immediately move this card from your field to your hand if there is no Earth or Wind Mystic on your field.
+7000
+7000
+0
+Accessor
+Duomystic
+
+Phantasmal Dracomage
+(Majesty)
+This card is treated as a Fire, Water, Earth and Wind Mystic. Once per turn, you may add 1 fire, water, earth and wind element from your network to your hand. You may shuffle an element in your hand into your network to spawn one of your locked dragons. You can send a Scale from your shard collection to the necronet to spawn the corresponding dragon from your network: Emerald = Wind Sapphire = Water Ruby = Fire Topaz = Earth
+0
+40000
+0
+Accessor
+Duomystic
+
+Elder Sentinel Dragon 
+Respirator 
+Awaken this card when if have 6 or less barriers. When this card is awakened, shuffle all locked cards into the network, then add 6 dragons from your network to your hand. Each time you add an element to your hand, send 2 dragons from your network to your necronet.
+0
+0
+0
+Respirator 
+Duomystic
+
+Alchemist of the Ascent
+Philosopher
+When a card would be moved to your network, add it to your hand instead.
+0
+0
+0
+Philosopher
+Duomystic
+
+Alchemist of the Descent
+Philosopher
+When a card is moved to your necronet, add an element from your deck to your hand. 
+0
+0
+0
+Philosopher
+Duomystic
+
+Alchemist of the Helix
+Philosopher
+When one or more of your cards is locked, Add a card from your deck to your hand.
+0
+0
+0
+Philosopher
+Duomystic
+
+QuadraPalace 
+Circle 
+At the start, each player spawns an accessor from their network, adds an accessor from their network to their hand, and adds 2 elements from their network to their hand. Each time the player not in possession of this card spawns an element, the controller of this card draws a card. Casters are unaffected by mechanisms.
+0
+0
+0
+Landscape
+Duomystic
+
+QuadraCastle 
+Square 
+At the start, Each player spawns an accessor from their network. At the start of each turn. Each player adds one card from their network to their hand, then draws one card. Dragons are unaffected by mechanisms.
+0
+0
+0
+Landscape
+Duomystic
+
+QuadraKingdom
+Triangle
+At the start, each player spawns 2 accessors from their network. At the start of each turn, each player sends all cards in their shard collection to the Necronet, then adds an element from their network to their hand for each. Casters and Dragons are unaffected by mechanisms.
+0
+0
+0
+Landscape
+Duomystic
+
+Miragenerate
+Element
+Break any amount of your barriers. For each 2 barriers broken, add an element from your network to your hand and send a Dragon from your network to your necronet. Lock this card from your necronet to put all elements in your necronet into your shard collection. This card cannot be unlocked.
+0
+0
+0
+Element
+Duomystic
+
+Dragonspiral Auroras
+Lingering Element
+Each time a dragon(s) is sent to the necronet (except by this card), add a Dragon from your network to your hand. Each time a dragon(s) is added to your hand (except by this card), send 2 dragons from your network to your necronet. You may despawn this card to spawn a Caster from your network.
+0
+0
+0
+Element
+Duomystic
+
+Dracosynthesis
+Element 
+Lock up to two elements and 1 dragon in your necronet; spawn a dragon from your deck whose style matches the locked elements. Then, you may add a dragon from your network to your hand for each of your locked Miragenerate.
+0
+0
+0
+Element
+Duomystic
+
+Emerald Scales
+Element (Fragment)
+Lock a Wind dragon in your necronet to draw 2 cards. When this card is sent from the shard collection to the necronet during crystallization, draw a card.
+0
+0
+1
+Element
+Duomystic
+
+Sapphire Scales 
+Element (Fragment) 
+Lock a Water dragon in your necronet to draw 2 cards. When this card is sent from the shard collection to the necronet during crystallization, draw a card.
+0
+0
+1
+Element
+Duomystic
+
+Ruby Scales 
+Element (Fragment) 
+Lock a Fire dragon in your necronet to draw 2 cards. When this card is sent from the shard collection to the necronet during crystallization, draw a card.
+0
+0
+1
+Element
+Duomystic
+
+Topaz Scales 
+Element (Fragment) 
+Lock an Earth dragon in your necronet to draw 2 cards. When this card is sent from the shard collection to the necronet during crystallization, draw a card.
+0
+0
+1
+Element
+Duomystic
+.
