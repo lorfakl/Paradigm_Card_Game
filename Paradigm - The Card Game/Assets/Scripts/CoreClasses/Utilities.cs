@@ -10,4 +10,5 @@ public static class Utilities
         public List<Card> cardList;
         public int value;
     }
+
 }

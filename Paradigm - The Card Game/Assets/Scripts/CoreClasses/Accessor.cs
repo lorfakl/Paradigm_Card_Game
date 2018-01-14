@@ -39,8 +39,8 @@ public class Accessor: Card
         public Accessor(string n, string[] e, string[] t, int p, int h, bool s, string k)
         {
             this.setName(n);
-            this.setEffect(e);
-            this.setTraits(t);
+            //this.setEffect(e); Come back to these
+            //this.setTraits(t);
             this.setPower(p);
             this.setMaxHp(h);
             this.setHp(h);

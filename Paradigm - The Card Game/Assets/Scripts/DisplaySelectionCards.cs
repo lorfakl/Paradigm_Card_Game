@@ -82,10 +82,10 @@ public class DisplaySelectionCards :MonoBehaviour
         Text[] textEdit = cardObject.GetComponentsInChildren<Text>();
         textEdit[0].text = c.getName();
         textEdit[1].text = "";
-        for (int i = 0; i < c.getEffect().Length; i++)
-        {
-            textEdit[1].text = textEdit[1].text + c.getEffect()[i];
-        }
+        //for (int i = 0; i < c.getEffect().Length; i++)
+        //{
+        //  textEdit[1].text = textEdit[1].text + c.getEffect()[i];
+        //}
         
         return cardObject;
     }

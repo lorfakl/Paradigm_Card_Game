@@ -132,14 +132,15 @@ namespace DataBase
                 case 1: //search with the type modifier
                     for (int i = 0; i < AllCards.Count; i++)
                     {
+                        /*
                         //Debug.Log("Type Search");
-                        string debug = AllCards[i].getType();
+                        string debug = AllCards[i].getType(); 
                         //Debug.Log("This is the type: " + debug);
                         if (debug.Contains(searchVal))
                         {
                             //Debug.Log("Type Searching");
                             searchResults.Add(AllCards[i]);
-                        }
+                        }*/
                     }
                     break;
 

@@ -13,8 +13,8 @@ class AuxiliaryCard: Card
     public AuxiliaryCard(string n, string[] e, string[] t, bool s, string k)
     {
         this.setName(n);
-        this.setEffect(e);
-        this.setTraits(t);
+        //this.setEffect(e); Come back to these
+        //this.setTraits(t);
         this.setShard(s);
         Family fam = new Family(k);
         this.setFam(fam);

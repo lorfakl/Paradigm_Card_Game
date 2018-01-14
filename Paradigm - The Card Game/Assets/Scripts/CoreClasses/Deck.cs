@@ -79,7 +79,7 @@ using UnityEngine;
             Accessor c = new Accessor();
             for (int i = 0; i < deck.Count; i++)
             {
-                if (deck[i].getAbility().Contains("Majesty"))
+                if (deck[i] is Majesty)
                 {
                     c = (Accessor)deck[i];
                 }
@@ -96,7 +96,7 @@ using UnityEngine;
             foreach (Card c in deck)
             {
                 //Debug.Log(c.getName() + " " + c.getType());
-                if (c.getType() == "Landscape")
+                if (c is AuxiliaryCard)
                 {
                     //Debug.Log("It's a Landscape " + c.getName() + " " + c.getType());
                     landscapesInDeck.Add(c);
