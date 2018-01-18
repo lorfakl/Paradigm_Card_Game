@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-class AuxiliaryCard: Card
+public class AuxiliaryCard: Card
 {
     private string shape;
 
     public string getShape() { return shape; }
 
-    public AuxiliaryCard(string n, string[] e, string[] t, bool s, string k)
+    public AuxiliaryCard(string n, Ability[] a, Trait[] t, bool s, string k)
     {
         this.setName(n);
         //this.setEffect(e); Come back to these

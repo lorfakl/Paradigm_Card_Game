@@ -59,7 +59,7 @@ public class Accessor: Card
         public override void playCard()
         {
             Player p = this.getOwner();
-            p.addToField(this);
+            p.GetLocation("Field").AddContent(this);
         }
 
         public override void useEffect()

@@ -8,7 +8,12 @@ namespace Builder
 {
     public static class AbilityBuilder 
     {
+        
+        public static AbilityFunctionality CreateAbility(string cardName, string text, string abName = "")
+        {
 
+            return new AbilityFunctionality();
+        }
        
     }
 }

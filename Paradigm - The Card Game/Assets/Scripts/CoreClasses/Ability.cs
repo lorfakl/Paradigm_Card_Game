@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+public enum AbilityType { Optional, Mandatory};
+
 public class Ability
-{
-  
+{ 
     private string text;
-    private bool canActivate;
-    private enum AbilityType {Optional, Mandatory, Patient }; //the ability type dictates how the ability will interact with the event stack
-    private AbilityType type;
+    private string cardName;
+    private string abilityName;
+    private bool isPatient;
     private bool isLimited;
+    private bool canActivate;
     private int timesUsed;
-    private string name;
+    private Player owner;
+    private AbilityType type; //ability type dictates how the abilities is activated
     private AbilityFunctionality abilityFunction;
     
     public bool ActivationStatus
@@ -29,7 +32,18 @@ public class Ability
     }
 
     public bool getLimitedStatus() { return isLimited; }
-    public string getAbilityName() { return name; }
+    public string getAbilityName() { return abilityName; }
+
+    private void CheckNewEvent (object sender, GameEventsArgs e)
+    {
+        Debug.Log("I'm an ability, and I know a new game event was added to the queue");
+    }
+
+    public Ability(string cName, string text, Player o, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
+    {
+        GameEventsManager.CallEventAddedSubs += CheckNewEvent;
+        this.owner = o;
+    }
     
 
 }

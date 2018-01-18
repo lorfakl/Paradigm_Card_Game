@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class AbilityFunctionality
 {
+    private bool patientStat;
+    private bool limitedStat;
+
 
     
 }

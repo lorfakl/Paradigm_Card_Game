@@ -7,74 +7,90 @@ using UnityEngine;
 
 public class Player
     {
-        private Deck playerDeck = new Deck();
-        private List<Card> barriers = new List<Card>();
+       
         //private Turn playerTurn;
-        private List<Card> hand = new List<Card>();
-        private List<Card> grave = new List<Card>();
-        private List<Card> shardPile = new List<Card>();
-        private List<Card> field = new List<Card>();
-        private AuxiliaryCard TCLandscape = null;
+       
+        private Dictionary<string, Locations> cardLocations;
+        private string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field" };
+        private Deck playerDeck;
+        
+        private AuxiliaryCard tcLandscape = null;
         private Card majesty;
 
         public Player()
         {
-
+            foreach(string s in validLocations)
+            {
+                cardLocations.Add(s, new Locations(s));
+            }
         }
 
         public Player(Deck d)
         {
-            playerDeck = d;
-            majesty = playerDeck.getMajesty();
-
+            this.playerDeck = d;
+            this.majesty = playerDeck.getMajesty();
+            foreach (string s in validLocations)
+            {
+                cardLocations.Add(s, new Locations(s));
+            }
         }
 
-        //Getters
-        public List<Card> getPlayerHand(){ return hand; }
-        public List<Card> getPlayerGrave(){ return grave; }
-        public List<Card> getPlayerField(){ return field; }
-        public List<Card> getShardPile(){ return shardPile; }
-        public Card getTCLandscapeCard(){ return TCLandscape; }
-        public int getBarriers(){ return barriers.Count; }
-        //End Getters
-
-
-        //Setters
-        public void setTCLandscapeCard(Card c){ TCLandscape = (AuxiliaryCard)c; }
-
-        public void setDeck(Deck d)
+        public Deck PlayerDeck
         {
-            playerDeck = d;
-            majesty = d.getMajesty();
+            get { return playerDeck; }
+            set { playerDeck = value; }
         }
 
-        public void addToField(Card c)
+        public Card Majesty
         {
-            hand.Remove(c);
-            field.Add(c);
+            get { return majesty; }
+            set { majesty = value; }
         }
 
-        //End Setters
-
-        //Removes
-        public void removeTCLandscapeCard()
+        public AuxiliaryCard TCLandscape
         {
-            TCLandscape = null;
+            get { return tcLandscape; }
+            set { tcLandscape = value; }
         }
+        
 
-        //End Removes
+        public Locations GetLocation(string l)
+        {
+            bool validVal = false;
+            foreach (string s in validLocations)
+            {
+                if(s.Contains(l))
+                {
+                    validVal = true;
+                }
+            }
 
-        //Adds
+            if(!validVal)
+            {
+                Debug.Log("Invalid Argument!");
+                return null;
+            }
+
+            return cardLocations[l];
+    }
+
+
+        public void AddToField(Card c)
+        {
+            cardLocations["Hand"].RemoveContent(c);
+            cardLocations["Field"].AddContent(c);
+        }
+    
         public void AddBarrier(Card c)
         {
             c.setShard(true);
             c.setBarrierStatus(true);
-            barriers.Add(c);
+            cardLocations["BZ"].AddContent(c);
         }
 
         public void AddToHand(Card c)
         {
-            hand.Add(c);
+            cardLocations["Hand"].AddContent(c);
         }
         //End Adds
 
@@ -82,9 +98,9 @@ public class Player
         //Housing Keeping functions
         public void DestroyBarrier()
         {
-            barriers[0].setBarrierStatus(false);
-            SendToShardPile(barriers[0]);
-            barriers.RemoveAt(0);
+            cardLocations["BZ"].GetContents()[0].setBarrierStatus(false);
+            SendToShardPile(cardLocations["BZ"].GetContents()[0]);
+            cardLocations["BZ"].RemoveContent();
         }
         //End Housing Keeping functions
 
@@ -94,12 +110,12 @@ public class Player
         public void SendToGrave(Card c)
         {
             c.setDestoyedStatus(true);
-            grave.Add(c);
+            cardLocations["Grave"].AddContent(c);
         }
 
         public void SendToShardPile(Card c)
         {
-            shardPile.Add(c);
+            cardLocations["SC"].AddContent(c);
         }
 
         public void DrawFromDeck(int drawVal = 1)
@@ -107,7 +123,7 @@ public class Player
             List<Card> cardsDrawn = playerDeck.Draw(drawVal);
             foreach (Card c in cardsDrawn)
             {
-                hand.Add(c);
+                cardLocations["Hand"].AddContent(c);
             }
         }
         //End Card Transit

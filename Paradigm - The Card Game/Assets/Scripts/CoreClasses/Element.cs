@@ -25,14 +25,14 @@ public class Element: Card
         public override void playCard()
         {
             Player p = this.getOwner();
-            for(int i = 0; i < p.getPlayerField().Count; i++)
+            for(int i = 0; i < p.GetLocation("Field").Count; i++)
             {
-                if(p.getPlayerField()[i] is Accessor)
+                if(p.GetLocation("Field").GetContents()[i] is Accessor)
                 {
-                    Accessor a = (Accessor)p.getPlayerField()[i];
+                    Accessor a = (Accessor)p.GetLocation("Field").GetContents()[i];
                     if (a.getElementStatus())
                     {
-                        p.addToField(this);
+                        p.GetLocation("Field").AddContent(this);
                     }
                 }
             }
