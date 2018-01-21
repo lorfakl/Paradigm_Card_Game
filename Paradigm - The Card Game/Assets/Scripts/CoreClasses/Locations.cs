@@ -13,6 +13,7 @@ public class Locations
     public Locations(string name)
     {
         this.name = name;
+        contents = null;
     }
 
     public Locations(string name, List<Card> l)
@@ -22,44 +23,53 @@ public class Locations
     }
     public string Name
     {
-        get { return name; }
-        set { name = value; }
+        get { return this.name; }
+        set { this.name = value; }
     }
-
-    public List<Card> GetContents() { return contents; }
 
     public int Count
     {
-        get { return contents.Count; }
+        get { return this.contents.Count; }
     }
+
+    public void AddList(List<Card> l)
+    {
+        if(this.contents == null)
+        {
+            this.contents = l;
+        }
+    }
+
+    public List<Card> GetContents() { return this.contents; }
+
     public void AddContent(Card c)
     {
-        contents.Add(c);
+        this.contents.Add(c);
     }
 
     public void ListAdd( List<Card> l)
     {
         foreach( Card c in l)
         {
-            contents.Add(c);
+            this.contents.Add(c);
         }
     }
 
     public void RemoveContent(Card c)
     {
-        contents.Remove(c);
+        this.contents.Remove(c);
     }
 
     public void RemoveContent()
     {
-        contents.RemoveAt(0);
+        this.contents.RemoveAt(0);
     }
 
     public void ListRemove(List<Card> l)
     {
         foreach (Card c in l)
         {
-            contents.Remove(c);
+            this.contents.Remove(c);
         }
     }
 

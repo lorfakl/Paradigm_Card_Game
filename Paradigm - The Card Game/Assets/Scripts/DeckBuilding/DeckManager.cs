@@ -12,7 +12,7 @@ public class DeckManager : MonoBehaviour {
     {
         TextAsset cardCollection = Resources.Load("carddatabase") as TextAsset;
         string[] lines = cardCollection.text.Split("\n"[0]);
-        AllCards = CardDataBase.LoadData(lines);
+        //AllCards = CardDataBase.LoadData(lines);
     }
 
     void Update()

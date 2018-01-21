@@ -10,13 +10,13 @@ public class GameEventsManager : MonoBehaviour
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
-    public static event EventAddedHandler CallEventAddedSubs; // an instance of the delegate
+    public static event EventAddedHandler NotifyEventAddedSubs; // an instance of the delegate only ever gonna be one
 
     private void OnEventAdd (object sender, GameEventsArgs data)
     {
-        if(CallEventAddedSubs != null) //if there are subcribers
+        if(NotifyEventAddedSubs != null) //if there are subcribers
         {
-            CallEventAddedSubs(this, data);
+            NotifyEventAddedSubs(this, data);
         }
     }
 

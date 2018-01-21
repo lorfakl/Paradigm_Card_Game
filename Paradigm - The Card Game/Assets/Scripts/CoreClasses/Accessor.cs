@@ -36,22 +36,26 @@ public class Accessor: Card
 
         }
 
-        public Accessor(string n, string[] e, string[] t, int p, int h, bool s, string k)
+        public Accessor(System.String n, System.String k, System.String t, System.Int64 p, System.Int64 h, System.String a, System.String a2 = "")
         {
             this.setName(n);
-            //this.setEffect(e); Come back to these
-            //this.setTraits(t);
-            this.setPower(p);
-            this.setMaxHp(h);
-            this.setHp(h);
-            this.setShard(s);
+            this.setAbilities(n, a);
+            string[] traits = SplitTrait(t);
+            foreach (string tr in traits) { this.setTraits(tr, n); }
+            this.setPower((int)p);
+            this.setMaxHp((int)h);
+            this.setHp((int)h);
             Family fam = new Family(k);
             this.setFam(fam);
-            for(int i = 0; i < t.Length; i++)
+            for(int i = 0; i < traits.Length; i++)
             {
-                if(t[i] == "Elemental")
+                if(traits[i] == "Elemental")
                 {
                     elemental = true;
+                }
+                else
+                {
+                    elemental = false;
                 }
             }
         }

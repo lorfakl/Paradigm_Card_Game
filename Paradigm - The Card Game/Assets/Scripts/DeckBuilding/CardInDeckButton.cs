@@ -18,7 +18,7 @@ public class CardInDeckButton : MonoBehaviour {
     void expandCard()
     {
         GameObject cardDets = GameObject.FindGameObjectWithTag("cardDetails");
-        cardDets.GetComponent<Text>().text = cardData.getName() + "\nKazoku: " + cardData.getFam().getFam() + "\t   Ability: " + cardData.getAbility() +  "\nEffect: " + cardData.getEffect();
+        //cardDets.GetComponent<Text>().text = cardData.getName() + "\nKazoku: " + cardData.getFam().getFam() + "\t   Ability: " + cardData.getAbility() +  "\nEffect: " + cardData.getEffect();
         cardDets.GetComponent<cardDetailsAddOn>().setExpandedCard(cardData);
         print("From in the Deck: "+cardDets.GetComponent<cardDetailsAddOn>().getExpandedCard().getName());
     }

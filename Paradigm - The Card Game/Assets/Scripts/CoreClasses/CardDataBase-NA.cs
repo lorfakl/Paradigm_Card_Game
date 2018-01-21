@@ -3,14 +3,117 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Mono.Data.Sqlite;
+using System.Data;
 
 namespace DataBase
 {
-    static class CardDataBase
+    class CardDataBase
     {
-
+        
         private static List<Card> everySingleCard = new List<Card>();
+        private static Dictionary<string, Type> typeDict = new Dictionary<string, Type>();
 
+        private static void PrepareDictionary()
+        {
+            typeDict.Add("Accessor", typeof(Accessor));
+            //typeDict.Add("Phantom", typeof(Phantom));
+            typeDict.Add("AuxiliaryCard", typeof(AuxiliaryCard));
+            typeDict.Add("Element", typeof(Element));
+        }
+
+        public static List<IDataRecord> GetDataBaseData()
+        {
+            List<IDataRecord> dbRecords = new List<IDataRecord>();
+            PrepareDictionary();
+            string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
+            IDbConnection dbconn;
+            dbconn = (IDbConnection)new SqliteConnection(conn); 
+            dbconn.Open(); //connect to database
+
+            IDbCommand cmd = dbconn.CreateCommand(); //create sql command object
+            string query = "SELECT * FROM Cards"; //sql command text
+            cmd.CommandText = query; //put sql command text in the command object
+
+            IDataReader reader = cmd.ExecuteReader(); //run query
+            
+
+            while (reader.Read())
+            {
+                
+
+                if (typeDict.ContainsKey(reader[1].ToString()))
+                {
+                    Type cardType = typeDict[reader[1].ToString()];
+                    //Debug.Log(reader[1].ToString() + " maps to a valid card type");
+                    List<System.Object> recordData = new List<System.Object>();
+                    for(int i = 2; i < reader.FieldCount; i++) //go through the columns of the DB record and removes any NULL values before processing
+                    {
+                        if(!reader.IsDBNull(i))
+                        {
+                            recordData.Add(reader[i]);
+                        }
+                    }
+                    foreach (System.Object o in recordData)
+                    {
+                        //Debug.Log(o.ToString());
+                    }
+
+                    System.Object[] ob = recordData.ToArray();
+                    //Debug.Log("Whats in the Object Array");
+                    Debug.Log("Should Create " + reader[2]);
+                    Card c = (Card)Activator.CreateInstance(cardType, ob);
+                    Debug.Log("Dynamically Created Card: " + c.getName());
+                    
+
+
+
+
+                }
+                else
+                {
+                    //Debug.Log(reader[1] + " does NOT map to a valid card type");
+                }
+                
+                
+                
+                
+                
+            }
+            dbconn.Close();
+            return dbRecords; 
+        }
+
+        public static List<Card> GenerateCards()
+        {
+            List<IDataRecord> records = GetDataBaseData();
+
+            foreach(IDataRecord r in records)
+            {
+                Debug.Log("This Might be some Column Data?: ");
+                for (int i = 0; i < r.FieldCount; i++)
+                {
+                    Debug.Log(r[i]);
+                }
+                    
+                Type cardType = typeDict[r[1].ToString()];  //get the Type that corresponds to the 2nd column of the DB record( or row)
+                for(int i = 0; i < r.FieldCount; i++)
+                {
+                    if(r.IsDBNull(i))
+                    {
+                        Debug.Log("Column " + i + " is NULL as fuck!");
+                    }
+                }
+            }
+            
+            return everySingleCard;
+        }
+
+        
+        
+
+        
+/*
         /// <summary>
         /// This function takes in an array of lines. this array is the entire database text file each string at the indecies
         /// represents an entire line of the database file.
@@ -61,14 +164,14 @@ namespace DataBase
                 }
                 else //Respirators and Philosophers
                 {
-                    temp = new AuxiliaryCard(lines[i], e, t, Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
+                    //temp = new AuxiliaryCard(lines[i], e, t, Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
                 }
 
                 AllCards.Add(temp);
             }
-            setCardCollection(AllCards);
+            //setCardCollection(AllCards);
             return AllCards;
-        }
+        }*/
         /// <summary>
         /// Loads the individual lines from the file
         /// (On Line 53) A TextAsset is declared because text files in Unity are implicity converted to type TextAsset Objects
@@ -79,25 +182,7 @@ namespace DataBase
         /// (On Line 55) calls the LoadData in order to create the Card objects
         /// (On Line 56) redundant
         /// </summary>
-        public static void getFileData()
-        {
-            TextAsset cardCollection = Resources.Load("carddatabase") as TextAsset;
-            string[] lines = cardCollection.text.Split("\n"[0]);
-            List<Card> allCards = LoadData(lines);
-            setCardCollection(allCards);
-        }
-
-        public static void setCardCollection(List<Card> cards)
-        {
-            everySingleCard = cards;
-        }
-
-        public static List<Card> getCardCollection()
-        {
-            return everySingleCard;
-        } 
-
-
+        
         /// <summary>
         /// //This function searches AllCards which is a reference to
         //A list containing all the cards in the carddatabase text file

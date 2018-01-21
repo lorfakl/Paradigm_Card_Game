@@ -15,8 +15,8 @@ using UnityEngine;
     public Majesty(string n, string[] e, string[] t, int p, int h, bool s, string k)
     {
         this.setName(n);
-        //this.setEffect(e); Come back to these
-        //this.setTraits(t);
+        foreach(string a in e) { this.setAbilities(n, a); }
+        foreach(string tr in t) { this.setTraits(tr, n); }
         this.setPower(p);
         this.setMaxHp(h);
         this.setHp(h);

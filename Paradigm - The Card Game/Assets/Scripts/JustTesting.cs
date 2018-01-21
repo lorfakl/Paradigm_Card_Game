@@ -6,7 +6,7 @@ using DataBase;
 
 public class JustTesting : MonoBehaviour {
 
-    public Transform display;
+    /*public Transform display;
     List<Card> cards = null;
     int numToSelect = 0;
     int count = 0;
@@ -58,5 +58,5 @@ public class JustTesting : MonoBehaviour {
             //count = count + DisplaySelectionCards.getSelectedCards().Count;
             Debug.Log("Cards selected over time: " + count);
         }
-	}
+	}*/
 }

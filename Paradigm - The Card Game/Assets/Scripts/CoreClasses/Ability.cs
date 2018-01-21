@@ -17,8 +17,10 @@ public class Ability
     private int timesUsed;
     private Player owner;
     private AbilityType type; //ability type dictates how the abilities is activated
-    private AbilityFunctionality abilityFunction;
-    
+    public delegate void ActivateAbility(GameEvents e);
+    ActivateAbility abilityFunction; //this is an identifier, in the constructor this will be assigned to a function grabbed 
+                                     //from the hashtable of ability functions the AbilityBuilder contains
+     
     public bool ActivationStatus
     {
         get { return canActivate; }
@@ -39,10 +41,10 @@ public class Ability
         Debug.Log("I'm an ability, and I know a new game event was added to the queue");
     }
 
-    public Ability(string cName, string text, Player o, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
+    public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
     {
-        GameEventsManager.CallEventAddedSubs += CheckNewEvent;
-        this.owner = o;
+        GameEventsManager.NotifyEventAddedSubs += CheckNewEvent;
+        
     }
     
 
