@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DisplaySelectionCards :MonoBehaviour
 {
-
+    /*
     //This script is for use any time the player needs to select Cards from a list
     //It should get the cards from somewhere, currently a global static class this is TEMPORARY 
     //It should display those cards, allow the player to select them and send the selected cards back to the sender
@@ -128,4 +128,5 @@ public class DisplaySelectionCards :MonoBehaviour
         }//end Input IF
         yield return new WaitForSeconds(.1f);
     }//end SelectCard*/
+
 }
