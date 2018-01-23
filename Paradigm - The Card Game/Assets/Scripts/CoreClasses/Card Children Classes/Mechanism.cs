@@ -16,13 +16,12 @@ public class Mechanism: Card
     public void setPower(int p) { power = p; }
     public int getPower() { return power; }
 
-    public Mechanism(string n, string[] e, string[] t, int p, bool s, string k)
+    public Mechanism(string n, string k, System.Int64 p, string t, string a, string a2, string a3 )
     {
         this.setName(n);
-        foreach (string a in e) { this.setAbilities(n, a); }
-        foreach (string tr in t) { this.setTraits(tr, n); }
-        this.setPower(p);
-        this.setShard(s);
+        this.SetAbilities(a, a2, a2);
+        this.SetTraits(t);
+        this.setPower((int)p);
         Family fam = new Family(k);
         this.setFam(fam);
     }

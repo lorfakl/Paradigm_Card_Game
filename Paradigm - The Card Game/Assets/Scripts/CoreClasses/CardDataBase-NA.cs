@@ -1,30 +1,52 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using Mono.Data.Sqlite;
 using System.Data;
+using Mono.Data.Sqlite;
+using System.Reflection;
+using System.Collections;
+using System.Globalization;
+using System.Collections.Generic;
 
 namespace DataBase
 {
     class CardDataBase
     {
-        
         private static List<Card> everySingleCard = new List<Card>();
-        private static Dictionary<string, Type> typeDict = new Dictionary<string, Type>();
+        private static Dictionary<string, CardConstrInfo> typeDict = new Dictionary<string, CardConstrInfo>();
+
+        private struct CardConstrInfo
+        {
+            public Type t;
+            public int maxArgs;
+        }
 
         private static void PrepareDictionary()
         {
-            typeDict.Add("Accessor", typeof(Accessor));
-            //typeDict.Add("Phantom", typeof(Phantom));
-            typeDict.Add("AuxiliaryCard", typeof(AuxiliaryCard));
-            typeDict.Add("Element", typeof(Element));
+            
+            typeDict.Add("Accessor", MakeEntry(typeof(Accessor), 8));
+            typeDict.Add("Element", MakeEntry(typeof(Element), 7));
+            typeDict.Add("Majesty", MakeEntry(typeof(Majesty), 8));
+            //typeDict.Add("Source", MakeEntry(typeof(Source), ));
+            typeDict.Add("Mechanism", MakeEntry(typeof(Mechanism), 7));
+            //typeDict.Add("Phantom", MakeEntry(typeof(Phantom), 9));
+            //typeDict.Add("Philosopher", MakeEntry(typeof(Philosopher), ));
+            //typeDict.Add("Landscape", MakeEntry(typeof(Landscape), ));
+            
         }
 
-        public static List<IDataRecord> GetDataBaseData()
+        private static CardConstrInfo MakeEntry(Type t, int i)
         {
-            List<IDataRecord> dbRecords = new List<IDataRecord>();
+            CardConstrInfo info = new CardConstrInfo();
+            info.t = t;
+            info.maxArgs = i;
+
+            return info;
+        }
+
+        public static List<Card> GetDataBaseData()
+        {
+            List<Card> allCards = new List<Card>();
             PrepareDictionary();
             string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
             IDbConnection dbconn;
@@ -40,78 +62,42 @@ namespace DataBase
 
             while (reader.Read())
             {
-                
-
                 if (typeDict.ContainsKey(reader[1].ToString()))
                 {
-                    Type cardType = typeDict[reader[1].ToString()];
-                    //Debug.Log(reader[1].ToString() + " maps to a valid card type");
+                    CardConstrInfo constrInfo = typeDict[reader[1].ToString()];
+                    Type cardType = constrInfo.t;
                     List<System.Object> recordData = new List<System.Object>();
                     for(int i = 2; i < reader.FieldCount; i++) //go through the columns of the DB record and removes any NULL values before processing
                     {
                         if(!reader.IsDBNull(i))
                         {
                             recordData.Add(reader[i]);
-                        }
-                    }
-                    foreach (System.Object o in recordData)
-                    {
-                        //Debug.Log(o.ToString());
+                        }  
                     }
 
+                    while(recordData.Count < constrInfo.maxArgs)
+                    {
+                        recordData.Add("");
+                    }
+
+                    if(recordData.Count > constrInfo.maxArgs)
+                    {
+                        Debug.Log("Definitely gonna break");
+                    }
+                   
                     System.Object[] ob = recordData.ToArray();
-                    //Debug.Log("Whats in the Object Array");
-                    Debug.Log("Should Create " + reader[2]);
                     Card c = (Card)Activator.CreateInstance(cardType, ob);
                     Debug.Log("Dynamically Created Card: " + c.getName());
-                    
-
-
-
-
+                    allCards.Add(c);
                 }
                 else
                 {
-                    //Debug.Log(reader[1] + " does NOT map to a valid card type");
+                    Debug.Log(reader[1] + " does NOT map to a valid card type");
                 }
-                
-                
-                
-                
-                
             }
             dbconn.Close();
-            return dbRecords; 
+            return allCards; 
         }
-
-        public static List<Card> GenerateCards()
-        {
-            List<IDataRecord> records = GetDataBaseData();
-
-            foreach(IDataRecord r in records)
-            {
-                Debug.Log("This Might be some Column Data?: ");
-                for (int i = 0; i < r.FieldCount; i++)
-                {
-                    Debug.Log(r[i]);
-                }
-                    
-                Type cardType = typeDict[r[1].ToString()];  //get the Type that corresponds to the 2nd column of the DB record( or row)
-                for(int i = 0; i < r.FieldCount; i++)
-                {
-                    if(r.IsDBNull(i))
-                    {
-                        Debug.Log("Column " + i + " is NULL as fuck!");
-                    }
-                }
-            }
-            
-            return everySingleCard;
-        }
-
-        
-        
-
         
 /*
         /// <summary>

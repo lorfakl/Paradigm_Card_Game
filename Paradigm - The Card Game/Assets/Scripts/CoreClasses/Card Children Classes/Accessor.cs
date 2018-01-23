@@ -36,28 +36,17 @@ public class Accessor: Card
 
         }
 
-        public Accessor(System.String n, System.String k, System.String t, System.Int64 p, System.Int64 h, System.String a, System.String a2 = "")
+        public Accessor(string n, string k, System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
         {
             this.setName(n);
-            this.setAbilities(n, a);
-            string[] traits = SplitTrait(t);
-            foreach (string tr in traits) { this.setTraits(tr, n); }
+            this.SetAbilities(a,a2,a3);
+            this.SetTraits(t);
             this.setPower((int)p);
             this.setMaxHp((int)h);
             this.setHp((int)h);
             Family fam = new Family(k);
             this.setFam(fam);
-            for(int i = 0; i < traits.Length; i++)
-            {
-                if(traits[i] == "Elemental")
-                {
-                    elemental = true;
-                }
-                else
-                {
-                    elemental = false;
-                }
-            }
+            
         }
 
         public override void playCard()

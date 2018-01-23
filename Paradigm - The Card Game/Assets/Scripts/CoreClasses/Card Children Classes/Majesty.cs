@@ -12,15 +12,14 @@ using UnityEngine;
     public bool getSecretStatus(){ return secrets; }
     public void setSecretStatus(bool s) { secrets = s; }
         
-    public Majesty(string n, string[] e, string[] t, int p, int h, bool s, string k)
+    public Majesty(string n, string k,  System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);
-        foreach(string a in e) { this.setAbilities(n, a); }
-        foreach(string tr in t) { this.setTraits(tr, n); }
-        this.setPower(p);
-        this.setMaxHp(h);
-        this.setHp(h);
-        this.setShard(s);
+        this.SetAbilities(a, a2, a3);
+        this.SetTraits(t);
+        this.setPower((int)p);
+        this.setMaxHp((int)h);
+        this.setHp((int)h);
         Family fam = new Family(k);
         this.setFam(fam);
     }

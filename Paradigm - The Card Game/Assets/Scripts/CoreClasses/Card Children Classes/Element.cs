@@ -11,21 +11,12 @@ public class Element: Card
         public int getPower() { return power; }
 
 
-        public Element(string n, string k, string t, int p, string a, string a2 = "", string a3 = "")
+        public Element(string n, string k, System.Int64 p, string t, string a, string a2, string a3)
         {
             this.setName(n);
-            this.setAbilities(n, a);
-            foreach (string tr in SplitTrait(t)) { this.setTraits(tr, n); }
-            this.setPower(p);
-            Family fam = new Family(k);
-            this.setFam(fam);
-        }
-
-        public Element(string n, string k, int p, string a, string a2 = "", string a3 = "")
-        {
-            this.setName(n);
-            this.setAbilities(n, a); 
-            this.setPower(p);
+            this.SetAbilities(a, a2, a3);
+            this.SetTraits(t); 
+            this.setPower((int)p);
             Family fam = new Family(k);
             this.setFam(fam);
         }

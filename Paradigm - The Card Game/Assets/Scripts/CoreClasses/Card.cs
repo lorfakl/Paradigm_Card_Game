@@ -43,22 +43,24 @@ using UnityEngine;
         public void setPlayStatus(bool b) { inPlay = b; }
         public void setDestoyedStatus(bool s) { isDestroyed = s; }
 
-        public void setAbilities(string cName, string text, string aName = "")
+        public void SetTraits(string text)
         {
-            addAbility(new Ability(cName, text));
+            foreach (string tr in SplitTrait(text)) { this.addTrait(new Trait(text, this.name)); }
+        }
+        
+        public void SetAbilities(string a, string a2, string a3)
+        {
+            string[] abs = { a, a2, a3 };
+            for (int i = 0; i < 3; i++)
+            {
+                if (abs[i] != "")
+                {
+                    this.addAbility(new Ability(this.name, abs[i]));
+                }      
+            }
         }
 
-        public void setTraits(string text, string cName)
-        {
-            addTrait(new Trait(text, cName));
-        }
-
-        public void ConstructTraits(string[] t, string n)
-        {
-            foreach (string tr in t) { this.setTraits(tr, n); }
-        }
-
-        protected string[] SplitTrait(string s) { return s.Split(','); }
+        private string[] SplitTrait(string s) { return s.Split(','); }
 
     public abstract void playCard(); //To be defined MUCH later
 

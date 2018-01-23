@@ -6,7 +6,8 @@ using DataBase;
 public class DBTesting : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         CardDataBase.GetDataBaseData();
 	}
 	
