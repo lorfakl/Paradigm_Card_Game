@@ -17,7 +17,7 @@ using UnityEngine;
         private bool inPlay;
         private bool isBarrier;
         private bool isDestroyed;
-        private string currentLocation;
+        private Location currentLocation;
 
         //Getters
         public string getName() { return name; }
@@ -26,7 +26,7 @@ using UnityEngine;
         public bool getShard() { return isShard; }
         public Player getOwner() { return owner; }
         public Family getFam() { return fam; }
-        public string getLocation() { return currentLocation; }
+        public Location getLocation() { return currentLocation; }
         public bool getBarrierStatus() { return isBarrier; }
         public bool getPlayStatus() { return inPlay; }
         
@@ -38,7 +38,7 @@ using UnityEngine;
         public void setShard(bool sh) { isShard = sh; }
         public void setOwner(Player p) { owner = p; }
         public void setFam(Family f) { fam = f; }
-        public void setLocation(string l) { currentLocation = l; }
+        public void setLocation(Location l) { currentLocation = l; }
         public void setBarrierStatus(bool b) { isBarrier = b; }
         public void setPlayStatus(bool b) { inPlay = b; }
         public void setDestoyedStatus(bool s) { isDestroyed = s; }

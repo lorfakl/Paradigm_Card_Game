@@ -6,19 +6,42 @@ using UnityEngine;
 /// </summary>
 namespace Utilities
 {
-    public static class Utilities
+    public static class HelperFuncs
     {
-
-        public struct Tuple
+        public static GameEventsArgs CreateGameEvent()
         {
-            public List<Card> cardList;
-            public int value;
-        }
 
+            
+        }
     }
 
     public static class Dictionaries
     {
+        //this static class will be responsible for mmapping card names to their abilities and traits
+        //which map to the functions that actually do the things for abilities and traits
+        private static bool arePrepared = false;
+        public static Dictionary<string, Turn.TurnPhaseFunction> turnDict = new Dictionary<string, Turn.TurnPhaseFunction>();
+       
+        
+        public static bool Prepared
+        {
+            get { return arePrepared; }
+        }
 
+        public static void PrepareDictionaries()
+        {
+
+            arePrepared = true;
+        }
+
+        
+    }
+
+    static class CardFunctions
+    {
+        private static void StartElementalEffect(GameEvents e)
+        {
+
+        }
     }
 }

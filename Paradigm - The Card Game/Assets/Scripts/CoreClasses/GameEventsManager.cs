@@ -25,12 +25,25 @@ public class GameEventsManager : MonoBehaviour
     /// Which will lead into adding things to the stack and doing timer things 
     /// </summary>
     /// <param name="e"></param>
-    public void EnqueueEvent(GameEventsArgs e) 
+    public void PublishEvent(GameEventsArgs e) 
     {                                                   
         eventQueue.Enqueue(e);
         OnEventAdd(this, e);
     }
 
-    
-    
+    /// <summary>
+    /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
+    /// Thats why it extends Monobehaviour and has Update and Start functions
+    /// </summary>
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
 }

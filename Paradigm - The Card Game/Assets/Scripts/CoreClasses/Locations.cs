@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Locations
+public class Location
 {
 
+    public struct LocationChanges
+    {
+        public Card c;
+        public Location origin;
+        public Location destination;
+    }
+
     private string name;
+    private Player owner;
     private List<Card> contents;
+    private static List<Location> locations = new List<Location>();
+    private static Dictionary<Location, List<LocationChanges>> changesDict = new Dictionary<Location, List<LocationChanges>>();
+    private List<LocationChanges> changes;
 
-    public Locations(string name)
-    {
-        this.name = name;
-        contents = null;
-    }
-
-    public Locations(string name, List<Card> l)
-    {
-        this.name = name;
-        ListAdd(l);
-    }
     public string Name
     {
         get { return this.name; }
@@ -32,45 +32,67 @@ public class Locations
         get { return this.contents.Count; }
     }
 
-    public void AddList(List<Card> l)
+    public Location(string name, Player p)
     {
-        if(this.contents == null)
-        {
-            this.contents = l;
-        }
+        this.name = name;
+        this.owner = p;
+        contents = new List<Card>() ;
+        locations.Add(this);
+        this.changes = new List<LocationChanges>();
+        changesDict.Add(this, this.changes);
     }
 
     public List<Card> GetContents() { return this.contents; }
 
-    public void AddContent(Card c)
+    public void MoveContent(List<Card> l, Location destination)
     {
-        this.contents.Add(c);
+        ProcessListLocationChanges(l, destination);
     }
 
-    public void ListAdd( List<Card> l)
+    public void MoveContent(Card c, Location destination)
     {
-        foreach( Card c in l)
-        {
-            this.contents.Add(c);
-        }
+        ProcessLocationChange(c, destination);
     }
 
-    public void RemoveContent(Card c)
+    public void MoveContent(Location destination)
     {
-        this.contents.Remove(c);
+        Card c = this.contents[0];
+        ProcessLocationChange(c, destination);
     }
 
-    public void RemoveContent()
+    private void ProcessListLocationChanges(List<Card> l, Location destination)
     {
-        this.contents.RemoveAt(0);
-    }
-
-    public void ListRemove(List<Card> l)
-    {
+        LocationChanges newChanges = new LocationChanges();
         foreach (Card c in l)
         {
-            this.contents.Remove(c);
+            newChanges.c = c;
+            newChanges.destination = destination;
+            newChanges.origin = this;
+            changes.Add(newChanges);
+            destination.contents.Add(c);
+            c.setLocation(destination);
+            if(!(this.contents.Remove(c)))
+            {
+                Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " + this.name);
+            }
         }
+        
+    }
+
+    private void ProcessLocationChange(Card c, Location destination)
+    {
+        LocationChanges newChanges = new LocationChanges();
+        newChanges.c = c;
+        newChanges.destination = destination;
+        newChanges.origin = this;
+        changes.Add(newChanges);
+        destination.contents.Add(c);
+        c.setLocation(destination);
+        if (!(this.contents.Remove(c)))
+        {
+            Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " + this.name);
+        }
+
     }
 
 }

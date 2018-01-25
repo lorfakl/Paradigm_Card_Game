@@ -29,7 +29,7 @@ public class Mechanism: Card
     public override void playCard()
     {
         Player p = this.getOwner();
-        //p.addToField(this);
+        
     }
 
     public override void useEffect()

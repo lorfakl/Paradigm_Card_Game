@@ -52,7 +52,7 @@ public class Accessor: Card
         public override void playCard()
         {
             Player p = this.getOwner();
-            p.GetLocation("Field").AddContent(this);
+            this.getLocation().MoveContent(this, p.GetLocation("Field"));
         }
 
         public override void useEffect()

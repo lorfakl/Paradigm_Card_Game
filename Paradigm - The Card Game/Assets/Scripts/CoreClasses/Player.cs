@@ -10,18 +10,29 @@ public class Player
        
         //private Turn playerTurn;
        
-        private Dictionary<string, Locations> cardLocations;
+        private Dictionary<string, Location> cardLocations;
         private string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field" };
         private Deck playerDeck;
-        
-        private AuxiliaryCard tcLandscape = null;
+        private int playerID;
+        //private AuxiliaryCard tcLandscape = null;
         private Card majesty;
+        private static List<Player> currentPlayers = new List<Player>();
 
         public Player()
         {
-            foreach(string s in validLocations)
+            this.playerID = new System.Random().Next(256);
+            foreach (Player p in currentPlayers)
             {
-                cardLocations.Add(s, new Locations(s));
+            
+                while (this.playerID == p.playerID)
+                {
+                    this.playerID = new System.Random().Next(256);
+                }
+            }
+
+            foreach (string s in validLocations)
+            {
+                cardLocations.Add(s, new Location(s, this));
             }
         }
 
@@ -31,7 +42,7 @@ public class Player
             this.majesty = playerDeck.getMajesty();
             foreach (string s in validLocations)
             {
-                cardLocations.Add(s, new Locations(s));
+                cardLocations.Add(s, new Location(s, this));
             }
         }
 
@@ -47,14 +58,14 @@ public class Player
             set { majesty = value; }
         }
 
-        public AuxiliaryCard TCLandscape
+        /*public AuxiliaryCard TCLandscape
         {
             get { return tcLandscape; }
             set { tcLandscape = value; }
-        }
+        }*/
         
 
-        public Locations GetLocation(string l)
+        public Location GetLocation(string l)
         {
             bool validVal = false;
             foreach (string s in validLocations)
@@ -72,25 +83,24 @@ public class Player
             }
 
             return cardLocations[l];
-    }
+        }
 
 
         public void AddToField(Card c)
         {
-            cardLocations["Hand"].RemoveContent(c);
-            cardLocations["Field"].AddContent(c);
+            cardLocations["Hand"].MoveContent(c, cardLocations["Field"]);   
         }
     
         public void AddBarrier(Card c)
         {
             c.setShard(true);
             c.setBarrierStatus(true);
-            cardLocations["BZ"].AddContent(c);
+            c.getLocation().MoveContent(c, cardLocations["BZ"]);
         }
 
         public void AddToHand(Card c)
         {
-            cardLocations["Hand"].AddContent(c);
+            c.getLocation().MoveContent(c, cardLocations["BZ"]);
         }
         //End Adds
 
@@ -98,24 +108,22 @@ public class Player
         //Housing Keeping functions
         public void DestroyBarrier()
         {
-            cardLocations["BZ"].GetContents()[0].setBarrierStatus(false);
-            SendToShardPile(cardLocations["BZ"].GetContents()[0]);
-            cardLocations["BZ"].RemoveContent();
+            Card c = cardLocations["BZ"].GetContents()[0];
+            c.setBarrierStatus(false);
+            c.getLocation().MoveContent(c, cardLocations["SC"]);
         }
         //End Housing Keeping functions
-
-
 
         //Card Transit
         public void SendToGrave(Card c)
         {
             c.setDestoyedStatus(true);
-            cardLocations["Grave"].AddContent(c);
+            c.getLocation().MoveContent(c, cardLocations["Grave"]);
         }
 
         public void SendToShardPile(Card c)
         {
-            cardLocations["SC"].AddContent(c);
+            c.getLocation().MoveContent(c, cardLocations["SC"]);
         }
 
         public void DrawFromDeck(int drawVal = 1)
@@ -123,7 +131,7 @@ public class Player
             List<Card> cardsDrawn = playerDeck.Draw(drawVal);
             foreach (Card c in cardsDrawn)
             {
-                cardLocations["Hand"].AddContent(c);
+                c.getLocation().MoveContent(c, cardLocations["Hand"]);
             }
         }
         //End Card Transit

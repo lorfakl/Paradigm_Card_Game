@@ -33,7 +33,7 @@ public class Element: Card
                     Accessor a = (Accessor)p.GetLocation("Field").GetContents()[i];
                     if (a.getElementStatus())
                     {
-                        p.GetLocation("Field").AddContent(this);
+                        this.getLocation().MoveContent(this, p.GetLocation("Field"));
                     }
                 }
             }
