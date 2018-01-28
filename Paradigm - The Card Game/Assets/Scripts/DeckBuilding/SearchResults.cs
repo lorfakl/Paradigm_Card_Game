@@ -11,18 +11,17 @@ public class SearchResults : MonoBehaviour {
     public GameObject panel;
     List<GameObject> createdButtons = new List<GameObject>();
     
-    public void printSearchResults()
+    public void PrintSearchResults(List<Card> results)
     {
         
-        clearResults(createdButtons);
-        SearchBox script = searchBox.GetComponent<SearchBox>();
-        List<Card> results = script.getResults();
+        ClearResults(createdButtons);
         float deltaY = 0f;
         foreach (Card card in results)
         {
-            GameObject made = makeButtonsForResults(deltaY);
+            GameObject made = MakeButtonsForResults(deltaY);
             made.GetComponentInChildren<Text>().text = card.getName();
-            made.GetComponent<searchResultAddOns>().setCardData(card);  
+            made.GetComponent<searchResultAddOns>().setCardData(card);
+            Debug.Log(card.GetAbilityText());
             createdButtons.Add(made);
             deltaY -= 40f;
             
@@ -30,7 +29,7 @@ public class SearchResults : MonoBehaviour {
         
     }
 
-    GameObject makeButtonsForResults(float offset)
+    GameObject MakeButtonsForResults(float offset)
     {
         
         Vector3 pos = this.gameObject.transform.position;
@@ -43,13 +42,13 @@ public class SearchResults : MonoBehaviour {
         return newButton;
     }
 
-    public void clearResults()
+    public void ClearResults()
     {
-        clearResults(createdButtons);
+        ClearResults(createdButtons);
     }
 
 
-    void clearResults(List<GameObject> createdButtons)
+    void ClearResults(List<GameObject> createdButtons)
     {
         foreach(GameObject button in createdButtons)
         {

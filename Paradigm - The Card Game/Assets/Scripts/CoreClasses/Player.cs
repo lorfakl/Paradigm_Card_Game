@@ -10,17 +10,19 @@ public class Player
        
         //private Turn playerTurn;
        
-        private Dictionary<string, Location> cardLocations;
-        private string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field" };
+        private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
+        private static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
         private Deck playerDeck;
         private int playerID;
         //private AuxiliaryCard tcLandscape = null;
         private Card majesty;
+        private Turn turn;
         private static List<Player> currentPlayers = new List<Player>();
 
         public Player()
         {
             this.playerID = new System.Random().Next(256);
+            this.majesty = null;
             foreach (Player p in currentPlayers)
             {
             
@@ -34,16 +36,9 @@ public class Player
             {
                 cardLocations.Add(s, new Location(s, this));
             }
-        }
-
-        public Player(Deck d)
-        {
-            this.playerDeck = d;
-            this.majesty = playerDeck.getMajesty();
-            foreach (string s in validLocations)
-            {
-                cardLocations.Add(s, new Location(s, this));
-            }
+            Debug.Log("Dictionary Size: " + cardLocations.Count);
+            this.playerDeck = new Deck("Deck", this);
+            cardLocations["Deck"] = this.playerDeck;
         }
 
         public Deck PlayerDeck
@@ -57,6 +52,17 @@ public class Player
             get { return majesty; }
             set { majesty = value; }
         }
+
+        public int PlayerID
+        {
+            get { return playerID; }
+        }
+
+    public Turn PlayerTurn
+    {
+        get { return this.turn; }
+        set { this.turn = value; }
+    }
 
         /*public AuxiliaryCard TCLandscape
         {

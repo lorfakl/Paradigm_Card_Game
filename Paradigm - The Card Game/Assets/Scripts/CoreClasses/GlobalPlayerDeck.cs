@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GlobalPlayerDeck
 { 
 
-    private static Deck playerDeck = new Deck();
+    /*private static Deck playerDeck = new Deck();
     
     public static void setPlayerDeck(Deck d)
     {
@@ -27,6 +27,6 @@ public static class GlobalPlayerDeck
     public static Deck getAIPlayerDeck()
     {
         return aiPlayerDeck;
-    }
+    }*/
 
 }

@@ -5,44 +5,43 @@ using System.IO;
 using UnityEngine;
 
 
- public class Deck
+ public class Deck: Location
     {
-        private List<Card> deck = new List<Card>();
-
         private Family deckFam;
-        private Player ownership;
         private Card nextCard;
 
-        public Deck()
+        public Deck(string name, Player p)
         {
-            deckFam = null;
+            this.Name = name;
+            this.Owner = p;
+            this.deckFam = null;
         }
 
-        public bool addCard(Card c)
+        public bool AddCard(Card c)
         {
             if (deckFam == null)
             {
-                deck.Add(c);
-
+                this.AddContent(c);
                 deckFam = c.getFam();  //set the family of the deck to the family of the first card added
+                c.setLocation(this);
                 return true;
             }
-            else if (c.getFam().getFam() != deckFam.getFam())
+            else if (c.getFam().FamString != deckFam.FamString)
             {
                 //Debug.Log("Cannot add Card, does not Match Deck Family");
                 return false;
             }
             else
             {
-                deck.Add(c);
-
+                this.AddContent(c);
+                c.setLocation(this);
                 return true;
             }
         }
 
-        public void removeCard(Card c)
+        public void RemoveCard(Card c)
         {
-            deck.Remove(c);
+            this.RemoveContent(c);
         }
 
         public List<Card> Draw(int drawVal = 1)
@@ -50,38 +49,28 @@ using UnityEngine;
             List<Card> cardsDrawn = new List<Card>();
             if (drawVal == 1)
             {
-                cardsDrawn.Add(deck[0]);
+                cardsDrawn.Add(this.GetContents()[0]);
                 return cardsDrawn;
             }
             else
             {
                 for (int i = 0; i < drawVal; i++)
                 {
-                    cardsDrawn.Add(deck[i]);
-                    removeCard(deck[i]);
+                    cardsDrawn.Add(this.GetContents()[i]);
+                    this.RemoveCard(this.GetContents()[i]);
                 }
                 return cardsDrawn;
             }
         }
 
-        public List<Card> getDeck()
-        {
-            return deck;
-        }
-
-        public int getDeckSize()
-        {
-            return deck.Count;
-        }
-
-        public Accessor getMajesty()
+        public Accessor GetMajesty()
         {
             Accessor c = new Accessor();
-            for (int i = 0; i < deck.Count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
-                if (deck[i] is Majesty)
+                if (this.GetContents()[i] is Majesty)
                 {
-                    c = (Accessor)deck[i];
+                    c = (Accessor)this.GetContents()[i];
                 }
             }
 
@@ -89,11 +78,11 @@ using UnityEngine;
         }
 
 
-        public List<Card> getLandscapesInDeck()
+        public List<Card> GetLandscapesInDeck()
         {
             List<Card> landscapesInDeck = new List<Card>();
 
-            foreach (Card c in deck)
+            foreach (Card c in this.GetContents())
             {
                 //Debug.Log(c.getName() + " " + c.getType());
                 if (c is AuxiliaryCard)

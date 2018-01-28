@@ -11,11 +11,11 @@ public class MainMenuButton : MonoBehaviour {
     void Start()
     {
         Button back = backButton.GetComponent<Button>();
-        back.onClick.AddListener(loadlevel);
+        back.onClick.AddListener(LoadLevel);
     }
 
     // Update is called once per frame
-    void loadlevel()
+    void LoadLevel()
     {
         SceneManager.LoadScene("mainmenu");
     }

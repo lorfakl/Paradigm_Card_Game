@@ -3,22 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Utilities;
+
+public struct LocationChanges  //this struct is for containing infomation regarding a location change in one package
+{
+    public Card c;
+    public Location origin;
+    public Location destination;
+}
 
 public class Location
 {
-
-    public struct LocationChanges
-    {
-        public Card c;
-        public Location origin;
-        public Location destination;
-    }
-
     private string name;
     private Player owner;
     private List<Card> contents;
-    private static List<Location> locations = new List<Location>();
-    private static Dictionary<Location, List<LocationChanges>> changesDict = new Dictionary<Location, List<LocationChanges>>();
+    private static List<Location> locations = new List<Location>(); 
+    private static Dictionary<Location, List<LocationChanges>> changesDict = 
+                   new Dictionary<Location, List<LocationChanges>>(); 
     private List<LocationChanges> changes;
 
     public string Name
@@ -32,6 +33,17 @@ public class Location
         get { return this.contents.Count; }
     }
 
+    public Player Owner
+    {
+        get { return this.owner; }
+        set { this.owner = value; }
+    }
+
+    public Location()
+    {
+
+    }
+
     public Location(string name, Player p)
     {
         this.name = name;
@@ -40,6 +52,11 @@ public class Location
         locations.Add(this);
         this.changes = new List<LocationChanges>();
         changesDict.Add(this, this.changes);
+    }
+
+    public List<LocationChanges> GetChangesOnLocation()
+    {
+        return this.changes;
     }
 
     public List<Card> GetContents() { return this.contents; }
@@ -60,6 +77,17 @@ public class Location
         ProcessLocationChange(c, destination);
     }
 
+    protected void AddContent(Card c)
+    {
+        this.contents.Add(c);    
+    }
+
+    protected bool RemoveContent(Card c)
+    {
+        bool result = this.contents.Remove(c);
+        return result;
+    }
+
     private void ProcessListLocationChanges(List<Card> l, Location destination)
     {
         LocationChanges newChanges = new LocationChanges();
@@ -73,7 +101,15 @@ public class Location
             c.setLocation(destination);
             if(!(this.contents.Remove(c)))
             {
-                Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " + this.name);
+                Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
+                                                                                                            + this.name);
+            }
+            else
+            {
+                Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
+                                                                + destination.owner.PlayerID + "'s " + destination.Name);
+                changesDict[this] = changes;
+                Utilities.HelperFunctions.RaiseNewEvent(this, changes, c, GetMoveAction(this, destination), NonMoveAction.None, l);
             }
         }
         
@@ -90,9 +126,68 @@ public class Location
         c.setLocation(destination);
         if (!(this.contents.Remove(c)))
         {
-            Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " + this.name);
+            Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
+                                                                                                            + this.name);
+        }
+        else
+        {
+            Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
+                                                            + destination.owner.PlayerID + "'s " + destination.Name);
+            changesDict[this] = changes;
+            Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
         }
 
     }
 
+    private MoveAction GetMoveAction(Location from, Location to)
+    {
+        if(from.name == "BZ")
+        {
+            return MoveAction.Break;
+        }
+        else if(to.name == "BZ")
+        {
+            return MoveAction.Build;
+        }
+        else if(to.name == "SC")
+        {
+            return MoveAction.Collect;
+        }
+        else if((from.name == "Hand") && (to.name == "Grave"))
+        {
+            return MoveAction.Delete;
+        }
+        else if((from.name == "Field") && (to.name == "Grave"))
+        {
+            return MoveAction.Despawn;
+        }
+        else if((from.name == "Deck") && (to.name == "Hand"))
+        {
+            return MoveAction.Draw;
+        }
+        else if(to.name == "LZ")
+        {
+            return MoveAction.Lock;
+        }
+        else if(to.name == "DZ")
+        {
+            return MoveAction.Rest;
+        }
+        else if(to.name == "Deck")
+        {
+            return MoveAction.Return;
+        }
+        else if(to.name == "Field")
+        {
+            return MoveAction.Spawn;
+        }
+        else if((from.name == "LZ") && (to.name == "Deck"))
+        {
+            return MoveAction.Unlock;
+        }
+        else
+        {
+            return MoveAction.None;
+        }
+    }
 }

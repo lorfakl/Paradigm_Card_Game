@@ -15,12 +15,16 @@ public class SearchBox : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        InputField search = searchBox.GetComponent<InputField>();
-        search.onValueChanged.AddListener(delegate { callDataBaseSearch(search.text, getSearchMod()); });
+        CardDataBase.GetDataBaseData();
+        InputField search = searchBox.GetComponent<InputField>(); 
+        search.onValueChanged.AddListener(delegate { CallDataBaseSearch(search.text, GetSearchMod()); }); 
+        //adds a delagate to the onValue changed event so that when the text in the InputField changes a new 
+        //search begins
+                                                                                    
         
 	}
     
-    string getSearchMod()
+    string GetSearchMod()
     {
         string name = "";
         foreach (Toggle t in searchMods.ActiveToggles())
@@ -31,25 +35,23 @@ public class SearchBox : MonoBehaviour {
         return name;
     }
 	
-	// Update is called once per frame
-	void callDataBaseSearch (string searchVal, string searchMod)
+	
+	void CallDataBaseSearch (string searchVal, string searchMod)
     {
-        DeckManager getCardsScript = manager.GetComponent<DeckManager>();
-        List<Card> AllCards = getCardsScript.getCards();
         SearchResults printResultsScript = searchResults.GetComponent<SearchResults>();
         if (!(String.IsNullOrEmpty(searchVal)))
         {
-            results = CardDataBase.search(searchVal, searchMod, AllCards);
-            printResultsScript.printSearchResults();
+            results = CardDataBase.Search(searchVal, searchMod);
+            printResultsScript.PrintSearchResults(results);
         }
-            else
-            {
-                printResultsScript.clearResults();
-            }
+        else
+        {
+            printResultsScript.ClearResults();
+        }
         
     }
 
-    public List<Card> getResults()
+    public List<Card> GetResults()
     {
         return results;
     }

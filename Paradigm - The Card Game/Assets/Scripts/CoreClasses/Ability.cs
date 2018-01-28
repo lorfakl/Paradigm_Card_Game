@@ -33,6 +33,11 @@ public class Ability
         set { timesUsed = value; }
     }
 
+    public string AbilityText
+    {
+        get { return this.text; }
+    }
+
     public bool getLimitedStatus() { return isLimited; }
     public string getAbilityName() { return abilityName; }
 
@@ -43,9 +48,11 @@ public class Ability
 
     public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
     {
-        GameEventsManager.NotifyEventAddedSubs += CheckNewEvent;
-        
+        GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
+        this.text = text;
     }
+
+    
     
 
 }

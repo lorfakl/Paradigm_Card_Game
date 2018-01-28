@@ -6,26 +6,151 @@ using UnityEngine;
 
 public enum MoveAction
 {
-    Break, Build, Collect, Crystallize, Delete, Despawn, Draw, Lock, Rest, Return, Spawn, Unlock
+    Break, Build, Collect, Crystallize, Delete, Despawn, Draw, Lock, Rest, Return, Search, Spawn, Unlock, None
 }
 
-public class GameEventsArgs: EventArgs
+public enum NonMoveAction
 {
-    public readonly string owner;
-    public readonly string target;
-    public readonly string source;
-    public readonly Player p;
-    public readonly Turn t;
-    public readonly Location.LocationChanges boardChanges;
-    public readonly MoveAction action;
+    Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, DimensionTwist, None
+}
 
+public class GameEventsArgs : EventArgs
+{
+    private Player owner;
+    private Card cardSource;
+    private Turn turn;
+    private List<LocationChanges> boardMovemnets;
+    private MoveAction moveAction;
+    private NonMoveAction notMoveAction;
+    private Player playerTarget;
+    private List<Card> cardTargets;
+    private Card targetCard;
 
-    public GameEventsArgs()
+    public GameEventsArgs() 
     {
-        
+    }
+    
+    public GameEventsArgs(List<LocationChanges> boardMovemnets, Card cardSource, MoveAction moveAction,
+                                NonMoveAction notMoveAction, List<Card> cardTargets)
+    {
+        this.boardMovemnets = boardMovemnets;
+        this.cardSource = cardSource;
+        this.owner = cardSource.getOwner();
+        this.moveAction = moveAction;
+        this.notMoveAction = notMoveAction;
+        this.cardTargets = cardTargets;
+        this.turn = this.owner.PlayerTurn;
+
         Debug.Log("Event Data Created!");
     }
 
-    
-   
+    /// <summary>
+    /// This game event constructor is for movement base actions
+    /// </summary>
+    /// <param name="boardMovemnets"></param>
+    /// <param name="moveAction"></param>
+    public GameEventsArgs(List<LocationChanges> boardMovemnets, MoveAction moveAction)
+    {
+        this.boardMovemnets = boardMovemnets;
+        this.cardSource = null;
+        this.owner = boardMovemnets[0].destination.Owner;
+        this.moveAction = moveAction;
+        this.notMoveAction = NonMoveAction.None;
+        this.turn = this.owner.PlayerTurn;
+        List<Card> cardsMoved = new List<Card>();
+        foreach (LocationChanges l in boardMovemnets)
+        {
+            cardsMoved.Add(l.c);
+        }
+        this.cardTargets = cardsMoved;
+        this.playerTarget = cardsMoved[0].getOwner();
+
+        Debug.Log("Event Data Created!");
+    }
+
+    /// <summary>
+    /// This constructor is for game events that aren't sources from a card, like turn phase changes
+    /// </summary>
+    /// <param name="owner"></param>
+    /// <param name="target"></param>
+    /// <param name="nonMoveAction"></param>
+    public GameEventsArgs(Player owner, Player target, NonMoveAction nonMoveAction = NonMoveAction.None)
+    {
+        this.owner = owner;
+        this.cardSource = null;
+        this.boardMovemnets = null;
+        this.playerTarget = target;
+        this.notMoveAction = nonMoveAction;
+        this.moveAction = MoveAction.None;
+        this.turn = owner.PlayerTurn;
+        this.cardTargets = null;
+
+    }
+
+    /// <summary>
+    /// The constructor to publish Attack declarations
+    /// </summary>
+    /// <param name="cardSource"></param>
+    /// <param name="notMoveAction"></param>
+    /// <param name="cardTarget"></param>
+    public GameEventsArgs(Card cardSource, NonMoveAction notMoveAction, Card cardTarget)
+    {
+        this.boardMovemnets = null;
+        this.cardSource = cardSource;
+        this.owner = cardSource.getOwner();
+        this.moveAction = MoveAction.None;
+        this.notMoveAction = notMoveAction;
+        this.targetCard = cardTarget;
+        this.playerTarget = cardTarget.getOwner();
+        this.turn = this.owner.PlayerTurn;
+
+        Debug.Log("Event Data Created!");
+    }
+
+    public List<Card> CardTargets
+    {
+        get { return cardTargets; }
+    }
+
+    public Card TargetCard
+    {
+        get { return targetCard; }
+    }
+
+    public Player PlayerTarget
+    {
+        get { return playerTarget; }
+    }
+
+    public Card EventOriginCard
+    {
+        get { return cardSource; }
+    }
+
+    public Player EventOwner
+    {
+        get { return owner; }
+    }
+
+    public Turn EventOwnerTurn
+    {
+        get { return turn; }
+    }
+
+    public List<LocationChanges> GameBoardMovemnets
+    {
+        get { return boardMovemnets; }
+    }
+
+    public MoveAction MoveActionEvent
+    {
+        get { return moveAction; }
+    }
+
+    public NonMoveAction ActionEvent
+    {
+        get { return notMoveAction; }
+    }
+
+
 }

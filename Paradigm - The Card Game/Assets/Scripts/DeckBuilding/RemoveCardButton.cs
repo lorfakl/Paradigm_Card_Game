@@ -8,7 +8,7 @@ public class RemoveCardButton : MonoBehaviour {
     public GameObject cardDets;
     public GameObject manager;
     Deck playerDeck;
-    
+    /*
     // Use this for initialization
 	void Start ()
     {
@@ -25,5 +25,5 @@ public class RemoveCardButton : MonoBehaviour {
         playerDeck.removeCard(cardToRemove);
         GameObject.Destroy(buttonToDelete);
         
-    }
+    }*/
 }

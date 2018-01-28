@@ -13,11 +13,11 @@ public class Accessor: Card
         private int numOfAttacks = 1;
         private bool elemental = false;
 
-        public void setPower(int p) { power = p; }
-        public void setMaxHp(int h) { maxHp = h; }
-        public void setHp(int h) { hp = h; }
-        public void addAttacks(int a) { numOfAttacks = numOfAttacks + a; }
-        public void reduceAttacks(int a)
+        public void SetPower(int p) { power = p; }
+        public void SetMaxHp(int h) { maxHp = h; }
+        public void SetHp(int h) { hp = h; }
+        public void AddAttacks(int a) { numOfAttacks = numOfAttacks + a; }
+        public void ReduceAttacks(int a)
         {
             numOfAttacks = numOfAttacks - a;
             if (numOfAttacks < 0)
@@ -41,9 +41,9 @@ public class Accessor: Card
             this.setName(n);
             this.SetAbilities(a,a2,a3);
             this.SetTraits(t);
-            this.setPower((int)p);
-            this.setMaxHp((int)h);
-            this.setHp((int)h);
+            this.SetPower((int)p);
+            this.SetMaxHp((int)h);
+            this.SetHp((int)h);
             Family fam = new Family(k);
             this.setFam(fam);
             
@@ -82,7 +82,7 @@ public class Accessor: Card
                 Accessor a = (Accessor)t;
                 if (!t.getBarrierStatus())
                 {
-                    a.setHp(a.getHp() - this.getPower());
+                    a.SetHp(a.getHp() - this.getPower());
                     return;
                 }
             }

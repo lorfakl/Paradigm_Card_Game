@@ -12,8 +12,10 @@ namespace DataBase
 {
     class CardDataBase
     {
-        private static List<Card> everySingleCard = new List<Card>();
+        private static List<Card> allCards = new List<Card>();
         private static Dictionary<string, CardConstrInfo> typeDict = new Dictionary<string, CardConstrInfo>();
+        private static string dbConnString = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+        private enum SearchMod { nameToggle, typeToggle, famToggle }
 
         private struct CardConstrInfo
         {
@@ -22,17 +24,15 @@ namespace DataBase
         }
 
         private static void PrepareDictionary()
-        {
-            
+        {         
             typeDict.Add("Accessor", MakeEntry(typeof(Accessor), 8));
             typeDict.Add("Element", MakeEntry(typeof(Element), 7));
             typeDict.Add("Majesty", MakeEntry(typeof(Majesty), 8));
-            //typeDict.Add("Source", MakeEntry(typeof(Source), ));
+            typeDict.Add("Source", MakeEntry(typeof(Source), 6));
             typeDict.Add("Mechanism", MakeEntry(typeof(Mechanism), 7));
-            //typeDict.Add("Phantom", MakeEntry(typeof(Phantom), 9));
-            //typeDict.Add("Philosopher", MakeEntry(typeof(Philosopher), ));
-            //typeDict.Add("Landscape", MakeEntry(typeof(Landscape), ));
-            
+            typeDict.Add("Phantom", MakeEntry(typeof(Phantom), 9));
+            typeDict.Add("Philosopher", MakeEntry(typeof(Philosopher), 6));
+            typeDict.Add("Landscape", MakeEntry(typeof(Landscape), 6));
         }
 
         private static CardConstrInfo MakeEntry(Type t, int i)
@@ -44,183 +44,124 @@ namespace DataBase
             return info;
         }
 
-        public static List<Card> GetDataBaseData()
+        public static void GetDataBaseData()
         {
-            List<Card> allCards = new List<Card>();
             PrepareDictionary();
             string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
-            IDbConnection dbconn;
-            dbconn = (IDbConnection)new SqliteConnection(conn); 
-            dbconn.Open(); //connect to database
 
-            IDbCommand cmd = dbconn.CreateCommand(); //create sql command object
-            string query = "SELECT * FROM Cards"; //sql command text
-            cmd.CommandText = query; //put sql command text in the command object
-
-            IDataReader reader = cmd.ExecuteReader(); //run query
-            
-
-            while (reader.Read())
+            using (SqliteConnection dbconn = new SqliteConnection(conn))
             {
-                if (typeDict.ContainsKey(reader[1].ToString()))
+                dbconn.Open(); //connect to database
+                using (SqliteCommand cmd = dbconn.CreateCommand()) //create sql command object
                 {
-                    CardConstrInfo constrInfo = typeDict[reader[1].ToString()];
-                    Type cardType = constrInfo.t;
-                    List<System.Object> recordData = new List<System.Object>();
-                    for(int i = 2; i < reader.FieldCount; i++) //go through the columns of the DB record and removes any NULL values before processing
+                    string query = "SELECT * FROM Cards"; //sql command text
+                    cmd.CommandText = query; //put sql command text in the command object
+
+                    using (IDataReader reader = cmd.ExecuteReader()) //run query
                     {
-                        if(!reader.IsDBNull(i))
+                        while (reader.Read())
                         {
-                            recordData.Add(reader[i]);
-                        }  
-                    }
+                            if (typeDict.ContainsKey(reader[1].ToString()))
+                            {
+                                CardConstrInfo constrInfo = typeDict[reader[1].ToString()];
+                                Type cardType = constrInfo.t;
+                                List<System.Object> recordData = new List<System.Object>();
+                                for (int i = 2; i < reader.FieldCount; i++) //go through the columns of the DB record 
+                                                                            //and removes any NULL values before processing
+                                {
+                                    if (!reader.IsDBNull(i))
+                                    {
+                                        recordData.Add(reader[i]);
+                                    }
+                                }
 
-                    while(recordData.Count < constrInfo.maxArgs)
-                    {
-                        recordData.Add("");
-                    }
+                                while (recordData.Count < constrInfo.maxArgs)
+                                {
+                                    recordData.Add("");
+                                }
 
-                    if(recordData.Count > constrInfo.maxArgs)
-                    {
-                        Debug.Log("Definitely gonna break");
+                                if (recordData.Count > constrInfo.maxArgs)
+                                {
+                                    Debug.Log("Definitely gonna break");
+                                }
+
+                                System.Object[] ob = recordData.ToArray();
+                                Card c = (Card)Activator.CreateInstance(cardType, ob);
+                                Debug.Log("Dynamically Created Card: " + c.getName());
+                                allCards.Add(c);
+                            }
+                            else
+                            {
+                                Debug.Log(reader[1] + " does NOT map to a valid card type");
+                            }
+                        }
                     }
-                   
-                    System.Object[] ob = recordData.ToArray();
-                    Card c = (Card)Activator.CreateInstance(cardType, ob);
-                    Debug.Log("Dynamically Created Card: " + c.getName());
-                    allCards.Add(c);
                 }
-                else
-                {
-                    Debug.Log(reader[1] + " does NOT map to a valid card type");
-                }
+
+                dbconn.Close();
             }
-            dbconn.Close();
-            return allCards; 
         }
         
-/*
-        /// <summary>
-        /// This function takes in an array of lines. this array is the entire database text file each string at the indecies
-        /// represents an entire line of the database file.
-        /// (On Line 31) a list of cards is declared 
-        /// (On Line 33) a for loop goes through the entire lines array and grabs 9 indecies at a time
-        /// this is because the text file is formatted in a way that every 9 lines holds the data of a single card
-        /// (On Line 35) a temporary card is created with data from the file. it only goes from 0 to 7 because the 9th line 
-        /// in the file is blank space
-        /// (On Line 36) the temporary card is then added to the all cards list, once the loop finishes the all cards list will
-        /// contain a card object for every card in the database
-        /// (On Line 38) sets the card Collection list variable to contain all cards created from the file
-        /// (On Line 39) returns allCards list even though I could just return getCardCollection
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <returns></returns>
-        public static List<Card> LoadData(string[] lines)
-        {
-            List<Card> AllCards = new List<Card>();
-            int cardInfoLine = 7;
-
-            for (int i = 0; i < lines.Length; i += 9)
-            {
-                if(cardInfoLine +9 < lines.Length)
-                {
-                    cardInfoLine = cardInfoLine + 9;
-                }
-                Card temp = null;
-                string[] e = { lines[i + 2] };
-                string[] t = { lines[i + 1], lines[i + 7] };
-                if (lines[cardInfoLine].Contains("Accessor") || lines[cardInfoLine].Contains("Elemental") || lines[cardInfoLine].Contains("Majesty"))
-                {
-                    
-                    temp = new Accessor(lines[i], e, t, Int32.Parse(lines[i + 3]), Int32.Parse(lines[i + 4]), Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
-
-                    if (lines[cardInfoLine].Contains("Majesty"))
-                    {
-                        temp = (Majesty)temp;
-                    }
-                }
-                else if(lines[cardInfoLine].Contains("Element"))
-                {
-                    temp = new Element(lines[i], e, t, Int32.Parse(lines[i + 3]), Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
-
-                }
-                else if(lines[cardInfoLine].Contains("Mechanism"))
-                {
-                    temp = new Mechanism(lines[i], e, t, Int32.Parse(lines[i + 3]), Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
-                }
-                else //Respirators and Philosophers
-                {
-                    //temp = new AuxiliaryCard(lines[i], e, t, Convert.ToBoolean(Int32.Parse(lines[i + 5])), lines[i + 7]);
-                }
-
-                AllCards.Add(temp);
-            }
-            //setCardCollection(AllCards);
-            return AllCards;
-        }*/
-        /// <summary>
-        /// Loads the individual lines from the file
-        /// (On Line 53) A TextAsset is declared because text files in Unity are implicity converted to type TextAsset Objects
-        /// when they are imported into the project. Resources.Load is used because it allows easy access to raw files inside 
-        /// the project
-        /// (On Line 54) the lines array is created by separating the dataBase file line by line, making each line of the 
-        /// file a string. when it reaches a new line in the file is when the Split function knows to make a new string
-        /// (On Line 55) calls the LoadData in order to create the Card objects
-        /// (On Line 56) redundant
-        /// </summary>
+        public static List<Card> GetAllCards(){ return allCards; }
         
         /// <summary>
-        /// //This function searches AllCards which is a reference to
-        //A list containing all the cards in the carddatabase text file
+        /// //This function searches allCards which is a reference to
+        //A list containing all the cards in the carddatabase
         //The parameters here are the string being searched for known as searchVal
         //and the search modifier which is the name of the toggle that is on in the UI
-        //Note: Think about adding a Const field to the AllCards parameter
+        //This function returns a list of cards found in the search
         /// </summary>
         /// <param name="searchVal"></param>
         /// <param name="searchMod"></param>
-        /// <param name="AllCards"></param>
         /// <returns></returns>
 
-        public static List<Card> search(string searchVal, string searchMod, List<Card> AllCards)
+        public static List<Card> Search(string searchVal, string searchMod)
         {
-            List<Card> searchResults = new List<Card>(); //list for the results                 
+            
+            List<Card> searchResults = new List<Card>(); //list for the results
+            Debug.Log("Search Mod: " + searchMod + " SearchVal: " + searchVal);
             string[] searchMods = new string[3] { "nameToggle", "typeToggle", "famToggle" }; //this array contains all possible values of searchMod      
-            //Debug.Log("Search: " + searchVal);
-
-            //Debug.Log("Index? " + Array.IndexOf(searchMods, searchMod));
-            switch (Array.IndexOf(searchMods, searchMod)) //since switch can only use ints and enums and the searchMod string HAS to be in the array the index is just returned
+            SearchMod currentSearchMod = (SearchMod)Enum.Parse(typeof(SearchMod), searchMod); //mapping the search mod name to an enum value
+            switch (currentSearchMod) //since switch can only use ints and enums and the searchMod string HAS to be in the array the index is just returned
             {
-                case 0:  //search with the name modifier
-                    for (int i = 0; i < AllCards.Count; i++)
+                case SearchMod.nameToggle:  //search with the name modifier
+                    for (int i = 0; i < allCards.Count; i++)
                     {
-                        if (AllCards[i].getName().Contains(searchVal))
+                        if (allCards[i].getName().Contains(searchVal))
                         {
-                            searchResults.Add(AllCards[i]);
+                            searchResults.Add(allCards[i]);
+                            Debug.Log("Found: " + allCards[i].getName());
                         }
                     }
                     break;
 
-                case 1: //search with the type modifier
-                    for (int i = 0; i < AllCards.Count; i++)
+                case SearchMod.typeToggle: //search with the type modifier, now that we're dealing with actual type this is slightly more involved
+
+                    CardConstrInfo value; //to get the type being searched for from the typeDict
+                    if(typeDict.TryGetValue(searchVal, out value)) //out keyword require for pass by reference and somehow this function returns 2 values a bool and TValue of the Dictionary
                     {
-                        /*
-                        //Debug.Log("Type Search");
-                        string debug = AllCards[i].getType(); 
-                        //Debug.Log("This is the type: " + debug);
-                        if (debug.Contains(searchVal))
+                        for (int i = 0; i < allCards.Count; i++)
                         {
-                            //Debug.Log("Type Searching");
-                            searchResults.Add(AllCards[i]);
-                        }*/
+                            if(allCards[i].GetType() == value.t)//get the type of i and compare to type from dict entry
+                            {
+                                searchResults.Add(allCards[i]);
+                                Debug.Log("Found: " + allCards[i].getName());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log(searchVal + " is not a valid card type, this is case-sensitive");
                     }
                     break;
 
-                case 2: //search with the Family modifier
-                    for (int i = 0; i < AllCards.Count; i++)
+                case SearchMod.famToggle: //search with the Family modifier
+                    for (int i = 0; i < allCards.Count; i++)
                     {
-                        if (AllCards[i].getFam().getFam().Contains(searchVal))
+                        if (allCards[i].getFam().FamString.Contains(searchVal))
                         {
-                            searchResults.Add(AllCards[i]);
+                            searchResults.Add(allCards[i]);
+                            Debug.Log("Found: " + allCards[i].getName());
                         }
                     }
                     break;

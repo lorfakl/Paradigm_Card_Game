@@ -60,9 +60,21 @@ using UnityEngine;
             }
         }
 
+        public string GetAbilityText()
+        {
+            string abText = "";
+
+            foreach(Ability a in abilities)
+            {
+                abText = abText + a.AbilityText + System.Environment.NewLine;
+            }
+
+            return abText;
+        }
+
         private string[] SplitTrait(string s) { return s.Split(','); }
 
-    public abstract void playCard(); //To be defined MUCH later
+        public abstract void playCard(); //To be defined MUCH later
 
         public abstract void useEffect(); //To be defined MUCH later
         

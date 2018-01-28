@@ -7,23 +7,28 @@ public class DeckManager : MonoBehaviour {
 
     // Use this for initialization
     List<Card> AllCards = new List<Card>();
-    Deck playDeck = GlobalPlayerDeck.getPlayerDeck();
+    Deck playDeck;
+
+    void Awake()
+    {
+        Player p = new Player();
+        playDeck = p.PlayerDeck;
+    }
+
     void Start ()
     {
-        TextAsset cardCollection = Resources.Load("carddatabase") as TextAsset;
-        string[] lines = cardCollection.text.Split("\n"[0]);
-        //AllCards = CardDataBase.LoadData(lines);
+        
     }
 
     void Update()
     {
-        GlobalPlayerDeck.setPlayerDeck(playDeck);
-        //print("Curr Size: " + playDeck.getDeck().Count);
+        //GlobalPlayerDeck.setPlayerDeck(playDeck);
+        //print("Curr Size: " + playDeck.Count);
     }
 	
 	public Deck getDeck()
     {
-        //print("Deck get");
+        print("Deck get");
         return playDeck;
 
     }

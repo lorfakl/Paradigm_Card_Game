@@ -9,23 +9,23 @@ public class AddToDeckButton : MonoBehaviour {
     public GameObject cardButtonPrefab;
     public GameObject manager;
     public float cardButtonoffset = 0f;
-
+    
     Card cardToAdd;
-    Deck playerDeck = new Deck();
+    Deck playerDeck;
 	
     // Use this for initialization
 	void Start ()
     {
         Button add2deck = DeckAddButton.GetComponent<Button>();
-        add2deck.onClick.AddListener(addCardToDeck);
+        add2deck.onClick.AddListener(AddCardToDeck);
         playerDeck = manager.GetComponent<DeckManager>().getDeck();
         print("Deck get");
     }
 	
 	
-	void addCardToDeck ()
+	void AddCardToDeck ()
     {
-        if (playerDeck.addCard(cardToAdd))
+        if (playerDeck.AddCard(cardToAdd))
         {
             addCardUI(cardButtonoffset);
         }
@@ -53,9 +53,9 @@ public class AddToDeckButton : MonoBehaviour {
 
     public void sendDeck()
     {
-        print("Card has been added deck size: " + playerDeck.getDeck().Count);
+        print("Card has been added deck size: " + playerDeck.Count);
 
-        foreach (Card c in playerDeck.getDeck())
+        foreach (Card c in playerDeck.GetContents())
         {
             print(c.getName());
         }

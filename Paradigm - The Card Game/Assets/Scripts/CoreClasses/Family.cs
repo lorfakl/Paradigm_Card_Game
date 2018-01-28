@@ -13,6 +13,11 @@ public class Family
         fam = f;
     }
 
-    public string getFam() { return fam; }
+    public string FamString
+    {
+        get { return fam; }
+    }
+
+    
 }
 
