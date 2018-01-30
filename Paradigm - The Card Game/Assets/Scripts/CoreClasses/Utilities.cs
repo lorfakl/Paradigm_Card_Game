@@ -31,14 +31,15 @@ namespace Utilities
         /// <param name="sender"></param>
         /// <param name="owner"></param>
         /// <param name="target"></param>
-        public static void RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction = NonMoveAction.None)
+        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction = NonMoveAction.None)
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
             GameEventsManager.PublishEvent(sender, newEvent);
+            return newEvent;
         }
 
         /// <summary>
-        /// Raise a new event that is directly related to movement
+        /// Raise a new event that is directly related to Card movement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="boardChanges"></param>
@@ -82,6 +83,11 @@ namespace Utilities
 
     static class Functions
     {
+        private static void StartGamePhase()
+        {
+
+        }
+
         private static void StartGatherPhase()
         {
 

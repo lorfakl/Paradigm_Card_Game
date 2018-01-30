@@ -9,13 +9,14 @@ public enum AbilityType { Optional, Mandatory};
 public class Ability
 { 
     private string text;
-    private string cardName;
     private string abilityName;
     private bool isPatient;
     private bool isLimited;
     private bool canActivate;
     private int timesUsed;
-    private Player owner;
+    private Player playerOwner;
+    private Card cardOwner;
+    public static int numOfAbilities = 0;
     private AbilityType type; //ability type dictates how the abilities is activated
     public delegate void ActivateAbility(GameEvents e);
     ActivateAbility abilityFunction; //this is an identifier, in the constructor this will be assigned to a function grabbed 
@@ -25,6 +26,12 @@ public class Ability
     {
         get { return canActivate; }
         set { canActivate = value; }
+    }
+
+    public Card CardOwner
+    {
+        get { return this.cardOwner; }
+        set { this.cardOwner = value; }
     }
 
     public int TimesUsed
@@ -38,8 +45,23 @@ public class Ability
         get { return this.text; }
     }
 
-    public bool getLimitedStatus() { return isLimited; }
-    public string getAbilityName() { return abilityName; }
+    public string AbilityName
+    {
+        get { return this.abilityName; }
+        set { this.abilityName = value; }
+    }
+
+    public bool IsLimited
+    {
+        get { return this.isLimited; }
+        set { this.isLimited = value; }
+    }
+
+    public bool IsPatient
+    {
+        get { return this.isPatient; }
+        set { this.isPatient = value; }
+    }
 
     private void CheckNewEvent (object sender, GameEventsArgs e)
     {
@@ -49,7 +71,21 @@ public class Ability
     public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
     {
         GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
+        Card card = DataBase.CardDataBase.GetCard(cName);
+
+        if (card == null)
+        {
+            throw new Exception("The Card this ability should belong to is null! That's an Error");
+        }
+        else
+        {
+            this.cardOwner = card;
+            this.playerOwner = this.cardOwner.getOwner();
+        }
+
         this.text = text;
+        this.canActivate = false;
+        numOfAbilities++;
     }
 
     

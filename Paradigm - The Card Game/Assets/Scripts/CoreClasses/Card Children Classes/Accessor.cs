@@ -13,23 +13,7 @@ public class Accessor: Card
         private int numOfAttacks = 1;
         private bool elemental = false;
 
-        public void SetPower(int p) { power = p; }
-        public void SetMaxHp(int h) { maxHp = h; }
-        public void SetHp(int h) { hp = h; }
-        public void AddAttacks(int a) { numOfAttacks = numOfAttacks + a; }
-        public void ReduceAttacks(int a)
-        {
-            numOfAttacks = numOfAttacks - a;
-            if (numOfAttacks < 0)
-            {
-                numOfAttacks = 0;
-            }
-            
-        }
-
-        public int getPower() { return power; }
-        public int getHp() { return hp; }
-        public bool getElementStatus() { return elemental; }
+        
 
         public Accessor()
         {
@@ -48,6 +32,37 @@ public class Accessor: Card
             this.setFam(fam);
             
         }
+
+        public int Power
+        {
+            get { return this.power; }
+            set { this.power = value; }
+        }
+
+        public int HP
+        {
+            get { return this.hp; }
+            set { this.hp = value; }
+        }
+
+        public void SetPower(int p) { power = p; }
+        public void SetMaxHp(int h) { maxHp = h; }
+        public void SetHp(int h) { hp = h; }
+        public void AddAttacks(int a) { numOfAttacks = numOfAttacks + a; }
+        public void ReduceAttacks(int a)
+        {
+            numOfAttacks = numOfAttacks - a;
+            if (numOfAttacks < 0)
+            {
+                numOfAttacks = 0;
+            }
+
+        }
+
+        public int getPower() { return power; }
+        public int getHp() { return hp; }
+        public bool getElementStatus() { return elemental; }
+
 
         public override void playCard()
         {

@@ -15,18 +15,23 @@ public class Turn
     private Player owner;
     private TurnPhase phase;
     private bool isPhaseComplete;
+    private static bool isDictionaryPrepared = false;
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
-    private Dictionary<string, TurnPhase> phaseDict = new Dictionary<string, TurnPhase>();
+    private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
 
     public Turn(Player p)
     {
-        PrepareDictionary();
+        if(!isDictionaryPrepared)
+        {
+            PrepareDictionary();
+        }
+      
         this.owner = p;
         this.phase = TurnPhase.Start;
         this.isPhaseComplete = false;
         SetDelegate();
-        
+        Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
     }
 
     public TurnPhase Phase
@@ -40,52 +45,93 @@ public class Turn
         get { return this.isPhaseComplete; }
     }
 
-    public int MoveToNextPhase()
+    public void StartTurn()
     {
-        int currentPhase = (int)this.phase;
-        if(currentPhase == (int)TurnPhase.End)
-        {
-            this.phase = TurnPhase.Gather;
-        }
-        else
-        {
-            currentPhase++;
-            TurnPhase nextPhase = (TurnPhase)currentPhase;
-            this.phase = nextPhase;
-        }
-
-        SetDelegate();
-        return (int)this.phase;
+        this.MoveToNextPhase();
     }
 
-    public void PerformPhaseAction(GameEventsArgs e)
+    private void MoveToNextPhase()
+    {
+        SetDelegate();
+        GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner);
+        Debug.Log(this.phase.ToString());
+        this.PerformPhaseAction(turnPhaseEvent);
+
+        TurnPhase currentPhase = this.phase; 
+        if(currentPhase == TurnPhase.End)//if the End phase was the last turn phase
+        {
+
+            this.phase = TurnPhase.Gather; //set the turn phase to Gather for the next turn
+            return; //exit this function
+            
+        }
+        else
+        { 
+            currentPhase++;
+            TurnPhase nextPhase = currentPhase;//(TurnPhase)currentPhase;
+            this.phase = nextPhase;
+        }
+               
+        this.MoveToNextPhase(); //a recursive call to move through all the phases
+    }
+
+    private void PerformPhaseAction(GameEventsArgs e)
     {
         this.turnPhaseFunction(e);
     }
 
     private void SetDelegate()
     {
-        if (Utilities.Dictionaries.Prepared)
+        if (!isDictionaryPrepared)
         {
-            this.turnPhaseFunction = Utilities.Dictionaries.turnDict[this.phase];
+            PrepareDictionary();
         }
-        else
-        {
-            Utilities.Dictionaries.PrepareDictionaries();
-            this.turnPhaseFunction = Utilities.Dictionaries.turnDict[this.phase];
-        }
+
+        this.turnPhaseFunction = phaseDict[this.phase];
+        
     }
 
-    private void PrepareDictionary()
+    private static void PrepareDictionary()
     {
-        phaseDict.Add("Start", TurnPhase.Start);
-        phaseDict.Add("Gather", TurnPhase.Gather);
-        phaseDict.Add("Awaken", TurnPhase.Awaken);
-        phaseDict.Add("Central", TurnPhase.Central);
-        phaseDict.Add("Crystallize", TurnPhase.Crystallize);
-        phaseDict.Add("End", TurnPhase.End);
+        phaseDict.Add(TurnPhase.Start, StartGamePhase);
+        phaseDict.Add(TurnPhase.Gather, StartGatherPhase);
+        phaseDict.Add(TurnPhase.Awaken, StartAwakenPhase);
+        phaseDict.Add(TurnPhase.Central, StartCentralPhase);
+        phaseDict.Add(TurnPhase.Crystallize, StartCrystalPhase);
+        phaseDict.Add(TurnPhase.End, StartEndPhase);
+        isDictionaryPrepared = true;
     }
-     
-    
+
+    private static void StartGamePhase(GameEventsArgs e)
+    {
+        Debug.Log("Game Start! Start Territory Challenge!");
+    }
+
+    private static void StartGatherPhase(GameEventsArgs e)
+    {
+        Debug.Log("Gather Phase: Draw Card and Abilities check the event queue");
+    }
+
+    private static void StartAwakenPhase(GameEventsArgs e)
+    {
+        Debug.Log("Awaken Phase: Choose your philosophers");
+    }
+
+    private static void StartCentralPhase(GameEventsArgs e)
+    {
+        Debug.Log("Central Phase: Play cards and shit");
+    }
+
+    private static void StartCrystalPhase(GameEventsArgs e)
+    {
+        Debug.Log("Crystallize Phase: collect your shards are whatever, still dont get why there's like 4 different words that describe the same thing");
+    }
+
+    private static void StartEndPhase(GameEventsArgs e)
+    {
+        Debug.Log("End Phase: End of your turn fuck face! Abilities that want to will activate here");
+    }
+
+
 }
 

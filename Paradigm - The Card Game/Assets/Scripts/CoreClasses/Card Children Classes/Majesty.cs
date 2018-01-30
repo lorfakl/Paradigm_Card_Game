@@ -11,7 +11,8 @@ using UnityEngine;
     private bool dormant = true;
     public bool GetSecretStatus(){ return secrets; }
     public void SetSecretStatus(bool s) { secrets = s; }
-        
+
+    public Majesty() { }
     public Majesty(string n, string k,  System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);

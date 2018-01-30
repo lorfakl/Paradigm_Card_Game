@@ -10,7 +10,7 @@ using UnityEngine;
         private Family deckFam;
         private Card nextCard;
 
-        public Deck(string name, Player p)
+        public Deck(string name, Player p):base(name , p)
         {
             this.Name = name;
             this.Owner = p;
@@ -21,6 +21,12 @@ using UnityEngine;
         {
             if (deckFam == null)
             {
+                if (this == null)
+                {
+                    Debug.Log("The Deck you're adding to is Null as fuck!");
+                    return false;
+                }
+
                 this.AddContent(c);
                 deckFam = c.getFam();  //set the family of the deck to the family of the first card added
                 c.setLocation(this);
@@ -63,14 +69,14 @@ using UnityEngine;
             }
         }
 
-        public Accessor GetMajesty()
+        public Majesty GetMajesty()
         {
-            Accessor c = new Accessor();
+            Majesty c = new Majesty();
             for (int i = 0; i < this.Count; i++)
             {
                 if (this.GetContents()[i] is Majesty)
                 {
-                    c = (Accessor)this.GetContents()[i];
+                    c = (Majesty)this.GetContents()[i];
                 }
             }
 

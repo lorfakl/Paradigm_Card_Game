@@ -16,6 +16,7 @@ namespace DataBase
         private static Dictionary<string, CardConstrInfo> typeDict = new Dictionary<string, CardConstrInfo>();
         private static string dbConnString = "URI=file:" + Application.dataPath + "/CardDataBase.db";
         private enum SearchMod { nameToggle, typeToggle, famToggle }
+        private static bool isDataLoaded = false;
 
         private struct CardConstrInfo
         {
@@ -99,11 +100,33 @@ namespace DataBase
                 }
 
                 dbconn.Close();
+                isDataLoaded = true;
             }
+        }
+
+        public bool IsDataLoaded
+        {
+            get { return isDataLoaded; }
         }
         
         public static List<Card> GetAllCards(){ return allCards; }
-        
+        public static Card GetCard(string n)
+        {
+            if(!isDataLoaded)
+            {
+                GetDataBaseData();
+            }
+
+            foreach(Card c in allCards)
+            {
+                if(c.getName() == n)
+                {
+                    return c;
+                }
+            }
+
+            return null;
+        }
         /// <summary>
         /// //This function searches allCards which is a reference to
         //A list containing all the cards in the carddatabase
@@ -172,6 +195,37 @@ namespace DataBase
             }
 
             return searchResults; //return the list of results
+        }
+
+        public static void MakePlayerDeck(Player p)
+        {
+            Deck playerDeck = p.PlayerDeck;
+
+            if(!isDataLoaded)
+            {
+                GetDataBaseData();
+            }
+
+            if (playerDeck == null)
+            {
+                Debug.Log("Null as fuck!");
+                return;
+            }
+
+            foreach (Card c in allCards)
+            {
+                if(playerDeck.AddCard(c))
+                {
+                    Debug.Log("Card Add Success");
+                }
+                else
+                {
+                    Debug.Log("Card Failed to Add");
+                }
+            }
+
+            Debug.Log("Deck created with " + playerDeck.Count + " cards");
+            
         }
     }
 }

@@ -15,7 +15,7 @@ public class Player
         private Deck playerDeck;
         private int playerID;
         //private AuxiliaryCard tcLandscape = null;
-        private Card majesty;
+        private Majesty majesty;
         private Turn turn;
         private static List<Player> currentPlayers = new List<Player>();
 
@@ -23,14 +23,8 @@ public class Player
         {
             this.playerID = new System.Random().Next(256);
             this.majesty = null;
-            foreach (Player p in currentPlayers)
-            {
-            
-                while (this.playerID == p.playerID)
-                {
-                    this.playerID = new System.Random().Next(256);
-                }
-            }
+            this.turn = null;
+            this.playerID = new System.Random().Next(256);
 
             foreach (string s in validLocations)
             {
@@ -47,7 +41,7 @@ public class Player
             set { playerDeck = value; }
         }
 
-        public Card Majesty
+        public Majesty Majesty
         {
             get { return majesty; }
             set { majesty = value; }
@@ -58,11 +52,11 @@ public class Player
             get { return playerID; }
         }
 
-    public Turn PlayerTurn
-    {
-        get { return this.turn; }
-        set { this.turn = value; }
-    }
+        public Turn PlayerTurn
+        {
+            get { return this.turn; }
+            set { this.turn = value; }
+        }
 
         /*public AuxiliaryCard TCLandscape
         {

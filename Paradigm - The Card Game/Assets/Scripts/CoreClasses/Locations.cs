@@ -48,7 +48,7 @@ public class Location
     {
         this.name = name;
         this.owner = p;
-        contents = new List<Card>() ;
+        contents = new List<Card>();
         locations.Add(this);
         this.changes = new List<LocationChanges>();
         changesDict.Add(this, this.changes);
@@ -79,6 +79,12 @@ public class Location
 
     protected void AddContent(Card c)
     {
+        if (this.contents == null)
+        {
+            Debug.Log("The Location contents are Null as fuck!");
+            return;
+        }
+
         this.contents.Add(c);    
     }
 
