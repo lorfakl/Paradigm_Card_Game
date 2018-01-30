@@ -13,6 +13,7 @@ public class Ability
     private bool isPatient;
     private bool isLimited;
     private bool canActivate;
+    private bool canCheckForEvents; //so abilities dont check for events from the deck
     private int timesUsed;
     private Player playerOwner;
     private Card cardOwner;
@@ -63,9 +64,18 @@ public class Ability
         set { this.isPatient = value; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void CheckNewEvent (object sender, GameEventsArgs e)
     {
-        Debug.Log("I'm an ability, and I know a new game event was added to the queue");
+        if(this.canCheckForEvents)
+        {
+            Debug.Log("I'm an ability, and I know a new game event was added to the queue");
+        }
+            
     }
 
     public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
@@ -85,6 +95,7 @@ public class Ability
 
         this.text = text;
         this.canActivate = false;
+        this.canCheckForEvents = false;
         numOfAbilities++;
     }
 
