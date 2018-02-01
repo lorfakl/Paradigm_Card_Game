@@ -56,6 +56,7 @@ using UnityEngine;
             if (drawVal == 1)
             {
                 cardsDrawn.Add(this.GetContents()[0]);
+                this.RemoveCard(this.GetContents()[0]);
                 return cardsDrawn;
             }
             else
@@ -91,9 +92,9 @@ using UnityEngine;
             foreach (Card c in this.GetContents())
             {
                 //Debug.Log(c.getName() + " " + c.getType());
-                if (c is AuxiliaryCard)
+                if (c is Landscape)
                 {
-                    //Debug.Log("It's a Landscape " + c.getName() + " " + c.getType());
+                    //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
                     landscapesInDeck.Add(c);
                 }
             }

@@ -75,6 +75,7 @@ public class Location
     {
         Card c = this.contents[0];
         ProcessLocationChange(c, destination);
+        Utilities.HelperFunctions.RaiseNewEvent(this, this.changes, GetMoveAction(this, destination));
     }
 
     protected void AddContent(Card c)

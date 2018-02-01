@@ -19,12 +19,17 @@ public class Player
         private Turn turn;
         private static List<Player> currentPlayers = new List<Player>();
 
-        public Player()
+        public Player(int addTo = 0)
         {
-            this.playerID = new System.Random().Next(256);
+        
+            this.playerID = UnityEngine.Random.Range(0,256);
+            if (addTo != 0)
+            {
+                this.playerID = this.playerID + UnityEngine.Random.Range(0, 128);
+            }
+
             this.majesty = null;
             this.turn = null;
-            this.playerID = new System.Random().Next(256);
 
             foreach (string s in validLocations)
             {
@@ -57,7 +62,8 @@ public class Player
             get { return this.turn; }
             set { this.turn = value; }
         }
-
+        
+   
         /*public AuxiliaryCard TCLandscape
         {
             get { return tcLandscape; }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AuxiliaryCard: Card
 {
-    
+
     public AuxiliaryCard(string n, string k, string t, string a, string a2 = "", string a3 = "")
     {
         this.setName(n);

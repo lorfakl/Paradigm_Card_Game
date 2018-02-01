@@ -34,6 +34,7 @@ namespace DataBase
             typeDict.Add("Phantom", MakeEntry(typeof(Phantom), 9));
             typeDict.Add("Philosopher", MakeEntry(typeof(Philosopher), 6));
             typeDict.Add("Landscape", MakeEntry(typeof(Landscape), 6));
+            isDataLoaded = true;
         }
 
         private static CardConstrInfo MakeEntry(Type t, int i)
@@ -90,6 +91,11 @@ namespace DataBase
                                 Card c = (Card)Activator.CreateInstance(cardType, ob);
                                 Debug.Log("Dynamically Created Card: " + c.getName());
                                 allCards.Add(c);
+
+                                foreach(Ability a in c.getAbilities())
+                                {
+                                    a.LinkToCard(c.getName());
+                                }
                             }
                             else
                             {
@@ -104,7 +110,7 @@ namespace DataBase
             }
         }
 
-        public bool IsDataLoaded
+        public static bool IsDataLoaded
         {
             get { return isDataLoaded; }
         }
@@ -216,6 +222,7 @@ namespace DataBase
             {
                 if(playerDeck.AddCard(c))
                 {
+                    c.setOwner(p);
                     Debug.Log("Card Add Success");
                 }
                 else

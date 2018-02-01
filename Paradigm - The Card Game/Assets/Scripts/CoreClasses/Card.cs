@@ -45,7 +45,7 @@ using UnityEngine;
 
         public void SetTraits(string text)
         {
-            foreach (string tr in SplitTrait(text)) { this.addTrait(new Trait(text, this.name)); }
+            foreach (string tr in SplitTrait(text)) { this.addTrait(new Trait(tr, this.name)); }
         }
         
         public void SetAbilities(string a, string a2, string a3)
@@ -71,6 +71,20 @@ using UnityEngine;
 
             return abText;
         }
+
+    public ShapeTrait GetShape()
+    {
+        foreach(Trait t in traits)
+        {
+            Debug.Log("Trait Text: " + t.Text);
+            if (t.Shape != ShapeTrait.None)
+            {
+                return t.Shape;
+            }
+        }
+
+        throw new Exception("This Trait is not a Landscape and thus doesnt have a shape");
+    }
 
         private string[] SplitTrait(string s) { return s.Split(','); }
 

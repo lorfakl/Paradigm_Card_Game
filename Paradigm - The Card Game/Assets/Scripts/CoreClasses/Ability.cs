@@ -10,6 +10,7 @@ public class Ability
 { 
     private string text;
     private string abilityName;
+    private string cardName;
     private bool isPatient;
     private bool isLimited;
     private bool canActivate;
@@ -64,6 +65,12 @@ public class Ability
         set { this.isPatient = value; }
     }
 
+    public void LinkToCard(string n)
+    {
+        Card card = DataBase.CardDataBase.GetCard(n);
+        this.CardOwner = card;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -81,18 +88,7 @@ public class Ability
     public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
     {
         GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
-        Card card = DataBase.CardDataBase.GetCard(cName);
-
-        if (card == null)
-        {
-            throw new Exception("The Card this ability should belong to is null! That's an Error");
-        }
-        else
-        {
-            this.cardOwner = card;
-            this.playerOwner = this.cardOwner.getOwner();
-        }
-
+        this.cardName = cName;
         this.text = text;
         this.canActivate = false;
         this.canCheckForEvents = false;
