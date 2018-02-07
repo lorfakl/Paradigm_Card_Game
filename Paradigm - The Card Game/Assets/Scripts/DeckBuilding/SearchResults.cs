@@ -10,17 +10,18 @@ public class SearchResults : MonoBehaviour {
     public Transform searchBox;
     public GameObject panel;
     List<GameObject> createdButtons = new List<GameObject>();
+    private static Card searchResultCardData;
     
     public void PrintSearchResults(List<Card> results)
     {
-        
         ClearResults(createdButtons);
         float deltaY = 0f;
         foreach (Card card in results)
         {
+            searchResultCardData = card;
             GameObject made = MakeButtonsForResults(deltaY);
             made.GetComponentInChildren<Text>().text = card.getName();
-            made.GetComponent<searchResultAddOns>().setCardData(card);
+            //made.GetComponent<searchResultAddOns>().setCardData(card);
             Debug.Log(card.GetAbilityText());
             createdButtons.Add(made);
             deltaY -= 40f;
@@ -47,6 +48,10 @@ public class SearchResults : MonoBehaviour {
         ClearResults(createdButtons);
     }
 
+    public Card GetCardData()
+    {
+        return searchResultCardData;
+    }
 
     void ClearResults(List<GameObject> createdButtons)
     {

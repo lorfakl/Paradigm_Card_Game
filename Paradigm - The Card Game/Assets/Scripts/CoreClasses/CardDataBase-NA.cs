@@ -17,6 +17,7 @@ namespace DataBase
         private static string dbConnString = "URI=file:" + Application.dataPath + "/CardDataBase.db";
         private enum SearchMod { nameToggle, typeToggle, famToggle }
         private static bool isDataLoaded = false;
+        private static List<Card> playerDeckContents = new List<Card>();
 
         private struct CardConstrInfo
         {
@@ -88,8 +89,16 @@ namespace DataBase
                                 }
 
                                 System.Object[] ob = recordData.ToArray();
+
+                                /*for(int i = 0; i < ob.Length; i++)
+                                {
+                                    Debug.Log("Constructor Argument " + i + ": " + ob[i].ToString());
+                                }*/
+
                                 Card c = (Card)Activator.CreateInstance(cardType, ob);
                                 Debug.Log("Dynamically Created Card: " + c.getName());
+                                Debug.Log(reader[0]);
+                                c.ID = Int32.Parse(reader[0].ToString());
                                 allCards.Add(c);
 
                                 foreach(Ability a in c.getAbilities())
@@ -107,6 +116,38 @@ namespace DataBase
 
                 dbconn.Close();
                 isDataLoaded = true;
+            }
+        }
+
+        public static void SavePlayerDeck(Deck d)
+        {
+            using (SqliteConnection dbconn = new SqliteConnection(dbConnString))
+            {
+                dbconn.Open(); //connect to database
+                using (SqliteCommand cmd = dbconn.CreateCommand()) //create sql command object
+                {
+                    string countQuery = "SELECT count(*) FROM PlayerDeck";
+                    cmd.CommandText = countQuery;
+                    int tableCount = Int32.Parse(cmd.ExecuteScalar().ToString());
+
+                    if (tableCount > 0)
+                    {
+                        string deleteQuery = "DELETE FROM PlayerDeck";
+                        cmd.CommandText = deleteQuery;
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
+                    foreach(Card c in d.GetContents())
+                    {
+                        cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
+                        Debug.Log(cmd.CommandText);
+                        cmd.ExecuteNonQuery();
+                    }
+                    //cmd.CommandText = query; //put sql command text in the command object
+
+
+                }
             }
         }
 

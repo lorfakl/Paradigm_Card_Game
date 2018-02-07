@@ -13,8 +13,6 @@ public class Accessor: Card
         private int numOfAttacks = 1;
         private bool elemental = false;
 
-        
-
         public Accessor()
         {
 

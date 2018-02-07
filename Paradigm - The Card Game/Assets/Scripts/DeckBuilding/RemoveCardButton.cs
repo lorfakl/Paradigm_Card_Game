@@ -8,22 +8,26 @@ public class RemoveCardButton : MonoBehaviour {
     public GameObject cardDets;
     public GameObject manager;
     Deck playerDeck;
-    /*
+    Card cardMarkedForRemoval;
+    
     // Use this for initialization
 	void Start ()
     {
-        removebutton.onClick.AddListener(removeCard);
-        playerDeck = manager.GetComponent<DeckManager>().getDeck();
+        removebutton.onClick.AddListener(RemoveCard);
+        playerDeck = manager.GetComponent<DeckManager>().GetDeck();
 	}
 	
 	// Update is called once per frame
-	void removeCard()
+	void RemoveCard()
     {
-        Card cardToRemove = cardDets.GetComponent<cardDetailsAddOn>().getExpandedCard();
-        print("To be deleted "+ cardToRemove.getName());
-        GameObject buttonToDelete = GameObject.Find(cardToRemove.getName());
-        playerDeck.removeCard(cardToRemove);
+        print("To be deleted "+ cardMarkedForRemoval.getName());
+        GameObject buttonToDelete = GameObject.Find(cardMarkedForRemoval.getName());
+        playerDeck.RemoveCard(cardMarkedForRemoval);
         GameObject.Destroy(buttonToDelete);
-        
-    }*/
+    }
+
+    public void SetCardToRemove(Card c)
+    {
+        cardMarkedForRemoval = c;
+    }
 }

@@ -13,6 +13,13 @@ public class Element: Card
 
         public Element(string n, string k, System.Int64 p, string t, string a, string a2, string a3)
         {
+            if ((t != "") && (a == ""))
+            {
+                string temp = t;
+                t = a;
+                a = temp;
+            }
+
             this.setName(n);
             this.SetAbilities(a, a2, a3);
             this.SetTraits(t); 

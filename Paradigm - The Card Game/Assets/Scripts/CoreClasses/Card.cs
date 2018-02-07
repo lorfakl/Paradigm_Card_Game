@@ -9,6 +9,7 @@ using UnityEngine;
 {
         //TODO TRAITS NEED TO BE THOUGHT OUT
         private string name;
+        private int id;
         private List<Ability> abilities = new List<Ability>();
         private List<Trait> traits = new List<Trait>();
         private Family fam;
@@ -18,6 +19,31 @@ using UnityEngine;
         private bool isBarrier;
         private bool isDestroyed;
         private Location currentLocation;
+
+        protected void RemoveAttribute(string l)
+        {
+            if (l == "a")
+            {
+                Debug.Log("Removing Ability");
+                abilities.RemoveAt(abilities.Count - 1);
+            }
+            else if (l == "t")
+            {
+                Debug.Log("Removing Trait");
+                traits.RemoveAt(traits.Count - 1);
+            }
+            else
+            {
+                throw new Exception("Invalid Parameter to Card.RemoveAttribute");
+            }
+        }
+
+        //Properties
+        public int ID
+        {
+            get { return this.id; }
+            set { this.id = value; }
+        }
 
         //Getters
         public string getName() { return name; }
@@ -29,7 +55,7 @@ using UnityEngine;
         public Location getLocation() { return currentLocation; }
         public bool getBarrierStatus() { return isBarrier; }
         public bool getPlayStatus() { return inPlay; }
-        
+    
 
         //Setters
         public void setName(string n) { name = n; }
@@ -76,7 +102,7 @@ using UnityEngine;
     {
         foreach(Trait t in traits)
         {
-            Debug.Log("Trait Text: " + t.Text);
+            Debug.Log("Trait Text: " + t.TraitText);
             if (t.Shape != ShapeTrait.None)
             {
                 return t.Shape;

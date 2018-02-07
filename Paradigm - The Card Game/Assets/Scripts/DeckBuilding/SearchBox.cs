@@ -15,7 +15,6 @@ public class SearchBox : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        CardDataBase.GetDataBaseData();
         InputField search = searchBox.GetComponent<InputField>(); 
         search.onValueChanged.AddListener(delegate { CallDataBaseSearch(search.text, GetSearchMod()); }); 
         //adds a delagate to the onValue changed event so that when the text in the InputField changes a new 
@@ -48,11 +47,6 @@ public class SearchBox : MonoBehaviour {
         {
             printResultsScript.ClearResults();
         }
-        
     }
 
-    public List<Card> GetResults()
-    {
-        return results;
-    }
 }

@@ -23,7 +23,7 @@ public class Trait
         get { return this.shape; }
     }
 
-    public string Text
+    public string TraitText
     {
         get { return this.text; }
     }

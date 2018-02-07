@@ -11,24 +11,25 @@ public class CardInDeckButton : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        cardInDeck.onClick.AddListener(expandCard);
+        cardInDeck.onClick.AddListener(ExpandCard);
 	}
 
     // Update is called once per frame
-    void expandCard()
+    void ExpandCard()
     {
-        GameObject cardDets = GameObject.FindGameObjectWithTag("cardDetails");
+        GameObject removeCardButton = GameObject.Find("removeButton");
         //cardDets.GetComponent<Text>().text = cardData.getName() + "\nKazoku: " + cardData.getFam().getFam() + "\t   Ability: " + cardData.getAbility() +  "\nEffect: " + cardData.getEffect();
-        cardDets.GetComponent<cardDetailsAddOn>().setExpandedCard(cardData);
-        print("From in the Deck: "+cardDets.GetComponent<cardDetailsAddOn>().getExpandedCard().getName());
+        RemoveCardButton removeCardButtonScript = removeCardButton.GetComponent<RemoveCardButton>();
+        removeCardButtonScript.SetCardToRemove(cardData);
+        //print("From in the Deck: "+cardDets.GetComponent<cardDetailsAddOn>().getExpandedCard().getName());
     }
 
-    public void setCardData (Card c)
+    public void SetCardData (Card c)
     {
         cardData= c;
 	}
 
-    public Card getCardData()
+    public Card GetCardData()
     {
         return cardData;
     }

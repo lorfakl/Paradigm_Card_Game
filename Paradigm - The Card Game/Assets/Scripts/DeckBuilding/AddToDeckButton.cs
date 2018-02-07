@@ -18,7 +18,7 @@ public class AddToDeckButton : MonoBehaviour {
     {
         Button add2deck = DeckAddButton.GetComponent<Button>();
         add2deck.onClick.AddListener(AddCardToDeck);
-        playerDeck = manager.GetComponent<DeckManager>().getDeck();
+        playerDeck = manager.GetComponent<DeckManager>().GetDeck();
         print("Deck get");
     }
 	
@@ -27,21 +27,21 @@ public class AddToDeckButton : MonoBehaviour {
     {
         if (playerDeck.AddCard(cardToAdd))
         {
-            addCardUI(cardButtonoffset);
+            AddCardUI(cardButtonoffset);
         }
             //Debug.Log("Card Added");
         cardButtonoffset -= 20f;
-        sendDeck();
+        UpdateDeck();
         //Debug.Log("Y at next placement(kinda): " + cardButtonoffset);
 
         // Debug.Log("No Card Selected");
     }
-    void addCardUI(float offset)
+    void AddCardUI(float offset)
     {
         Vector3 gameObjectpos = panel.transform.position;
         Vector3 rectPosition = new Vector3(0f, 0f + offset);
         GameObject cardButton = Instantiate(cardButtonPrefab, gameObjectpos, Quaternion.identity);
-        cardButton.GetComponent<CardInDeckButton>().setCardData(cardToAdd);
+        cardButton.GetComponent<CardInDeckButton>().SetCardData(cardToAdd);
         cardButton.name = cardToAdd.getName();
         RectTransform cardRectLocation = cardButton.GetComponent<RectTransform>();
         cardRectLocation.SetParent(panel.transform, false);
@@ -51,7 +51,7 @@ public class AddToDeckButton : MonoBehaviour {
 
     }
 
-    public void sendDeck()
+    public void UpdateDeck()
     {
         print("Card has been added deck size: " + playerDeck.Count);
 
@@ -61,7 +61,7 @@ public class AddToDeckButton : MonoBehaviour {
         }
     }
 
-    public void setCardToAdd(Card c)
+    public void SetCardToAdd(Card c)
     {
         cardToAdd = c;
     }
