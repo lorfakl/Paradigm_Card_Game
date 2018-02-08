@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class AddToDeckButton : MonoBehaviour {
     public Button DeckAddButton;
     public GameObject panel;
@@ -19,7 +20,11 @@ public class AddToDeckButton : MonoBehaviour {
         Button add2deck = DeckAddButton.GetComponent<Button>();
         add2deck.onClick.AddListener(AddCardToDeck);
         playerDeck = manager.GetComponent<DeckManager>().GetDeck();
-        print("Deck get");
+        
+        if(manager.GetComponent<DeckManager>().GetDeck().Count > 0)
+        {
+            Debug.Log("Something has been loaded");
+        }
     }
 	
 	

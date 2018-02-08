@@ -98,19 +98,17 @@ using UnityEngine;
             return abText;
         }
 
-    public ShapeTrait GetShape()
-    {
-        foreach(Trait t in traits)
+        public static ShapeTrait GetShape(Card c)
         {
-            Debug.Log("Trait Text: " + t.TraitText);
-            if (t.Shape != ShapeTrait.None)
+            Debug.Log(c.name + " is a " + c.GetType().ToString());
+            if (c.GetType() == typeof(Landscape))
             {
-                return t.Shape;
+                Landscape land = (Landscape)c;
+                return land.Shape;
             }
+        
+            throw new Exception("This Trait is not a Landscape and thus doesnt have a shape");
         }
-
-        throw new Exception("This Trait is not a Landscape and thus doesnt have a shape");
-    }
 
         private string[] SplitTrait(string s) { return s.Split(','); }
 

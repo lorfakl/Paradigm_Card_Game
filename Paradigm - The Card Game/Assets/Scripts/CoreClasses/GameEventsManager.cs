@@ -114,10 +114,11 @@ public class GameEventsManager : MonoBehaviour
         {
             throw new Exception("Something went wrong with Territory Challenge Landscape selection");
         }
+
         Debug.Log("Getting shape from " + tcBuffer[0].getName());
-        ShapeTrait p1Shape = tcBuffer[0].GetShape();
+        ShapeTrait p1Shape = Card.GetShape(tcBuffer[0]);
         Debug.Log("Getting shape from " + tcBuffer[1].getName());
-        ShapeTrait p2Shape = tcBuffer[1].GetShape();
+        ShapeTrait p2Shape = Card.GetShape(tcBuffer[1]);
         Player tcWinner;
 
         if((p1Shape == ShapeTrait.Circle && p2Shape == ShapeTrait.Square) || (p1Shape == ShapeTrait.Square && p2Shape == ShapeTrait.Triangle) || (p1Shape == ShapeTrait.Triangle && p2Shape == ShapeTrait.Circle))
@@ -135,7 +136,11 @@ public class GameEventsManager : MonoBehaviour
         else
         {
             Debug.Log("Its a draw...redo!");
-            throw new Exception("Fix the display!!!");
+            activeLand = p1.PlayerDeck.GetLandscapesInDeck()[0];
+            isTCDone = true;
+            return;
+            //this is for debug once the display is fixed the point is to redo the TC if there are 2 draws then a winner will be randomly chosen
+            //throw new Exception("Fix the display!!!");
             //relaunch landscape selection
         }
 

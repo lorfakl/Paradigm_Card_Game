@@ -18,6 +18,7 @@ namespace DataBase
         private enum SearchMod { nameToggle, typeToggle, famToggle }
         private static bool isDataLoaded = false;
         private static List<Card> playerDeckContents = new List<Card>();
+        private static bool isPlayerDeckLoaded = false;
 
         private struct CardConstrInfo
         {
@@ -26,7 +27,7 @@ namespace DataBase
         }
 
         private static void PrepareDictionary()
-        {         
+        {
             typeDict.Add("Accessor", MakeEntry(typeof(Accessor), 8));
             typeDict.Add("Element", MakeEntry(typeof(Element), 7));
             typeDict.Add("Majesty", MakeEntry(typeof(Majesty), 8));
@@ -101,9 +102,14 @@ namespace DataBase
                                 c.ID = Int32.Parse(reader[0].ToString());
                                 allCards.Add(c);
 
-                                foreach(Ability a in c.getAbilities())
+                                foreach (Ability a in c.getAbilities())
                                 {
                                     a.LinkToCard(c.getName());
+                                }
+
+                                foreach (Trait t in c.getTraits())
+                                {
+                                    t.LinkToCard(c.getName());
                                 }
                             }
                             else
@@ -116,6 +122,11 @@ namespace DataBase
 
                 dbconn.Close();
                 isDataLoaded = true;
+
+                if(IsPlayerDeckSaved())
+                {
+                    LoadPlayerDeck();
+                }
             }
         }
 
@@ -126,19 +137,25 @@ namespace DataBase
                 dbconn.Open(); //connect to database
                 using (SqliteCommand cmd = dbconn.CreateCommand()) //create sql command object
                 {
-                    string countQuery = "SELECT count(*) FROM PlayerDeck";
-                    cmd.CommandText = countQuery;
-                    int tableCount = Int32.Parse(cmd.ExecuteScalar().ToString());
+                    //string countQuery = "SELECT count(*) FROM PlayerDeck";
+                    //cmd.CommandText = countQuery;
+                    //int tableCount = Int32.Parse(cmd.ExecuteScalar().ToString());
 
-                    if (tableCount > 0)
+                    if (IsPlayerDeckSaved())
                     {
                         string deleteQuery = "DELETE FROM PlayerDeck";
+                        Debug.Log("Not Empty deleteing old deck");
                         cmd.CommandText = deleteQuery;
                         cmd.ExecuteNonQuery();
                     }
 
+                    if(!IsPlayerDeckSaved())
+                    {
+                        Debug.Log("Just Got Wiped");
+                    }
+
                     string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
-                    foreach(Card c in d.GetContents())
+                    foreach (Card c in d.GetContents())
                     {
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
                         Debug.Log(cmd.CommandText);
@@ -146,7 +163,60 @@ namespace DataBase
                     }
                     //cmd.CommandText = query; //put sql command text in the command object
 
+                }
+            }
+        }
 
+        public static List<Card> LoadPlayerDeck()
+        {
+            if (!isPlayerDeckLoaded)
+            {
+                using (SqliteConnection dbconn = new SqliteConnection(dbConnString))
+                {
+                    dbconn.Open(); //connect to database
+                    using (SqliteCommand cmd = dbconn.CreateCommand()) //create sql command object
+                    {
+                        string query = "SELECT * FROM PlayerDeck"; //sql command text
+                        cmd.CommandText = query; //put sql command text in the command object
+
+                        using (IDataReader reader = cmd.ExecuteReader()) //run query
+                        {
+                            while (reader.Read())
+                            {
+                                playerDeckContents.Add(GetCard(reader[1].ToString()));
+                            }
+
+                            isPlayerDeckLoaded = true;
+                            return playerDeckContents;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return playerDeckContents;
+            }
+        }
+
+        public static bool IsPlayerDeckSaved()
+        {
+            using (SqliteConnection dbconn = new SqliteConnection(dbConnString))
+            {
+                dbconn.Open(); //connect to database
+                using (SqliteCommand cmd = dbconn.CreateCommand()) //create sql command object
+                {
+                    string countQuery = "SELECT count(*) FROM PlayerDeck";
+                    cmd.CommandText = countQuery;
+                    int tableCount = Int32.Parse(cmd.ExecuteScalar().ToString());
+
+                    if(tableCount > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -155,8 +225,14 @@ namespace DataBase
         {
             get { return isDataLoaded; }
         }
+
+        public static List<Card> SavedDeckContents
+        {
+            get { return playerDeckContents; }
+        }
         
         public static List<Card> GetAllCards(){ return allCards; }
+
         public static Card GetCard(string n)
         {
             if(!isDataLoaded)
@@ -248,9 +324,19 @@ namespace DataBase
         {
             Deck playerDeck = p.PlayerDeck;
 
-            if(!isDataLoaded)
+            if (!isDataLoaded)
             {
                 GetDataBaseData();
+            }
+
+            if (IsPlayerDeckSaved())
+            {
+                foreach (Card c in LoadPlayerDeck())
+                {
+                    playerDeck.AddCard(c);
+                }
+
+                return;
             }
 
             if (playerDeck == null)

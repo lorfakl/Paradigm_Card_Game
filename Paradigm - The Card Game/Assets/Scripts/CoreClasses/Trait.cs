@@ -13,6 +13,7 @@ public class Trait
 {
     private string text;
     private string cardName;
+    private Card cardOwner;
     private bool isEnabled;
     private ShapeTrait shape;
     public delegate void ActivateTrait(GameEvents e);
@@ -27,6 +28,13 @@ public class Trait
     {
         get { return this.text; }
     }
+
+    public void LinkToCard(string n)
+    {
+        Card card = DataBase.CardDataBase.GetCard(n);
+        this.cardOwner = card;
+    }
+
 
     private void CheckNewEvent(object sender, GameEventsArgs e)
     {
@@ -44,6 +52,7 @@ public class Trait
         this.cardName = cN;
         this.isEnabled = false;
         this.shape = ShapeTrait.None;
+
         foreach(var v in Enum.GetValues(typeof(ShapeTrait)))
         {
             //Debug.Log("Trait Constructor");
@@ -60,11 +69,7 @@ public class Trait
         if(this.shape == ShapeTrait.None)
         {
             Debug.Log("Trait Constructor: Not a Landscape");
-        }
-
-
-
-        
+        }  
     }
 
 }

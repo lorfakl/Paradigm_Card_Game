@@ -15,11 +15,26 @@ public class DeckManager : MonoBehaviour {
         Player p = new Player();
         playDeck = p.PlayerDeck;
         initialDeck.AddRange(playDeck.GetContents());
-        if(!CardDataBase.IsDataLoaded)
+        Debug.Log("Deck Manager is Awake");
+
+        if (!CardDataBase.IsDataLoaded)
         {
             CardDataBase.GetDataBaseData();
         }
+
+        foreach (Card c in CardDataBase.SavedDeckContents)
+        {
+            if(c == null)
+            {
+                break;
+            }
+
+            playDeck.AddCard(c);
+        }
         
+
+        
+
     }
 
     void Start ()
@@ -32,6 +47,7 @@ public class DeckManager : MonoBehaviour {
         //GlobalPlayerDeck.setPlayerDeck(playDeck);
         //print("Curr Size: " + playDeck.Count);
         print("Inital deck size: " + initialDeck.Count);
+        print("Player deck size: " + playDeck.Count);
     }
 	
 	public Deck GetDeck()
@@ -67,6 +83,7 @@ public class DeckManager : MonoBehaviour {
         }
         else
         {
+            Debug.Log("Not the same size");
             return true;
         }
     }
