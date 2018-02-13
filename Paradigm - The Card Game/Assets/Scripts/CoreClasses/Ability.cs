@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Builder;
 
 public enum AbilityType { Optional, Mandatory};
 
@@ -92,6 +93,7 @@ public class Ability
         this.text = text;
         this.canActivate = false;
         this.canCheckForEvents = false;
+        this.abilityFunction = AbilityBuilder.CreateAbility(this.cardName, this.text, aName);
         numOfAbilities++;
     }
 

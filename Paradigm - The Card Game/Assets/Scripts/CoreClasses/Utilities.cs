@@ -71,8 +71,9 @@ namespace Utilities
             get { return arePrepared; }
         }
 
-        public static void PrepareDictionaries()
+        public static void PrepareAllDictionaries()
         {
+
 
             arePrepared = true;
 
