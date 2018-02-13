@@ -14,9 +14,7 @@ public class DeckManager : MonoBehaviour {
     {
         Player p = new Player();
         playDeck = p.PlayerDeck;
-        initialDeck.AddRange(playDeck.GetContents());
-        Debug.Log("Deck Manager is Awake");
-
+  
         if (!CardDataBase.IsDataLoaded)
         {
             CardDataBase.GetDataBaseData();
@@ -30,11 +28,11 @@ public class DeckManager : MonoBehaviour {
             }
 
             playDeck.AddCard(c);
+            Debug.Log("Card Added: " + c.getName());
         }
-        
+        initialDeck.AddRange(playDeck.GetContents());
 
-        
-
+        Debug.Log("Called Awake Function");
     }
 
     void Start ()

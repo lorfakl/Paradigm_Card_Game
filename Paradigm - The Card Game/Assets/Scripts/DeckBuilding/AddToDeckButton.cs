@@ -24,6 +24,14 @@ public class AddToDeckButton : MonoBehaviour {
         if(manager.GetComponent<DeckManager>().GetDeck().Count > 0)
         {
             Debug.Log("Something has been loaded");
+            foreach(Card c in playerDeck.GetContents())
+            {
+                Debug.Log("Card UI to Add: " + c.getName());
+                cardToAdd = c;
+                AddCardUI(cardButtonoffset);
+                cardButtonoffset -= 20f;
+            }
+
         }
     }
 	

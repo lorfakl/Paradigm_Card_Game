@@ -6,31 +6,28 @@ using DataBase;
 
 public class JustTesting : MonoBehaviour {
 
-    /*public Transform display;
+    public GameObject display;
+   
     List<Card> cards = null;
     int numToSelect = 0;
     int count = 0;
 	void Awake ()
     {
-        List<Card> AllCards = new List<Card>();
-        TextAsset cardCollection = Resources.Load("carddatabase") as TextAsset;
-        string[] lines = cardCollection.text.Split("\n"[0]);
-        AllCards = CardDataBase.LoadData(lines);
+        MakeTestPlayer.MakePlayer();
+        CardDataBase.GetDataBaseData();
+        List<Card> AllCards = CardDataBase.GetAllCards();
 
-        int size = Random.Range(1, AllCards.Count);
+        int size = Random.Range(1, AllCards.Count - 1);
         List<Card> randomCards = new List<Card>();
 
         for(int i = 0; i < size; i++)
         {
-            randomCards.Add(AllCards[Random.Range(0, AllCards.Count)]);
-            string name = randomCards[i].GetType().Name;
-            Debug.Log(randomCards[i].GetType());
-            Debug.Log("Type in a string " + name);
+            MakeTestPlayer.P1.PlayerDeck.AddCard(AllCards[Random.Range(0, AllCards.Count - 1)]);
         }
+
         numToSelect = Random.Range(1, 10);
         Debug.Log("Num To Select: " + numToSelect);
         cards = randomCards;
-        GlobalCardTransit.sendCards(randomCards, numToSelect);
         Debug.Log(size);
     }
 	
@@ -41,22 +38,12 @@ public class JustTesting : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.Return))
         {
             Debug.Log("Made the thing");
-            GameObject overlay = Instantiate(Resources.Load("SelectionOverlay", typeof(GameObject))) as GameObject;
+            GameObject overlay = Instantiate(display) as GameObject;
+            display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(MakeTestPlayer.P1.GetLocation("Deck"),
+                                                            MakeTestPlayer.P1.GetLocation("Hand"), numToSelect);
 
-            //DisplaySelectionCards.ShowCards(cards, numToSelect);
-            
-            //DisplaySelectionCards.selectCard(ref numToSelect);
-            ///DisplaySelectionCards displayScript = display.GetComponent<DisplaySelectionCards>();
-            //List<Card> returnedCards = displayScript.ShowCards(cards);
             Debug.Log("Pressed the enter key, good job");
         }
      
-        //StartCoroutine(DisplaySelectionCards.selectCard());
-        
-        if (count < numToSelect)
-        {
-            //count = count + DisplaySelectionCards.getSelectedCards().Count;
-            Debug.Log("Cards selected over time: " + count);
-        }
-	}*/
+	}
 }

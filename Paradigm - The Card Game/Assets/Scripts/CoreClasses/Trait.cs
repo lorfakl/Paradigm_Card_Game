@@ -16,7 +16,7 @@ public class Trait
     private Card cardOwner;
     private bool isEnabled;
     private ShapeTrait shape;
-    public delegate void ActivateTrait(GameEvents e);
+    public delegate void ActivateTrait(GameEventsArgs e);
     ActivateTrait traitFunction;
 
     public ShapeTrait Shape
@@ -60,15 +60,15 @@ public class Trait
 
             if (this.text == v.ToString())
             {
-                Debug.Log("Trait Constructor");
-                Debug.Log("Raw Text: " + this.text + "Current Enum val: " + v.ToString());
+                //Debug.Log("Trait Constructor");
+                //Debug.Log("Raw Text: " + this.text + "Current Enum val: " + v.ToString());
                 this.shape = (ShapeTrait)v;
             }
         }
 
         if(this.shape == ShapeTrait.None)
         {
-            Debug.Log("Trait Constructor: Not a Landscape");
+            //Debug.Log("Trait Constructor: Not a Landscape");
         }  
     }
 

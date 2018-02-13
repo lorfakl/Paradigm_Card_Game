@@ -8,10 +8,6 @@ public class InputCommandScript : MonoBehaviour {
 
     public InputField commandInputField;
     public GameObject messageDisplayObject;
-    public delegate void CommandListener();
-    CommandListener commandListener;
-    private Dictionary<string, MessageDisplay.CommandFunction> commandsDictionary = new Dictionary<string, MessageDisplay.CommandFunction>();
-    private bool isPrepared = false;
     private MessageDisplay messageDisplay;
 
 	// Use this for initialization
@@ -19,7 +15,7 @@ public class InputCommandScript : MonoBehaviour {
     {
         InputField commandField = commandInputField.GetComponent<InputField>();
         messageDisplay = messageDisplayObject.GetComponent<MessageDisplay>();
-        //commandField.onEndEdit.AddListener(delegate { CallOut(); });
+        commandField.onEndEdit.AddListener(delegate { CallOut(commandField.text); });
 	}
 	
 	// Update is called once per frame
@@ -27,12 +23,9 @@ public class InputCommandScript : MonoBehaviour {
 		
 	}
 
-    void PrepareDict()
+    private void CallOut(string text)
     {
-        if(!isPrepared)
-        {
-            //commandsDictionary.Add("", messageDisplay.ShowCommands());
-        }
+        messageDisplay.RunCommand(text);
     }
     
 }

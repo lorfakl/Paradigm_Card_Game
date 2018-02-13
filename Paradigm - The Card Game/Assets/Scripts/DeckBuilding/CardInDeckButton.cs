@@ -21,7 +21,7 @@ public class CardInDeckButton : MonoBehaviour {
         //cardDets.GetComponent<Text>().text = cardData.getName() + "\nKazoku: " + cardData.getFam().getFam() + "\t   Ability: " + cardData.getAbility() +  "\nEffect: " + cardData.getEffect();
         RemoveCardButton removeCardButtonScript = removeCardButton.GetComponent<RemoveCardButton>();
         removeCardButtonScript.SetCardToRemove(cardData);
-        //print("From in the Deck: "+cardDets.GetComponent<cardDetailsAddOn>().getExpandedCard().getName());
+        print(cardData.getName() + "has been clicked");
     }
 
     public void SetCardData (Card c)

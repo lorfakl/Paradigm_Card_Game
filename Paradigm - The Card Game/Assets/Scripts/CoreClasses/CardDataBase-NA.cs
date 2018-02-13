@@ -97,8 +97,8 @@ namespace DataBase
                                 }*/
 
                                 Card c = (Card)Activator.CreateInstance(cardType, ob);
-                                Debug.Log("Dynamically Created Card: " + c.getName());
-                                Debug.Log(reader[0]);
+                                //Debug.Log("Dynamically Created Card: " + c.getName());
+                                //Debug.Log(reader[0]);
                                 c.ID = Int32.Parse(reader[0].ToString());
                                 allCards.Add(c);
 
@@ -114,7 +114,7 @@ namespace DataBase
                             }
                             else
                             {
-                                Debug.Log(reader[1] + " does NOT map to a valid card type");
+                                //Debug.Log(reader[1] + " does NOT map to a valid card type");
                             }
                         }
                     }
@@ -155,11 +155,13 @@ namespace DataBase
                     }
 
                     string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
+                    playerDeckContents.Clear(); //removes old saved deck data for when the game doesn't restart so this static class is still in memory
                     foreach (Card c in d.GetContents())
                     {
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
                         Debug.Log(cmd.CommandText);
                         cmd.ExecuteNonQuery();
+                        playerDeckContents.Add(c);
                     }
                     //cmd.CommandText = query; //put sql command text in the command object
 

@@ -106,6 +106,7 @@ public class Turn
     {
         Debug.Log("Game Start! Start Territory Challenge!");
         Player p = e.EventOwner;
+        
         List<Card> lands = p.PlayerDeck.GetLandscapesInDeck();
         //instaniate the display
         //Debug.Log("Display Landscapes");

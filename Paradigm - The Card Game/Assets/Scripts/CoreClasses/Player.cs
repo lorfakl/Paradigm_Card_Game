@@ -35,7 +35,7 @@ public class Player
             {
                 cardLocations.Add(s, new Location(s, this));
             }
-            Debug.Log("Dictionary Size: " + cardLocations.Count);
+            //Debug.Log("Dictionary Size: " + cardLocations.Count);
             this.playerDeck = new Deck("Deck", this);
             cardLocations["Deck"] = this.playerDeck;
         }

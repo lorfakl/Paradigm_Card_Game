@@ -88,24 +88,17 @@ public class GameEventsManager : MonoBehaviour
             Debug.Log("These players are the same object");
         }
 
-        if (Input.GetKeyDown("space"))
+        if(tcBuffer.Count == 0 || isTCDone)
         {
-            Debug.Log("We're starting the test");
+            PlayGame(p1, p2);
 
-            if(tcBuffer.Count == 0 || isTCDone)
+            if(!isTCDone)
             {
-                Debug.Log("Current Majesty HP: " + p1.Majesty.HP);
-                PlayGame(p1, p2);
-
-                StartCoroutine(WaitSomeTime(UnityEngine.Random.Range(3, 8)));
-                p1.Majesty.HP = p1.Majesty.HP - UnityEngine.Random.Range(3, 600);
-                if(!isTCDone)
-                {
-                    BeginTerritoryChallenge();
-                }
-            } 
+                BeginTerritoryChallenge();
+            }
+        } 
             
-        }
+        
     }
 
     private void BeginTerritoryChallenge()

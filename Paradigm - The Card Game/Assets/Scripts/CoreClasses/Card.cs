@@ -24,12 +24,12 @@ using UnityEngine;
         {
             if (l == "a")
             {
-                Debug.Log("Removing Ability");
+                //Debug.Log("Removing Ability");
                 abilities.RemoveAt(abilities.Count - 1);
             }
             else if (l == "t")
             {
-                Debug.Log("Removing Trait");
+                //Debug.Log("Removing Trait");
                 traits.RemoveAt(traits.Count - 1);
             }
             else
@@ -43,6 +43,34 @@ using UnityEngine;
         {
             get { return this.id; }
             set { this.id = value; }
+        }
+
+        public string Name
+        {
+            get { return this.name; }
+            set { this.name = value; }
+        }
+
+        public List<Ability> Abilities
+        {
+            get { return this.abilities; }
+        }
+
+        public List<Trait> Traits
+        {
+            get { return this.traits; }
+        }
+
+        public bool Shard
+        {
+            get { return this.isShard; }
+            set { this.isShard = value; }
+        }
+
+        public Player Owner
+        {
+            get { return this.owner; }
+            set { this.owner = value; }
         }
 
         //Getters
