@@ -16,7 +16,7 @@ namespace Builder
     {
         private static Dictionary<string, Ability.ActivateAbility> functionDictionary = new Dictionary<string, Ability.ActivateAbility>();
 
-        private static void SomeThing(GameEvents e)
+        private static void SomeThing(GameEventsArgs e)
         {
             
             Debug.Log("Some shit");

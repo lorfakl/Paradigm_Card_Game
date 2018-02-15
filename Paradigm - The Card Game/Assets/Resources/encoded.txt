@@ -1,0 +1,235 @@
+ID 1A:
+Condition - GatherPhase
+Cost - None
+Action - Search, Element, 2
+Limit - true
+ID 1B:
+Condition - None
+Cost - None
+Action - Spawn, !name, 1
+Limit - false
+ID 11A:
+Condition - Element Trait Wind Activate
+Cost - None
+Action - Return, !Own Accessor, 1
+Limit - false
+ID 12A:
+Condition - Element, Trait, Fire, Activate
+Cost - None
+Action - Despawn, !Own Accessor, 1
+Limit - false
+ID 13A:
+Condition - Element, Trait, Water, Activate
+Cost - None
+Action - SCMove, !Own Accessor, 1
+Limit - false
+ID 14A:
+Condition - Element, Trait, Earth, Activate
+Cost - None
+Action - Return, !Own, Accessor, 1
+Limit - false
+ID 15A:
+Condition - Element Trait Wind Activate
+Cost - None
+Action - HandMove, !Own, Accessor, 1
+Limit - false
+ID 15B:
+Condition - Element, Trait, Water, Activate
+Cost - None
+Action - SCMove, !Own Accessor, 1 
+Limit - false 
+ID 16A:
+Condition - Element, Trait, Fire, Activate
+Action - Despawn, !Own Accessor, 1
+Cost - None
+Limit - false
+ID 16B:
+Condition - Element, Trait, Earth, Activate
+Cost - None
+Action - Return, !Own, Accessor, 1
+Limit - false
+ID 17A:
+Condition - Element, Trait, Water, Activate
+Cost - None
+Action - SCMove, !Own Accessor, 1 
+Limit - false 
+ID 17B:
+Condition - Element, Trait, Earth, Activate
+Cost - None
+Action - Return, !Own, Accessor, 1
+Limit - false
+ID 18A:
+Condition - Element, Trait, Fire, Activate 
+Action - Despawn, !Own Accessor, 1
+Cost - None
+Limit - false
+ID 18B:
+Condition - Element Trait Wind Activate
+Action - Return, !Own Accessor, 1
+Cost - None
+Limit - false
+ID 19A:
+Condition - Element, Trait, Earth, Activate
+Cost - None
+Action - Return, !Own, Accessor, 1
+Limit - false
+ID 19B:
+Condition - Element Trait Wind Activate
+Cost - None
+Action - HandMove, !Own, Accessor, 1
+Limit - false
+ID 20A:
+Condition - Element, Trait, Fire, Activate 
+Action - Despawn, !Own Accessor, 1
+Cost - None
+Limit - false
+ID 20B:
+Condition - Element, Trait, Water, Activate
+Cost - None
+Action - SCMove, !Own Accessor, 1 
+Limit - false
+ID 21A:
+Condition - None
+Cost - None
+Action - Search, Element, Trait, Fire, 1|Search, Element, Trait, Water, 1|Search, Element, Trait, Wind, 1|Search, Element, Trait, Earth, 1
+Limit - false
+ID 21B:
+Condition - None
+Cost - None
+Action - Negate, Mechanisms.Abilities with Action:Despawn and Power 
+Limit - false
+ID 22A:
+Condition - Awakened, this
+Cost - None
+Action - Move, Grave, Hand, Elements 
+Limit - false
+ID 22B:
+Condition - Despawn, this
+Cost - None
+Action - Move, Grave, Field, Name contains Dragon, 2
+Limit - false
+ID 23A:
+Condition - EndPhase
+Cost - None
+Action - Move, Grave, Hand, Element, 2
+Limit - false
+ID 24A:
+Condition - Despawn, name contains "caster"
+Cost - EndPhase
+Action - Move, Deck, Field, Name contains caster, 1
+Limit - false
+ID 25A:
+Condition - Active, this
+Cost - None
+Action - Add Trait, Shard, Element, Own
+Limit - false
+ID 26A:
+Condition - Game Start
+Cost - None
+Action - Move, Deck, Field, Accessor, 1|Move, Deck, Hand, Accessor, 1|Move,Deck,Hand, Element, 2
+Limit - false
+ID 26B:
+Condition - Spawn, Element !Own
+Cost - None
+Action - Draw
+Limit - false
+ID 26C:
+Condition - None
+Cost - None
+Action - Negate, Mechanism, Target(Name contains caster)
+Limit - false
+ID 27A:
+Condition - Game Start
+Cost - None
+Action - Move, Deck, Field, Accessor, 1
+Limit - false
+ID 27B:
+Condition - Turn Start
+Cost - None
+Action - Draw, 2
+Limit - false
+ID 27C:
+Condition - None
+Cost - None
+Action - Negate, Mechanism, Target(Name contains Dragon)
+Limit - false
+ID 28A:
+Condition - None
+Cost - None
+Action - Move, Deck, Field, Accessor, 2
+Limit - false
+ID 28B:
+Condition - Turn Start
+Cost - None
+Action - Move, SC, Grave, All | Move, Deck Hand, Element, All.Count
+Limit - false
+ID 28C:
+Condition - None
+Cost - None
+Action - Negate, Mechanism, Target(Name contains Dragon, Name contains Caster)
+Limit - false
+ID 29A:
+Condition - Damage Calculation
+Cost - None
+Action - Damage, Accessors !Own, All
+Limit - false
+ID 30A:
+Condition - Despawn, target
+Cost - None
+Action - Move, Grave, LZ, target
+Limit - false
+ID 31A:
+Condition - Check Location, Field, Name contains Dragon && Trait contains Fire
+Cost - None
+Action - Damage, Accessor !Own
+Limit - false
+ID 32A:
+Condition - None
+Cost - None
+Action - Draw, 2
+Limit - false
+ID 33A:
+Condition - None
+Cost - None
+Action - Move, Hand !Own, LZ !Own, Random, 1 
+Limit - false
+ID 34A:
+Condition - Check Location, Field, Name contains Dragon
+Cost - None
+Action - Break
+Limit - false
+ID 35A:
+Condition - None
+Cost - None
+Action - Negate, Attack
+Limit - false
+ID 36A:
+Condition - None
+Cost - None
+Action - Move, SC !Own, LZ !Own, All
+Limit - false
+ID 37A:
+Condition - Check Location, Field, Name contains Dragon && Trait contains Water
+Cost - None
+Action - Heal, Accessor, 2
+Limit - false
+ID 38A:
+Condition - None
+Cost - None
+Action - Delete, !Own, 5 
+Limit - false
+ID 39A:
+Condition - None
+Cost - None
+Action - Move, Grave, LZ, Any, 1
+Limit - false
+ID 40A:
+Condition - Check Location, Field, Name contains Dragon && Trait contains Earth
+Cost - None
+Action - Move, Deck !Own, Grave !Own, Any, 3
+Limit - false
+ID 41A:
+Condition - None
+Cost - Move, Field, LZ, Name contains caster, 1 | Move, Grave, LZ, Trait contains Fire|Move, Grave, LZ, Trait contains Water|Move, Grave, LZ, Trait contains Earth|Move, Grave, LZ, Trait contains Wind
+Action - Awaken, Majesty|Invincible, this Turn
+Limit - false

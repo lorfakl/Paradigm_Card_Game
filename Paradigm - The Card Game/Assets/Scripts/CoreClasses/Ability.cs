@@ -21,7 +21,7 @@ public class Ability
     private Card cardOwner;
     public static int numOfAbilities = 0;
     private AbilityType type; //ability type dictates how the abilities is activated
-    public delegate void ActivateAbility(GameEvents e);
+    public delegate void ActivateAbility(GameEventsArgs e);
     ActivateAbility abilityFunction; //this is an identifier, in the constructor this will be assigned to a function grabbed 
                                      //from the hashtable of ability functions the AbilityBuilder contains
      
