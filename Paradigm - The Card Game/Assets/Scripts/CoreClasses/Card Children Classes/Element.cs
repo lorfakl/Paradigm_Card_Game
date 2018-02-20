@@ -38,7 +38,7 @@ public class Element: Card
                 if(p.GetLocation("Field").GetContents()[i] is Accessor)
                 {
                     Accessor a = (Accessor)p.GetLocation("Field").GetContents()[i];
-                    if (a.getElementStatus())
+                    if (a.GetElementStatus())
                     {
                         this.getLocation().MoveContent(this, p.GetLocation("Field"));
                     }

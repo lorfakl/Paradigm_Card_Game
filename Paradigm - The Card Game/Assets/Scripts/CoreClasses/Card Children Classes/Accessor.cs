@@ -12,6 +12,7 @@ public class Accessor: Card
         private int power;
         private int numOfAttacks = 1;
         private bool elemental = false;
+        private List<Card> bonds;
 
         public Accessor()
         {
@@ -28,6 +29,7 @@ public class Accessor: Card
             this.SetHp((int)h);
             Family fam = new Family(k);
             this.setFam(fam);
+            bonds = new List<Card>();
             
         }
 
@@ -57,9 +59,9 @@ public class Accessor: Card
 
         }
 
-        public int getPower() { return power; }
-        public int getHp() { return hp; }
-        public bool getElementStatus() { return elemental; }
+        public int GetPower() { return power; }
+        public int GetHp() { return hp; }
+        public bool GetElementStatus() { return elemental; }
 
 
         public override void playCard()
@@ -73,37 +75,9 @@ public class Accessor: Card
             throw new NotImplementedException();
         }
 
-        public void DeclareAttack(Card t)
+        public void Attack()
         {
-            //DISPLAY THAT AN ATTACK IS ABOUT TO HAPPEN AND
-            //PRESENT PROMPT FOR BLOCKING
-            /*Accessor blocker; // = return from notification and prompt function
-            if (blocker == null)
-            {
-                Attack(t);
-            }
-            else
-            {
-                Attack(blocker);
-            }*/
-        }
 
-        public void Attack(Card t)
-        {
-            if(t is Accessor)
-            {
-                Accessor a = (Accessor)t;
-                if (!t.getBarrierStatus())
-                {
-                    a.SetHp(a.getHp() - this.getPower());
-                    return;
-                }
-            }
-            else
-            {
-                Player p = t.getOwner();
-                p.DestroyBarrier();
-            }
-        }
+        }   
 }
 

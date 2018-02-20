@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 namespace Utilities
 {
+    
+
     public static class HelperFunctions
     {
         /// <summary>
@@ -55,6 +57,8 @@ namespace Utilities
             GameEventsArgs newEvent = new GameEventsArgs(cardSource, notMoveAction, cardTarget);
             GameEventsManager.PublishEvent(sender, newEvent);
         }
+
+        
     }
 
 
@@ -63,8 +67,7 @@ namespace Utilities
         //this static class will be responsible for mmapping card names to their abilities and traits
         //which map to the functions that actually do the things for abilities and traits
         private static bool arePrepared = false;
-        public static Dictionary<TurnPhase, Turn.TurnPhaseFunction> turnDict = new Dictionary<TurnPhase, Turn.TurnPhaseFunction>();
-       
+        
         
         public static bool Prepared
         {
@@ -80,38 +83,5 @@ namespace Utilities
         }
 
         
-    }
-
-    static class Functions
-    {
-        private static void StartGamePhase()
-        {
-
-        }
-
-        private static void StartGatherPhase()
-        {
-
-        }
-
-        private static void StartAwakenPhase()
-        {
-
-        }
-
-        private static void StartCentralPhase()
-        {
-
-        }
-
-        private static void StartCrystalPhase()
-        {
-
-        }
-
-        private static void StartEndPhase()
-        {
-
-        }
     }
 }

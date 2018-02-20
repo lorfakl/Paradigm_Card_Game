@@ -108,6 +108,7 @@ public class Turn
         Player p = e.EventOwner;
         
         List<Card> lands = p.PlayerDeck.GetLandscapesInDeck();
+        Debug.Log(lands.Count);
         //instaniate the display
         //Debug.Log("Display Landscapes");
         foreach(Card c in lands)
@@ -116,7 +117,7 @@ public class Turn
         }
         //send the lands to the display function
         //get the selected land from the display function
-        GameEventsManager.AddTCLand(lands[UnityEngine.Random.Range(0, 2)]); //choose a random landscape from the deck just for testing
+        GameEventsManager.AddTCLand(lands[UnityEngine.Random.Range(0, 1)]); //choose a random landscape from the deck just for testing
         e.EventOwnerTurn.phase = TurnPhase.End; //this line is kinda hacky
 
 
