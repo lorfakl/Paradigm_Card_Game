@@ -116,7 +116,7 @@ public class Location
                 Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
                                                                 + destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
-                Utilities.HelperFunctions.RaiseNewEvent(this, changes, c, GetMoveAction(this, destination), NonMoveAction.None, l);
+                Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
         }
         

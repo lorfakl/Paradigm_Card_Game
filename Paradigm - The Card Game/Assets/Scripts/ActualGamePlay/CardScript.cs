@@ -11,7 +11,7 @@ public class CardScript : MonoBehaviour {
     private Transform parent;
     private Card cardData;
     private static int numToSelect;
-    private static bool canSelect;
+
 
 
     private void Awake()
@@ -20,7 +20,6 @@ public class CardScript : MonoBehaviour {
         displayScript = gameObject.transform.parent.GetComponent<DisplaySelectionCards>();
         defaultCard = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
         selected = false;
-        canSelect = true;
         
     }
 
@@ -37,7 +36,7 @@ public class CardScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-		if(Input.GetMouseButtonDown(0) && canSelect)
+		if(Input.GetMouseButtonDown(0))
         {
             Ray rayLine = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit objectHit;
@@ -52,34 +51,26 @@ public class CardScript : MonoBehaviour {
             }
         }
 
-        canSelect = !displayScript.IsDoneSelecting;
-
-        if (cardData == null)
-        {
-            //throw new Exception("The Card's null dumbass!");
-        }
     }
 
     private void ChangeSprite(bool s)
     {
-        if(s)
+        if (s)
         {
-            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = cardSelected;
-
-            if (cardData == null)
+            if(displayScript.CardsSelected < displayScript.TotalCards)
             {
-                //t//hrow new Exception("The Card's null dumbass!");
+                print("Where?");
+                gameObject.GetComponentInChildren<SpriteRenderer>().sprite = cardSelected;
+                numToSelect = displayScript.UpdateSelectedCards(cardData, true);
+                return;
             }
 
-            numToSelect = displayScript.UpdateSelectedCards(cardData, true);
+            selected = !selected; //set the selected bool to it's pre-clicked value, because the user is no longer able
+                                  //to select cards. Only de-select
         }
         else
         {
             gameObject.GetComponentInChildren<SpriteRenderer>().sprite = defaultCard;
-            if (cardData == null)
-            {
-                //throw new Exception("The Card's null dumbass!");
-            }
             numToSelect = displayScript.UpdateSelectedCards(cardData, false);
         }
     }
@@ -88,15 +79,12 @@ public class CardScript : MonoBehaviour {
     {
         if (c == null)
         {
-            throw new Exception("The Card's null dumbass!(SetCard)");
-            
+            throw new Exception("The Card's null dumbass!(SetCard)");  
         }
         else
         {
             this.cardData = c;
-            print(c.Name);
+            //print(c.Name);
         }
     }
-
-    
 }

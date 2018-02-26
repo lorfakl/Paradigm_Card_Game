@@ -44,6 +44,8 @@ public class JustTesting : MonoBehaviour {
 
             Debug.Log("Pressed the enter key, good job");
         }
+
+        print("Hand size" + MakeTestPlayer.P1.GetLocation("Hand").Count);
      
 	}
 }

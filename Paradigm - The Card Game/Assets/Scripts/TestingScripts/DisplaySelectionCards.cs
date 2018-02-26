@@ -21,13 +21,81 @@ public class DisplaySelectionCards :MonoBehaviour
     private static Location source;
     private static Location destination;
     private static int numToMove = 0;
+    private static int leftToMove = 0;
     private static bool isDoneSelecting = false;
 
-    public bool IsDoneSelecting
+    //Public Properties, mainly for CardScript
+    public int CardsSelected
     {
-        get { return isDoneSelecting; }
+        get { return selectedCards.Count; }
     }
 
+    public int TotalCards
+    {
+        get { return numToMove; }
+    }
+
+    public int CardsLeft
+    {
+        get { return leftToMove; }
+    }
+
+    /// <summary>
+    /// This function needs to be called by the script instantiating this display IMMEDIATELY after the instantiation. 
+    /// In order to set the "Address" of the cards, setting the From Location and To Location.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="d"></param>
+    /// <param name="n"></param>
+    public void SetCardPath(Location s, Location d, int n)
+    {
+        if (s == null || d == null)
+        {
+            print("well fuck...");
+        }
+
+        source = s;
+        destination = d;
+        print(source.Name);
+        print(destination.Name);
+        numToMove = n;
+        leftToMove = n;
+        print("Called it");
+    }
+
+    /// <summary>
+    /// Called Explicitly from the CardScript class, all it does is let this display know how many cards the user has selected
+    /// </summary>
+    /// <param name="c"></param>
+    /// <param name="added"></param>
+    /// <returns></returns>
+    public int UpdateSelectedCards(Card c, bool added)
+    {
+        if (c == null)
+        {
+            //throw new Exception("The Card's null dumbass!");
+        }
+
+        if (added)
+        {
+            selectedCards.Add(c);
+            leftToMove = numToMove - selectedCards.Count;
+        }
+        else
+        {
+            if (selectedCards.Remove(c))
+            {
+                leftToMove = numToMove - selectedCards.Count;
+            }
+            else
+            {
+                return leftToMove;
+            }
+        }
+        return leftToMove;
+    }
+
+    //Private Functions
     private void Awake()
     {
         display = this.gameObject;
@@ -45,8 +113,9 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void Update()
     {
+        print("Total Cards to Select: " + numToMove);
         print("Cards Selected: " + selectedCards.Count);
-        print("Number of Cards left to select: " + numToMove);
+        print("Number of Cards left to select: " + leftToMove);
         foreach (Card c in selectedCards)
         {
             print(c.Name);
@@ -79,7 +148,9 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void CreateCard(Card c)
     {
+        //cardPrefab.GetComponent<CardScript>().SetCard(c);
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
+        cardObject.GetComponent<CardScript>().SetCard(c);
         objectsCreated.Add(cardObject);
         Transform cardName = cardObject.transform.FindDeepChild("cardName");
         cardName.GetComponent<Text>().text = c.Name;
@@ -89,7 +160,6 @@ public class DisplaySelectionCards :MonoBehaviour
         {
             throw new Exception("The Card's null dumbass!(CreateCard)");
         }
-        cardPrefab.GetComponent<CardScript>().SetCard(c);
         position = cardObject.transform.position;
         ScaleCard(cardObject);
     }
@@ -103,47 +173,6 @@ public class DisplaySelectionCards :MonoBehaviour
     private void StopSelecting()
     {
         isDoneSelecting = true;
-    }
-
-    public void SetCardPath(Location s, Location d, int n)
-    {
-        if(s == null || d == null)
-        {
-            print("well fuck...");
-        }
-
-        source = s;
-        destination = d;
-        print(source.Name);
-        print(destination.Name);
-        numToMove = n;
-        print("Called it");
-    }
-
-    public int UpdateSelectedCards(Card c, bool added)
-    {
-        if(c == null)
-        {
-            //throw new Exception("The Card's null dumbass!");
-        }
-
-        if(added)
-        {
-            selectedCards.Add(c);
-            numToMove--;
-        }
-        else
-        {
-            if(selectedCards.Remove(c))
-            {
-                numToMove++;
-            }
-            else
-            {
-                return numToMove;
-            }
-        }
-        return numToMove;
     }
 
 }
