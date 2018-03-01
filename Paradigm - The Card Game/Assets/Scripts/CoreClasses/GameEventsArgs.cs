@@ -20,7 +20,7 @@ public class GameEventsArgs : EventArgs
     private Player owner;
     private Card cardSource;
     private Turn turn;
-    private List<LocationChanges> boardMovemnets;
+    private List<LocationChanges> boardMovements;
     private MoveAction moveAction;
     private NonMoveAction notMoveAction;
     private Player playerTarget;
@@ -31,10 +31,10 @@ public class GameEventsArgs : EventArgs
     {
     }
     
-    public GameEventsArgs(List<LocationChanges> boardMovemnets, Card cardSource, MoveAction moveAction,
+    public GameEventsArgs(List<LocationChanges> boardMovements, Card cardSource, MoveAction moveAction,
                                 NonMoveAction notMoveAction, List<Card> cardTargets)
     {
-        this.boardMovemnets = boardMovemnets;
+        this.boardMovements = boardMovements;
         this.cardSource = cardSource;
         this.owner = cardSource.getOwner();
         this.moveAction = moveAction;
@@ -48,18 +48,18 @@ public class GameEventsArgs : EventArgs
     /// <summary>
     /// This game event constructor is for movement base actions
     /// </summary>
-    /// <param name="boardMovemnets"></param>
+    /// <param name="boardMovements"></param>
     /// <param name="moveAction"></param>
-    public GameEventsArgs(List<LocationChanges> boardMovemnets, MoveAction moveAction)
+    public GameEventsArgs(List<LocationChanges> boardMovements, MoveAction moveAction)
     {
-        this.boardMovemnets = boardMovemnets;
+        this.boardMovements = boardMovements;
         this.cardSource = null;
-        this.owner = boardMovemnets[0].destination.Owner;
+        this.owner = boardMovements[0].destination.Owner;
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
         this.turn = this.owner.PlayerTurn;
         List<Card> cardsMoved = new List<Card>();
-        foreach (LocationChanges l in boardMovemnets)
+        foreach (LocationChanges l in boardMovements)
         {
             cardsMoved.Add(l.c);
         }
@@ -79,7 +79,7 @@ public class GameEventsArgs : EventArgs
     {
         this.owner = owner;
         this.cardSource = null;
-        this.boardMovemnets = null;
+        this.boardMovements = null;
         this.playerTarget = target;
         this.notMoveAction = nonMoveAction;
         this.moveAction = MoveAction.None;
@@ -96,7 +96,7 @@ public class GameEventsArgs : EventArgs
     /// <param name="cardTarget"></param>
     public GameEventsArgs(Card cardSource, NonMoveAction notMoveAction, Card cardTarget)
     {
-        this.boardMovemnets = null;
+        this.boardMovements = null;
         this.cardSource = cardSource;
         this.owner = cardSource.getOwner();
         this.moveAction = MoveAction.None;
@@ -138,9 +138,9 @@ public class GameEventsArgs : EventArgs
         get { return turn; }
     }
 
-    public List<LocationChanges> GameBoardMovemnets
+    public List<LocationChanges> GameBoardMovements
     {
-        get { return boardMovemnets; }
+        get { return boardMovements; }
     }
 
     public MoveAction MoveActionEvent

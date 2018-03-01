@@ -1,11 +1,11 @@
 ﻿using System;
-using System.IO;
+//using System.IO;
 using UnityEngine;
 using System.Data;
 using Mono.Data.Sqlite;
-using System.Reflection;
-using System.Collections;
-using System.Globalization;
+//using System.Reflection;
+//using System.Collections;
+//using System.Globalization;
 using System.Collections.Generic;
 
 namespace DataBase

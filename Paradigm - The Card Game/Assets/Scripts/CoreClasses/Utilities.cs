@@ -1,6 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Data;
 using UnityEngine;
+using Mono.Data.Sqlite;
+using System.Collections.Generic;
+
 
 /// <summary>
 /// The utilities class is for storing the general purpose commonly used functions and data structures 
@@ -11,6 +14,9 @@ namespace Utilities
 
     public static class HelperFunctions
     {
+        private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+            
+
         /// <summary>
         /// Raise a new event that is the direct result of a card effect
         /// </summary>
@@ -58,7 +64,50 @@ namespace Utilities
             GameEventsManager.PublishEvent(sender, newEvent);
         }
 
-        
+        /// <summary>
+        /// This functions is to both read and write from the Database. If you read from a Table, the function returns a Dictionary with keys 0 - Records returned
+        /// If you write to a Table well, thats not implemented yet.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="command"></param>
+        /// <param name="read"></param>
+        /// <returns></returns>
+        public static Dictionary<int, List<System.Object>> AccessDataBaseTable(string table, bool read = true, string command = "")
+        {
+            Dictionary<int, List<System.Object>> tableData = new Dictionary<int, List<System.Object>>();
+            using (SqliteConnection dbConnection = new SqliteConnection(conn))
+            {
+                dbConnection.Open();
+                using (SqliteCommand cmd = dbConnection.CreateCommand())
+                {
+                    if(read)
+                    {
+                        string query = "SELECT * FROM " + table; //get the info from the table 
+                        cmd.CommandText = query;
+                        using (IDataReader reader = cmd.ExecuteReader())
+                        {
+                            int recordsReturned = 0;
+                            while (reader.Read())
+                            {
+                                List<System.Object> recordData = new List<System.Object>();
+                                for(int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    recordData.Add(reader[i]);
+                                }
+                                tableData.Add(recordsReturned, recordData);
+                                recordsReturned++;
+                            }
+                            return tableData;
+                        }
+                    }
+                    else //write
+                    {
+                        Debug.Log("Currently You Can only read. Write hasn't been implemented");
+                        return null;
+                    }
+                }
+            }
+        }
     }
 
 
