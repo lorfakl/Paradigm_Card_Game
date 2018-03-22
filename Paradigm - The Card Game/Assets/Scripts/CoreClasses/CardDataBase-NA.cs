@@ -364,37 +364,5 @@ namespace DataBase
             
         }
 
-        public static void WriteEncodedAbilities()
-        {
-            TextAsset encodedAbilities = Resources.Load("encoded") as TextAsset;
-            string[] lines = encodedAbilities.text.Split("\n"[0]);
-
-            for (int i = 0; i < lines.Length; i += 5)
-            {
-                string firstLine = lines[i];
-                firstLine = firstLine.Substring(3);
-                firstLine = "'"+firstLine.Substring(0, firstLine.Length - 2) + "'";
-
-
-                Debug.Log(firstLine);
-
-                string condition = "'" + lines[i + 1].Substring(11) + "'";
-                string cost = "'" + lines[i + 2].Substring(5) + "'";
-                string action = "'" + lines[i + 3].Substring(9) + "'";
-                string limit = "'" + lines[i + 4].Substring(8) + "'";
-                using (SqliteConnection dbconn = new SqliteConnection(dbConnString))
-                {
-                    dbconn.Open();
-
-                    using (SqliteCommand cmd = dbconn.CreateCommand())
-                    {
-                        string queryPortion = "INSERT INTO AbilityEncodes (ID, Condition, Cost, Action, Limited, Optional, Patient) VALUES (";
-                        cmd.CommandText = queryPortion + firstLine + ", " + condition + ", " + cost + ", " + action + ", " + limit + ", " + "'NULL', " + "'NULL')";
-                        Debug.Log(cmd.CommandText);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-        }
     }
 }
