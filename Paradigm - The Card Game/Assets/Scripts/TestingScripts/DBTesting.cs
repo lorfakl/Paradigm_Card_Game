@@ -9,7 +9,7 @@ public class DBTesting : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        CardDataBase.WriteEncodedAbilities();
+        //CardDataBase.WriteEncodedAbilities();
 	}
 	
 	// Update is called once per frame
