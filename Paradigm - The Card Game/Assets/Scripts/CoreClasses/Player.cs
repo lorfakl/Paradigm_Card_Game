@@ -25,11 +25,11 @@ public class Player
             this.playerID = UnityEngine.Random.Range(0,256);
             if (addTo != 0)
             {
-                this.playerID = this.playerID + UnityEngine.Random.Range(0, 128);
+                this.playerID = this.playerID + UnityEngine.Random.Range(510, 2048);
             }
 
             this.majesty = null;
-            this.turn = null;
+            this.turn = new Turn(this);
 
             foreach (string s in validLocations)
             {

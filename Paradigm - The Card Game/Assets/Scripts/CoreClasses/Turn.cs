@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 public enum TurnPhase
@@ -19,6 +20,9 @@ public class Turn
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
+    private Button endTurnButton;
+    private Button nextPhaseButton;
+
 
     public Turn(Player p)
     {
@@ -32,6 +36,12 @@ public class Turn
         this.isPhaseComplete = false;
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
+        GameObject[] buttons = GameObject.FindGameObjectsWithTag("playerUI");
+        if(buttons == null)
+        {
+            Debug.Log("Why'd you create player objects with no UI, seems weird");
+            if(buttons[0].name == "")
+        }
     }
 
     public TurnPhase Phase
@@ -55,7 +65,7 @@ public class Turn
         SetDelegate();
         GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner);
         Debug.Log(this.phase.ToString());
-        this.PerformPhaseAction(turnPhaseEvent);
+        this.PerformPhaseAction(turnPhaseEvent); //once this line finishes the turn phase is over
 
         TurnPhase currentPhase = this.phase; 
         if(currentPhase == TurnPhase.End)//if the End phase was the last turn phase

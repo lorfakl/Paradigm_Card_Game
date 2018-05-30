@@ -53,6 +53,7 @@ public class GameEventsManager : MonoBehaviour
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
+        //this whole business should be handled in gametime object
         p1 = new Player(5);
         p2 = new Player();
 
@@ -75,15 +76,16 @@ public class GameEventsManager : MonoBehaviour
 
     void Start()
     {
-        ValidatePlayers(new Player[] { p1, p2 });
+        /*ValidatePlayers(new Player[] { p1, p2 });
         Debug.Log("Player:" + p1.PlayerID + " cards in hand " + p1.GetLocation("Hand").Count);
         Debug.Log("Player:" + p2.PlayerID + " cards in hand " + p2.GetLocation("Hand").Count);
+        */
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(p1 == p2)
+       /* if(p1 == p2)
         {
             Debug.Log("These players are the same object");
         }
@@ -96,11 +98,11 @@ public class GameEventsManager : MonoBehaviour
             {
                 BeginTerritoryChallenge();
             }
-        } 
+        } */
             
         
     }
-
+    /*
     private void BeginTerritoryChallenge()
     {
         if(tcBuffer.Count == 0)
@@ -191,5 +193,5 @@ public class GameEventsManager : MonoBehaviour
     private IEnumerator WaitSomeTime(int t)
     {
         yield return new WaitForSeconds(t);
-    }
+    }*/
 }

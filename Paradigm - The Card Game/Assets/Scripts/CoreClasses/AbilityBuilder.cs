@@ -54,7 +54,7 @@ namespace Builder
 
         public static Ability.ActivateAbility CreateAbility(string cardName, string text, string abName = "")
         {
-            return new Ability.ActivateAbility(functionDictionary[text]);
+            return new Ability.ActivateAbility(SomeThing); //placeholder as fuck
         }
 
         private static void Move()
