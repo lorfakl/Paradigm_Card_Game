@@ -13,7 +13,7 @@ public class JustTesting : MonoBehaviour {
     int count = 0;
 	void Awake ()
     {
-        MakeTestPlayer.MakePlayer();
+        //MakeTestPlayer.MakePlayer();
         CardDataBase.GetDataBaseData();
         List<Card> AllCards = CardDataBase.GetAllCards();
 

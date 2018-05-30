@@ -19,7 +19,7 @@ public class Player
         private Turn turn;
         private static List<Player> currentPlayers = new List<Player>();
 
-        public Player(int addTo = 0)
+        public Player(GameTimeManager mgmt, int addTo = 0)
         {
         
             this.playerID = UnityEngine.Random.Range(0,256);
@@ -29,7 +29,7 @@ public class Player
             }
 
             this.majesty = null;
-            this.turn = new Turn(this);
+            this.turn = new Turn(this, mgmt);
 
             foreach (string s in validLocations)
             {

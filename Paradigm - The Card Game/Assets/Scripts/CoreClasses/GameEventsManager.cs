@@ -54,8 +54,8 @@ public class GameEventsManager : MonoBehaviour
     void Awake()
     {
         //this whole business should be handled in gametime object
-        p1 = new Player(5);
-        p2 = new Player();
+        //p1 = new Player(5);
+        //p2 = new Player();
 
         if( p1 == null || p2 == null)
         {
@@ -68,8 +68,8 @@ public class GameEventsManager : MonoBehaviour
         p1.Majesty = p1.PlayerDeck.GetMajesty();
         p2.Majesty = p2.PlayerDeck.GetMajesty();
 
-        p1.PlayerTurn = new Turn(p1);
-        p2.PlayerTurn = new Turn(p2);
+        //p1.PlayerTurn = new Turn(p1);
+        //p2.PlayerTurn = new Turn(p2);
         Debug.Log("Number of Individual Abilities: " + Ability.numOfAbilities);
 
     }

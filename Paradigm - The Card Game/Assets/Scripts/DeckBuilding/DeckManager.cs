@@ -12,8 +12,9 @@ public class DeckManager : MonoBehaviour {
 
     void Awake()
     {
-        Player p = new Player();
-        playDeck = p.PlayerDeck;
+        //Player p = new Player();
+        //playDeck = p.PlayerDeck;
+        Deck playDeck = new Deck();
   
         if (!CardDataBase.IsDataLoaded)
         {

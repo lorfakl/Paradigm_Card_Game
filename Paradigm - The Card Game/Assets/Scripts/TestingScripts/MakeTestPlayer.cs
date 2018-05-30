@@ -21,10 +21,10 @@ public static class MakeTestPlayer
         get { return p2; }
     }
 
-    public static Player MakePlayer()
+    public static Player MakePlayer(GameTimeManager mgmt)
     {
-        p1 = new Player();
-        p2 = new Player();
+        p1 = new Player(mgmt);
+        p2 = new Player(mgmt);
         return p1;
     }
 }
