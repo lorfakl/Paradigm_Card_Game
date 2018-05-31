@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameTimeManager
 {
@@ -62,7 +63,7 @@ public class GameTimeManager
     private void GameStart()
     {
         p1 = new Player(this);
-        p2 = new Player(this, 3); //arbitrary as fuck
+        p2 = new Player(this, 3, true); //arbitrary as fuck
         GameObject[] buttons = GameObject.FindGameObjectsWithTag("playerUI");
         if (buttons != null)
         {
@@ -85,13 +86,64 @@ public class GameTimeManager
         {
             Debug.Log("Why'd you create player objects with no UI, seems weird");
         }
+
+        StartTerritoryChallenge();
+
     }
 
     
     
-    // Update is called once per frame
-    void Update()
+    private List<Player> StartTerritoryChallenge()
     {
-        
+        List<Player> playerTurnOrder = new List<Player>();
+
+        //throw new Exception("The guts havent been made yet these card objects are hella null");
+        Card p1Pick = p1.ChooseTerritoryChallengeCard();
+        Card p2Pick = p2.ChooseTerritoryChallengeCard();
+
+        if(Card.GetShape(p1Pick) > Card.GetShape(p2Pick))
+        {
+            if(Card.GetShape(p1Pick) == ShapeTrait.Triangle)
+            {
+                playerTurnOrder.Add(p2); //P2 loses TC goes first
+                playerTurnOrder.Add(p1);
+                return playerTurnOrder;
+            }
+            else
+            {
+                playerTurnOrder.Add(p1);//P1 loses TC goes first
+                playerTurnOrder.Add(p2);
+                return playerTurnOrder;
+            }
+        }
+        else if(Card.GetShape(p2Pick) == ShapeTrait.Triangle)
+        {
+            playerTurnOrder.Add(p1);//P1 loses TC goes first
+            playerTurnOrder.Add(p2);
+            return playerTurnOrder;
+        }
+        else if(Card.GetShape(p1Pick) == Card.GetShape(p2Pick))
+        {
+            int num = UnityEngine.Random.Range(0, 100);
+            if(num > 50)
+            {
+                playerTurnOrder.Add(p1);//P1 loses TC goes first
+                playerTurnOrder.Add(p2);
+                return playerTurnOrder;
+            }
+            else
+            {
+                playerTurnOrder.Add(p2);//P2 loses TC goes first
+                playerTurnOrder.Add(p1);
+                return playerTurnOrder;
+            }
+        }
+        else
+        {
+            playerTurnOrder.Add(p2);//P2 loses TC goes first
+            playerTurnOrder.Add(p1);
+            return playerTurnOrder;
+        }
+
     }
 }

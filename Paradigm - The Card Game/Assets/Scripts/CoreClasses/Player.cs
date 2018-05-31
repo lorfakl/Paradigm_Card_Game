@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Utilities;
 
 
 public class Player
@@ -17,9 +18,10 @@ public class Player
         //private AuxiliaryCard tcLandscape = null;
         private Majesty majesty;
         private Turn turn;
+        private bool isAI;
         private static List<Player> currentPlayers = new List<Player>();
 
-        public Player(GameTimeManager mgmt, int addTo = 0)
+        public Player(GameTimeManager mgmt, int addTo = 0, bool isAI = false)
         {
         
             this.playerID = UnityEngine.Random.Range(0,256);
@@ -38,6 +40,7 @@ public class Player
             //Debug.Log("Dictionary Size: " + cardLocations.Count);
             this.playerDeck = new Deck("Deck", this);
             cardLocations["Deck"] = this.playerDeck;
+            this.isAI = isAI;
         }
 
         public Deck PlayerDeck
@@ -141,5 +144,21 @@ public class Player
             }
         }
         //End Card Transit
+
+        public Card ChooseTerritoryChallengeCard()
+        {
+            if(isAI)
+            {
+                //use AI namespace TODO make AI namespace
+            }
+            else
+            {
+            Location temp = new Location("temp", this);
+            HelperFunctions.SelectCards(this.GetLocation("Deck"), temp, 1);
+            return temp.GetContents()[0];
+            }
+
+            return null;
+        }
     }
 
