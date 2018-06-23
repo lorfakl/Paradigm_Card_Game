@@ -51,8 +51,11 @@ namespace DataBase
 
         public static void GetDataBaseData()
         {
-            PrepareDictionary();
-            string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
+            if (!isDataLoaded)
+            {
+                PrepareDictionary();
+            }
+                string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
 
             using (SqliteConnection dbconn = new SqliteConnection(conn))
             {

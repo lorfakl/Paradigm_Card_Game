@@ -53,8 +53,9 @@ public class GameEventsManager : MonoBehaviour
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
-        p1 = new Player(5);
-        p2 = new Player();
+        //this whole business should be handled in gametime object
+        //p1 = new Player(5);
+        //p2 = new Player();
 
         if( p1 == null || p2 == null)
         {
@@ -67,23 +68,24 @@ public class GameEventsManager : MonoBehaviour
         p1.Majesty = p1.PlayerDeck.GetMajesty();
         p2.Majesty = p2.PlayerDeck.GetMajesty();
 
-        p1.PlayerTurn = new Turn(p1);
-        p2.PlayerTurn = new Turn(p2);
+        //p1.PlayerTurn = new Turn(p1);
+        //p2.PlayerTurn = new Turn(p2);
         Debug.Log("Number of Individual Abilities: " + Ability.numOfAbilities);
 
     }
 
     void Start()
     {
-        ValidatePlayers(new Player[] { p1, p2 });
+        /*ValidatePlayers(new Player[] { p1, p2 });
         Debug.Log("Player:" + p1.PlayerID + " cards in hand " + p1.GetLocation("Hand").Count);
         Debug.Log("Player:" + p2.PlayerID + " cards in hand " + p2.GetLocation("Hand").Count);
+        */
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(p1 == p2)
+       /* if(p1 == p2)
         {
             Debug.Log("These players are the same object");
         }
@@ -96,11 +98,11 @@ public class GameEventsManager : MonoBehaviour
             {
                 BeginTerritoryChallenge();
             }
-        } 
+        } */
             
         
     }
-
+    /*
     private void BeginTerritoryChallenge()
     {
         if(tcBuffer.Count == 0)
@@ -191,5 +193,5 @@ public class GameEventsManager : MonoBehaviour
     private IEnumerator WaitSomeTime(int t)
     {
         yield return new WaitForSeconds(t);
-    }
+    }*/
 }

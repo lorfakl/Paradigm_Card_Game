@@ -13,7 +13,7 @@ public class JustTesting : MonoBehaviour
     int count = 0;
 	void Awake ()
     {
-        MakeTestPlayer.MakePlayer();
+        MakeTestPlayer.MakePlayer(new GameTimeManager());
         CardDataBase.GetDataBaseData();
         List<Card> AllCards = CardDataBase.GetAllCards();
 
@@ -22,7 +22,16 @@ public class JustTesting : MonoBehaviour
 
         for(int i = 0; i < size; i++)
         {
-            MakeTestPlayer.P1.PlayerDeck.AddCard(AllCards[Random.Range(0, AllCards.Count - 1)]);
+            if(MakeTestPlayer.P1 == null)
+            {
+                Debug.Log("Null as fuck");
+            }
+            else
+            {
+                MakeTestPlayer.P1.PlayerDeck.AddCard(AllCards[Random.Range(0, AllCards.Count - 1)]);
+
+            }
+            //MakeTestPlayer.P1.PlayerDeck.AddCard(AllCards[Random.Range(0, AllCards.Count - 1)]);
         }
 
         numToSelect = Random.Range(1, 10);

@@ -11,11 +11,27 @@ using System.Collections.Generic;
 namespace Utilities
 {
     
-
+    
     public static class HelperFunctions
     {
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
-            
+
+        /// <summary>
+        /// TODO ADD A FILTER TO CHOOSE WHICH CARDS ARE DISPLAYED(most work to be 
+        /// done in DisplaySelectionCards.cs)
+        /// This is the simplife function call to display a list of cards to the 
+        /// player so that they can select x amount of cards and those cards are 
+        /// sent to the destination to be process or whatever
+        /// </summary>
+        /// <param name="source">The location object the cards are being taken from</param>
+        /// <param name="destination">The location object the cards are being place in</param>
+        /// <param name="numToSelect">The number of cards the user is allowed to select</param>
+        public static void SelectCards(Location source, Location destination, int numToSelect)
+        {
+            GameObject display = GameObject.Instantiate(Resources.Load("DisplayOverlay")) as GameObject;
+            display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(
+                source, destination, numToSelect);
+        }
 
         /// <summary>
         /// Raise a new event that is the direct result of a card effect

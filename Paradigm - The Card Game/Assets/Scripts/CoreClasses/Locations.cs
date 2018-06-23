@@ -41,7 +41,7 @@ public class Location
 
     public Location()
     {
-
+    
     }
 
     public Location(string name, Player p)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 public enum TurnPhase
@@ -19,8 +20,10 @@ public class Turn
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
+    private GameTimeManager manager;
 
-    public Turn(Player p)
+
+    public Turn(Player p, GameTimeManager manager)
     {
         if(!isDictionaryPrepared)
         {
@@ -30,8 +33,10 @@ public class Turn
         this.owner = p;
         this.phase = TurnPhase.Start;
         this.isPhaseComplete = false;
+        this.manager = manager;
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
+       
     }
 
     public TurnPhase Phase
@@ -50,15 +55,21 @@ public class Turn
         this.MoveToNextPhase();
     }
 
+    public void EndTurn()
+    {
+        this.phase = TurnPhase.End;
+    }
+
     private void MoveToNextPhase()
     {
+        manager.AdvanceGameTime();
         SetDelegate();
         GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
         Debug.Log(this.phase.ToString());
-        this.PerformPhaseAction(turnPhaseEvent);
+        this.PerformPhaseAction(turnPhaseEvent); //once this line finishes the turn phase is over
 
         TurnPhase currentPhase = this.phase; 
-        if(currentPhase == TurnPhase.End)//if the End phase was the last turn phase
+        if(currentPhase == TurnPhase.End)//if the End phase was the last turn phase to occur
         {
 
             this.phase = TurnPhase.Gather; //set the turn phase to Gather for the next turn
@@ -80,6 +91,10 @@ public class Turn
         this.turnPhaseFunction(e);
     }
 
+    /// <summary>
+    /// Changes the delegate to point to the function that corressponds to
+    /// the turn phase in the turn phase dictionary
+    /// </summary>
     private void SetDelegate()
     {
         if (!isDictionaryPrepared)

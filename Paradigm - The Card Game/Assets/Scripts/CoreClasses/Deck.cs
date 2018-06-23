@@ -17,6 +17,12 @@ using UnityEngine;
             this.deckFam = null;
         }
 
+        public Deck(string name = "Deck")
+        {
+            this.Owner = null;
+            this.deckFam = null;
+        }
+
         public bool AddCard(Card c)
         {
             if (deckFam == null)
