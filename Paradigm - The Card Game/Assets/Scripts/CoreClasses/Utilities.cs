@@ -39,7 +39,7 @@ namespace Utilities
         /// <param name="sender"></param>
         /// <param name="owner"></param>
         /// <param name="target"></param>
-        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction = NonMoveAction.None)
+        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
             GameEventsManager.PublishEvent(sender, newEvent);
