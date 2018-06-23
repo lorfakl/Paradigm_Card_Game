@@ -46,7 +46,7 @@ public class GameEventsArgs : EventArgs
     }
 
     /// <summary>
-    /// This game event constructor is for movement base actions
+    /// This game event constructor is for movement based actions
     /// </summary>
     /// <param name="boardMovements"></param>
     /// <param name="moveAction"></param>
@@ -75,7 +75,7 @@ public class GameEventsArgs : EventArgs
     /// <param name="owner"></param>
     /// <param name="target"></param>
     /// <param name="nonMoveAction"></param>
-    public GameEventsArgs(Player owner, Player target, NonMoveAction nonMoveAction = NonMoveAction.None)
+    public GameEventsArgs(Player owner, Player target, NonMoveAction nonMoveAction)
     {
         this.owner = owner;
         this.cardSource = null;
@@ -133,9 +133,9 @@ public class GameEventsArgs : EventArgs
         get { return owner; }
     }
 
-    public Turn EventOwnerTurn
+    public TurnPhase EventOwnerTurn
     {
-        get { return turn; }
+        get { return turn.Phase; }
     }
 
     public List<LocationChanges> GameBoardMovements

@@ -53,7 +53,7 @@ public class Turn
     private void MoveToNextPhase()
     {
         SetDelegate();
-        GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner);
+        GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
         Debug.Log(this.phase.ToString());
         this.PerformPhaseAction(turnPhaseEvent);
 
@@ -118,7 +118,7 @@ public class Turn
         //send the lands to the display function
         //get the selected land from the display function
         GameEventsManager.AddTCLand(lands[UnityEngine.Random.Range(0, 1)]); //choose a random landscape from the deck just for testing
-        e.EventOwnerTurn.phase = TurnPhase.End; //this line is kinda hacky
+        p.PlayerTurn.Phase = TurnPhase.End; //this line is kinda hacky
 
 
 

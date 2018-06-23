@@ -10,19 +10,22 @@ public enum AbilityType { Optional, Mandatory};
 public class Ability
 { 
     private string text;
-    private string abilityName;
-    private string cardName;
+
+    private Action action;
     private bool isPatient;
     private bool isLimited;
+
     private bool canActivate;
+    private Player playerOwner;
+
+    private Condition condition;
     private bool canCheckForEvents; //so abilities dont check for events from the deck
     private int timesUsed;
-    private Player playerOwner;
     private Card cardOwner;
-    public static int numOfAbilities = 0;
-    private AbilityType type; //ability type dictates how the abilities is activated
+    
+    
     public delegate void ActivateAbility(GameEventsArgs e);
-    ActivateAbility abilityFunction; //this is an identifier, in the constructor this will be assigned to a function grabbed 
+    //ActivateAbility abilityFunction; //this is an identifier, in the constructor this will be assigned to a function grabbed 
                                      //from the hashtable of ability functions the AbilityBuilder contains
      
     public bool ActivationStatus
@@ -37,6 +40,12 @@ public class Ability
         set { this.cardOwner = value; }
     }
 
+    public Player Owner
+    {
+        get { return this.cardOwner.Owner; }
+        set { this.cardOwner.Owner = value; }
+    }
+
     public int TimesUsed
     {
         get { return timesUsed; }
@@ -46,12 +55,6 @@ public class Ability
     public string AbilityText
     {
         get { return this.text; }
-    }
-
-    public string AbilityName
-    {
-        get { return this.abilityName; }
-        set { this.abilityName = value; }
     }
 
     public bool IsLimited
@@ -86,15 +89,13 @@ public class Ability
             
     }
 
-    public Ability(string cName, string text, string aName = "") //contains an optional parameter for the ability name because not all abilities are named
+    public Ability(string cName, string text) 
     {
         GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
-        this.cardName = cName;
         this.text = text;
         this.canActivate = false;
         this.canCheckForEvents = false;
-        this.abilityFunction = AbilityBuilder.CreateAbility(this.cardName, this.text, aName);
-        numOfAbilities++;
+        
     }
 
     

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 //using System.IO;
 using UnityEngine;
 using System.Data;
@@ -91,14 +92,8 @@ namespace DataBase
 
                                 System.Object[] ob = recordData.ToArray();
 
-                                /*for(int i = 0; i < ob.Length; i++)
-                                {
-                                    Debug.Log("Constructor Argument " + i + ": " + ob[i].ToString());
-                                }*/
-
                                 Card c = (Card)Activator.CreateInstance(cardType, ob);
-                                //Debug.Log("Dynamically Created Card: " + c.getName());
-                                //Debug.Log(reader[0]);
+
                                 c.ID = Int32.Parse(reader[0].ToString());
                                 allCards.Add(c);
 

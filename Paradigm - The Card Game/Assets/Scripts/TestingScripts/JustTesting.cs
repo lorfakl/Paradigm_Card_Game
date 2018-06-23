@@ -4,8 +4,8 @@ using UnityEngine;
 using DataBase;
 
 
-public class JustTesting : MonoBehaviour {
-
+public class JustTesting : MonoBehaviour
+{
     public GameObject display;
    
     List<Card> cards = null;
