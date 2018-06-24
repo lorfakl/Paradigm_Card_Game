@@ -26,11 +26,12 @@ namespace Utilities
         /// <param name="source">The location object the cards are being taken from</param>
         /// <param name="destination">The location object the cards are being place in</param>
         /// <param name="numToSelect">The number of cards the user is allowed to select</param>
-        public static void SelectCards(Location source, Location destination, int numToSelect)
+        public static GameObject SelectCards(Location source, Location destination, int numToSelect)
         {
             GameObject display = GameObject.Instantiate(Resources.Load("DisplayOverlay")) as GameObject;
             display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(
                 source, destination, numToSelect);
+            return display;
         }
 
         /// <summary>

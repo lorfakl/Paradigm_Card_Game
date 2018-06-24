@@ -87,20 +87,14 @@ public class GameTimeManager
             Debug.Log("Why'd you create player objects with no UI, seems weird");
         }
 
-        StartTerritoryChallenge();
-
     }
-
     
-    
-    private List<Player> StartTerritoryChallenge()
+    public List<Player> StartTerritoryChallenge(Card p1Pick, Card p2Pick)
     {
         List<Player> playerTurnOrder = new List<Player>();
 
         //throw new Exception("The guts havent been made yet these card objects are hella null");
-        Card p1Pick = p1.ChooseTerritoryChallengeCard();
-        Card p2Pick = p2.ChooseTerritoryChallengeCard();
-
+       
         if(Card.GetShape(p1Pick) > Card.GetShape(p2Pick))
         {
             if(Card.GetShape(p1Pick) == ShapeTrait.Triangle)
@@ -146,4 +140,6 @@ public class GameTimeManager
         }
 
     }
+
+    
 }

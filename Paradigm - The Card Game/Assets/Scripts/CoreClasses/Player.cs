@@ -8,9 +8,10 @@ using Utilities;
 
 public class Player
     {
-       
-        //private Turn playerTurn;
-       
+
+    //private Turn playerTurn;
+        public int timeOnTimer = 45;
+
         private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
         private static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
         private Deck playerDeck;
@@ -143,22 +144,34 @@ public class Player
                 c.getLocation().MoveContent(c, cardLocations["Hand"]);
             }
         }
-        //End Card Transit
+    //End Card Transit
 
-        public Card ChooseTerritoryChallengeCard()
+    public IEnumerator ChooseTerritoryChallengeCard(Location temp)
+    {
+        if (isAI)
         {
-            if(isAI)
-            {
-                //use AI namespace TODO make AI namespace
-            }
-            else
-            {
-            Location temp = new Location("temp", this);
-            HelperFunctions.SelectCards(this.GetLocation("Deck"), temp, 1);
-            return temp.GetContents()[0];
-            }
+            Debug.Log("Gonna break not implemented");
+        }
+        else
+        {
+            Debug.Log("Human doing a thing");
+            GameObject cardDisplay = HelperFunctions.SelectCards(this.GetLocation("Deck"), temp, 1);
+            Debug.Log("Now we wait!");
+            cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
-            return null;
+            int counter = timeOnTimer;
+            while (counter > 0)
+            {
+                yield return new WaitForSeconds(1);
+                Debug.Log("Time left on timer: " + counter);
+                counter--;
+            }
+            
+            Debug.Log("We should have cards and things");
+            GameObject gm = GameObject.FindWithTag("GameManager");
+            gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
         }
     }
+        
+}
 

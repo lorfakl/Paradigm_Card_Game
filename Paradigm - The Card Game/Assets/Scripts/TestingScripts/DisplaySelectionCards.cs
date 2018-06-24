@@ -40,6 +40,8 @@ public class DisplaySelectionCards :MonoBehaviour
         get { return leftToMove; }
     }
 
+
+
     /// <summary>
     /// This function needs to be called by the script instantiating this display IMMEDIATELY after the instantiation. 
     /// In order to set the "Address" of the cards, setting the From Location and To Location.
@@ -93,6 +95,12 @@ public class DisplaySelectionCards :MonoBehaviour
             }
         }
         return leftToMove;
+    }
+
+    public bool SendSelectionEnd()
+    {
+        print("Now the coroutine can finish");
+        return true;
     }
 
     //Private Functions
@@ -173,6 +181,7 @@ public class DisplaySelectionCards :MonoBehaviour
     private void StopSelecting()
     {
         isDoneSelecting = true;
+        SendSelectionEnd();
     }
 
 }
