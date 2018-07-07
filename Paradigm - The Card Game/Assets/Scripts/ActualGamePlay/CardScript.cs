@@ -26,8 +26,7 @@ public class CardScript : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        print("CardScript Start");
-        if (cardData == null)
+        if (cardData == null) //this should never be true, if it is ya done goofed kid
         {
             throw new Exception("The Card's null dumbass!(CardScript Start)");
         }
@@ -59,7 +58,6 @@ public class CardScript : MonoBehaviour {
         {
             if(displayScript.CardsSelected < displayScript.TotalCards)
             {
-                print("Where?");
                 gameObject.GetComponentInChildren<SpriteRenderer>().sprite = cardSelected;
                 numToSelect = displayScript.UpdateSelectedCards(cardData, true);
                 return;

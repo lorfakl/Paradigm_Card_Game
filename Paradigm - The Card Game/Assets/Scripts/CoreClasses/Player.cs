@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Utilities;
+using AI;
 
 
 public class Player
@@ -18,6 +19,7 @@ public class Player
         private int playerID;
         //private AuxiliaryCard tcLandscape = null;
         private Majesty majesty;
+        private List<Landscape> lands;
         private Turn turn;
         private bool isAI;
         private static List<Player> currentPlayers = new List<Player>();
@@ -66,6 +68,11 @@ public class Player
             get { return this.turn; }
             set { this.turn = value; }
         }
+
+        public bool IsAI
+        {
+            get { return this.isAI; }
+        }
         
    
         /*public AuxiliaryCard TCLandscape
@@ -73,7 +80,10 @@ public class Player
             get { return tcLandscape; }
             set { tcLandscape = value; }
         }*/
-        
+        public void LoadDeckFromDataBase()
+        {
+            playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
+        }
 
         public Location GetLocation(string l)
         {
@@ -150,13 +160,16 @@ public class Player
     {
         if (isAI)
         {
-            Debug.Log("Gonna break not implemented");
+            Debug.Log("AI doing a thing");
+            AI.AiFunctions.ChooseTCCard(this, temp);
         }
         else
         {
             Debug.Log("Human doing a thing");
-            GameObject cardDisplay = HelperFunctions.SelectCards(this.GetLocation("Deck"), temp, 1);
-            Debug.Log("Now we wait!");
+            Location lands = this.PlayerDeck.GetLandsAsLocation();
+            //Debug.Log("Show me your size: " + lands.Count);
+            GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
+            //Debug.Log("Now we wait!");
             cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
             int counter = timeOnTimer;
@@ -167,7 +180,7 @@ public class Player
                 counter--;
             }
             
-            Debug.Log("We should have cards and things");
+            //Debug.Log("We should have cards and things");
             GameObject gm = GameObject.FindWithTag("GameManager");
             gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
         }

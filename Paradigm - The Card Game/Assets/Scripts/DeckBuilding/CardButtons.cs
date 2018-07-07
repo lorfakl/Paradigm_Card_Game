@@ -32,7 +32,7 @@ public class CardButtons : MonoBehaviour {
         GameObject cardAdder = GameObject.FindGameObjectWithTag("addButton");
         //Card buttonCardData = prefab.GetComponent<searchResultAddOns>().cardData;
         Text details = cardDets.GetComponent<Text>();
-        details.text = cardData.getName() + "\nKazoku: " + cardData.getFam().FamString + "\t   Abilities: " + cardData.GetAbilityText();
+        details.text = cardData.getName() + "\nKazoku: " + cardData.getFam().Name + "\t   Abilities: " + cardData.GetAbilityText();
         cardAdder.GetComponent<AddToDeckButton>().SetCardToAdd(cardData);
         Debug.Log(cardData.getName());
       

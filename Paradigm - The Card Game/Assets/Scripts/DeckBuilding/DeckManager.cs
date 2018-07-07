@@ -12,7 +12,7 @@ public class DeckManager : MonoBehaviour {
 
     void Awake()
     {
-        Deck playDeck = new Deck();
+        playDeck = new Deck();
   
         if (!CardDataBase.IsDataLoaded)
         {
@@ -23,6 +23,7 @@ public class DeckManager : MonoBehaviour {
         {
             if(c == null)
             {
+                print("This is null my guy");
                 break;
             }
 
@@ -51,7 +52,6 @@ public class DeckManager : MonoBehaviour {
     {
         print("Deck get");
         return playDeck;
-
     }
 
 	public List<Card> GetCards ()

@@ -29,8 +29,7 @@ namespace Utilities
         public static GameObject SelectCards(Location source, Location destination, int numToSelect)
         {
             GameObject display = GameObject.Instantiate(Resources.Load("DisplayOverlay")) as GameObject;
-            display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(
-                source, destination, numToSelect);
+            display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(source, destination, numToSelect);
             return display;
         }
 

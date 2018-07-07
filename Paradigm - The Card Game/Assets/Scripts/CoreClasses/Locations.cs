@@ -16,11 +16,11 @@ public class Location
 {
     private string name;
     private Player owner;
-    private List<Card> contents;
-    private static List<Location> locations = new List<Location>(); 
-    private static Dictionary<Location, List<LocationChanges>> changesDict = 
+    protected List<Card> contents;
+    protected static List<Location> locations = new List<Location>(); 
+    protected static Dictionary<Location, List<LocationChanges>> changesDict = 
                    new Dictionary<Location, List<LocationChanges>>(); 
-    private List<LocationChanges> changes;
+    protected List<LocationChanges> changes;
 
     public string Name
     {
@@ -37,6 +37,11 @@ public class Location
     {
         get { return this.owner; }
         set { this.owner = value; }
+    }
+
+    public List<Card> Content
+    {
+        get { return this.contents; }
     }
 
     public Location()
@@ -78,7 +83,7 @@ public class Location
         
     }
 
-    protected void AddContent(Card c)
+    public void AddContent(Card c)
     {
         if (this.contents == null)
         {
@@ -113,8 +118,8 @@ public class Location
             }
             else
             {
-                Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
-                                                                + destination.owner.PlayerID + "'s " + destination.Name);
+                //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
+                                                               // + destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
                 Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }

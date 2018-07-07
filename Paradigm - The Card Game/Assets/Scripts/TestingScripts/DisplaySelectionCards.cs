@@ -55,14 +55,14 @@ public class DisplaySelectionCards :MonoBehaviour
         {
             print("well fuck...");
         }
-
+        //print("setsardpathnum of cards in source: " + source.Count);
         source = s;
         destination = d;
         print(source.Name);
         print(destination.Name);
         numToMove = n;
         leftToMove = n;
-        print("Called it");
+        //print("Called it");
     }
 
     /// <summary>
@@ -100,6 +100,8 @@ public class DisplaySelectionCards :MonoBehaviour
     public bool SendSelectionEnd()
     {
         print("Now the coroutine can finish");
+        PlayerInteraction playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerInteraction>();
+        playerScript.StopAllCoroutines();
         return true;
     }
 
@@ -113,7 +115,7 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void Start()
     {
-        print("Start!");
+        //print("Start!");
         canvas = gameObject.transform.parent.parent;
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
         DisplayCards();
@@ -121,8 +123,8 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void Update()
     {
-        print("Total Cards to Select: " + numToMove);
-        print("Cards Selected: " + selectedCards.Count);
+        //print("Total Cards to Select: " + numToMove);
+        //print("Cards Selected: " + selectedCards.Count);
         print("Number of Cards left to select: " + leftToMove);
         foreach (Card c in selectedCards)
         {
@@ -132,6 +134,7 @@ public class DisplaySelectionCards :MonoBehaviour
         if (isDoneSelecting)
         {
             source.MoveContent(selectedCards, destination);
+            print(destination.Count);
             Destroy(canvas.gameObject);
 
         }
@@ -139,12 +142,14 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void DisplayCards()
     {
-        if (source != null && destination != null) //this is where the error is, it says they're both null even if 
-        {                                          //they're not
+        if (source != null && destination != null)
+        {                                          
             //display cards
+            //print("Display cards num of cards in source: " + source.Count);
             foreach(Card c in source.GetContents())
             {
                 CreateCard(c);
+                //print("added card: " + c.Name);
             }
         }
         else

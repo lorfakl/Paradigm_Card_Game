@@ -98,6 +98,7 @@ namespace DataBase
                                 Card c = (Card)Activator.CreateInstance(cardType, ob);
 
                                 c.ID = Int32.Parse(reader[0].ToString());
+                                c.ClassType = reader[1].ToString();
                                 allCards.Add(c);
 
                                 foreach (Ability a in c.getAbilities())
@@ -142,14 +143,14 @@ namespace DataBase
                     if (IsPlayerDeckSaved())
                     {
                         string deleteQuery = "DELETE FROM PlayerDeck";
-                        Debug.Log("Not Empty deleteing old deck");
+                        //Debug.Log("Not Empty deleteing old deck");
                         cmd.CommandText = deleteQuery;
                         cmd.ExecuteNonQuery();
                     }
 
                     if(!IsPlayerDeckSaved())
                     {
-                        Debug.Log("Just Got Wiped");
+                        //Debug.Log("Just Got Wiped");
                     }
 
                     string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
@@ -157,7 +158,7 @@ namespace DataBase
                     foreach (Card c in d.GetContents())
                     {
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
-                        Debug.Log(cmd.CommandText);
+                        //Debug.Log(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                         playerDeckContents.Add(c);
                     }
@@ -304,7 +305,7 @@ namespace DataBase
                 case SearchMod.famToggle: //search with the Family modifier
                     for (int i = 0; i < allCards.Count; i++)
                     {
-                        if (allCards[i].getFam().FamString.Contains(searchVal))
+                        if (allCards[i].getFam().Name.Contains(searchVal))
                         {
                             searchResults.Add(allCards[i]);
                             Debug.Log("Found: " + allCards[i].getName());

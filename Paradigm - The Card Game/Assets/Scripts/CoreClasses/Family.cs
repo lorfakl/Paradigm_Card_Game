@@ -13,7 +13,7 @@ public class Family
         fam = f;
     }
 
-    public string FamString
+    public string Name
     {
         get { return fam; }
     }

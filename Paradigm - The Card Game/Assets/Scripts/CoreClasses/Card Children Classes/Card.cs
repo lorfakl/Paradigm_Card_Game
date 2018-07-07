@@ -9,6 +9,7 @@ using UnityEngine;
 {
         //TODO TRAITS NEED TO BE THOUGHT OUT
         private string name;
+        private string classType;
         private int id;
         private List<Ability> abilities = new List<Ability>();
         private List<Trait> traits = new List<Trait>();
@@ -73,6 +74,12 @@ using UnityEngine;
             set { this.owner = value; }
         }
 
+        public string ClassType
+        {
+            get { return this.classType; }
+            set { this.classType = value; }
+        }
+
         //Getters
         public string getName() { return name; }
         public List<Ability> getAbilities() { return abilities; }
@@ -121,6 +128,18 @@ using UnityEngine;
             foreach(Ability a in abilities)
             {
                 abText = abText + a.AbilityText + System.Environment.NewLine;
+            }
+
+            return abText;
+        }
+
+        public string GetTraitText()
+        {
+            string abText = "";
+
+            foreach (Trait a in traits)
+            {
+                abText = abText + a.TraitText + System.Environment.NewLine;
             }
 
             return abText;

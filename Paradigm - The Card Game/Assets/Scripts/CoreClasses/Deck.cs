@@ -21,6 +21,10 @@ using UnityEngine;
         {
             this.Owner = null;
             this.deckFam = null;
+            contents = new List<Card>();
+            locations.Add(this);
+            this.changes = new List<LocationChanges>();
+            changesDict.Add(this, this.changes);
         }
 
         public bool AddCard(Card c)
@@ -38,7 +42,7 @@ using UnityEngine;
                 c.setLocation(this);
                 return true;
             }
-            else if (c.getFam().FamString != deckFam.FamString)
+            else if (c.getFam().Name != deckFam.Name)
             {
                 //Debug.Log("Cannot add Card, does not Match Deck Family");
                 return false;
@@ -108,6 +112,22 @@ using UnityEngine;
             //Debug.Log("Landscapes in Deck: " + landscapesInDeck.Count);
 
             return landscapesInDeck;
+        }
+
+        public Location GetLandsAsLocation()
+        {
+            Location lands = new Location("Landscapes", this.Owner);
+            foreach (Card c in this.GetContents())
+            {
+                //Debug.Log(c.getName() + " " + c.getType());
+                if (c is Landscape)
+                {
+                    //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
+                    lands.AddContent(c);
+                }
+            }
+
+            return lands;
         }
     }
 
