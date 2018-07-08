@@ -29,6 +29,7 @@ using UnityEngine;
 
         public bool AddCard(Card c)
         {
+            c.Owner = this.Owner;
             if (deckFam == null)
             {
                 if (this == null)
@@ -90,7 +91,7 @@ using UnityEngine;
                     c = (Majesty)this.GetContents()[i];
                 }
             }
-
+            
             return c;
         }
 
@@ -128,6 +129,14 @@ using UnityEngine;
             }
 
             return lands;
+        }
+
+        public void GameStartSetup()
+        {
+            foreach(Card c in this.contents)
+            {
+                c.MoveToGameStartLocation();
+            }
         }
     }
 

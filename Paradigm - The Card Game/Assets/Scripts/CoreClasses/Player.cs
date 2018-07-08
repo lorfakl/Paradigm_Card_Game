@@ -10,9 +10,11 @@ using AI;
 public class Player
     {
 
-    //private Turn playerTurn;
-        public int timeOnTimer = 45;
-
+        //private Turn playerTurn;
+        public static int timerTime = 45;
+        private int timeLeftOnTimer = timerTime;
+        
+        
         private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
         private static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
         private Deck playerDeck;
@@ -22,6 +24,7 @@ public class Player
         private List<Landscape> lands;
         private Turn turn;
         private bool isAI;
+        private Location returnedLocation;
         private static List<Player> currentPlayers = new List<Player>();
 
         public Player(GameTimeManager mgmt, int addTo = 0, bool isAI = false)
@@ -44,6 +47,7 @@ public class Player
             this.playerDeck = new Deck("Deck", this);
             cardLocations["Deck"] = this.playerDeck;
             this.isAI = isAI;
+            DisplaySelectionCards.IsDoneChoosing += GetReturnedLocation;
         }
 
         public Deck PlayerDeck
@@ -72,6 +76,18 @@ public class Player
         public bool IsAI
         {
             get { return this.isAI; }
+        }
+
+        public Location ReturnedLocation
+        {
+            get { return this.returnedLocation; }
+            set { this.returnedLocation = value; }
+        }
+        
+        public int TimeLeftOnTimer
+        {
+            get { return this.timeLeftOnTimer; }
+            set { this.timeLeftOnTimer = value; }
         }
         
    
@@ -120,7 +136,7 @@ public class Player
 
         public void AddToHand(Card c)
         {
-            c.getLocation().MoveContent(c, cardLocations["BZ"]);
+            c.getLocation().MoveContent(c, cardLocations["Hand"]);
         }
         //End Adds
 
@@ -154,37 +170,71 @@ public class Player
                 c.getLocation().MoveContent(c, cardLocations["Hand"]);
             }
         }
-    //End Card Transit
+        //End Card Transit
 
-    public IEnumerator ChooseTerritoryChallengeCard(Location temp)
-    {
-        if (isAI)
+        public IEnumerator ChooseTerritoryChallengeCard(Location temp)
         {
-            Debug.Log("AI doing a thing");
-            AI.AiFunctions.ChooseTCCard(this, temp);
-        }
-        else
-        {
-            Debug.Log("Human doing a thing");
-            Location lands = this.PlayerDeck.GetLandsAsLocation();
-            //Debug.Log("Show me your size: " + lands.Count);
-            GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
-            //Debug.Log("Now we wait!");
-            cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
-
-            int counter = timeOnTimer;
-            while (counter > 0)
+            if (isAI)
             {
-                yield return new WaitForSeconds(1);
-                Debug.Log("Time left on timer: " + counter);
-                counter--;
+                AiFunctions.ChooseTCCard(this, temp);
             }
+            else
+            {
+                Location lands = this.PlayerDeck.GetLandsAsLocation();
+                //Debug.Log("Show me your size: " + lands.Count);
+                GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
+                //Debug.Log("Now we wait!");
+                cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
             
-            //Debug.Log("We should have cards and things");
-            GameObject gm = GameObject.FindWithTag("GameManager");
-            gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
+                while (this.TimeLeftOnTimer > 0)
+                {
+                    yield return new WaitForSeconds(1);
+                    Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
+                    this.TimeLeftOnTimer--;
+                }
+
+                this.TimeLeftOnTimer = timerTime;
+                if(temp.Count == 0)
+                {
+                    Debug.Log("Choosing for you");
+                    lands.MoveRandomContent(temp);
+                    GameObject cd = GameObject.FindWithTag("CardSelectionDisplay");
+                    cd.GetComponentInChildren<DisplaySelectionCards>().SendSelectionEnd();
+
+                }
+
+                GameObject gm = GameObject.FindWithTag("GameManager");
+                gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
+            }
         }
-    }
+
+        public IEnumerator ChooseBarriers()
+        {
+            if (this.isAI)
+            {
+            //AI Namespace Call
+                AiFunctions.ChooseBarriers(this, 12);
+            }
+            else
+            {
+                GameObject cardDisplay = HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation("BZ"), 12);
+                
+                while (this.TimeLeftOnTimer > 0)
+                {
+                    yield return new WaitForSeconds(1);
+                    Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
+                    this.TimeLeftOnTimer--;
+                }
+                this.TimeLeftOnTimer = timerTime;
+            }
+        }
+        
+        private void GetReturnedLocation(object s, Location d)
+        {
+            //Debug.Log(s + " just returned to us a location with " + d.Count + " cards");
+            //this.ReturnedLocation = d;
+        }
+        
         
 }
 

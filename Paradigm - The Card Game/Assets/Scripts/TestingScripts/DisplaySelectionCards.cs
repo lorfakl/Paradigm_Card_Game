@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class DisplaySelectionCards :MonoBehaviour
 {
-
     //This script is for use any time the player needs to select Cards from a list
     //It should get the cards from somewhere, Likely a location object
     //It should display those cards, allow the player to select them and send the selected cards back to the sender
@@ -16,13 +15,15 @@ public class DisplaySelectionCards :MonoBehaviour
     private Transform parent;
     private Transform canvas;
     private Vector3 position = new Vector3();
-    private static List<GameObject> objectsCreated = new List<GameObject>();
-    private static List<Card> selectedCards = new List<Card>();
-    private static Location source;
-    private static Location destination;
-    private static int numToMove = 0;
-    private static int leftToMove = 0;
-    private static bool isDoneSelecting = false;
+    private List<GameObject> objectsCreated = new List<GameObject>();
+    private List<Card> selectedCards = new List<Card>();
+    private Location source;
+    private Location destination;
+    private int numToMove = 0;
+    private int leftToMove = 0;
+    private bool isDoneSelecting = false;
+    public delegate void NotifyDoneChoosing(object sender, Location source);
+    public static event NotifyDoneChoosing IsDoneChoosing; //for multiplayer this cant be static
 
     //Public Properties, mainly for CardScript
     public int CardsSelected
@@ -58,8 +59,6 @@ public class DisplaySelectionCards :MonoBehaviour
         //print("setsardpathnum of cards in source: " + source.Count);
         source = s;
         destination = d;
-        print(source.Name);
-        print(destination.Name);
         numToMove = n;
         leftToMove = n;
         //print("Called it");
@@ -99,9 +98,10 @@ public class DisplaySelectionCards :MonoBehaviour
 
     public bool SendSelectionEnd()
     {
-        print("Now the coroutine can finish");
         PlayerInteraction playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerInteraction>();
-        playerScript.StopAllCoroutines();
+        Player p = playerScript.CurrentPlayer;
+        p.TimeLeftOnTimer = 0;
+        isDoneSelecting = true;
         return true;
     }
 
@@ -110,6 +110,7 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
+        print("should print twice");
         
     }
 
@@ -126,17 +127,13 @@ public class DisplaySelectionCards :MonoBehaviour
         //print("Total Cards to Select: " + numToMove);
         //print("Cards Selected: " + selectedCards.Count);
         print("Number of Cards left to select: " + leftToMove);
-        foreach (Card c in selectedCards)
-        {
-            print(c.Name);
-        }
 
         if (isDoneSelecting)
         {
             source.MoveContent(selectedCards, destination);
             print(destination.Count);
+            IsDoneChoosing(this, destination);
             Destroy(canvas.gameObject);
-
         }
     }
 
@@ -144,12 +141,9 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         if (source != null && destination != null)
         {                                          
-            //display cards
-            //print("Display cards num of cards in source: " + source.Count);
             foreach(Card c in source.GetContents())
             {
                 CreateCard(c);
-                //print("added card: " + c.Name);
             }
         }
         else

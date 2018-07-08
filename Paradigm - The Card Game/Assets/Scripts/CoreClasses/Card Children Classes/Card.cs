@@ -19,6 +19,7 @@ using UnityEngine;
         private bool inPlay;
         private bool isBarrier;
         private bool isDestroyed;
+        private bool isValid;
         private Location currentLocation;
 
         protected void RemoveAttribute(string l)
@@ -80,6 +81,11 @@ using UnityEngine;
             set { this.classType = value; }
         }
 
+        public bool IsValid
+        {
+            get { return this.isValid; }
+        }
+
         //Getters
         public string getName() { return name; }
         public List<Ability> getAbilities() { return abilities; }
@@ -103,6 +109,11 @@ using UnityEngine;
         public void setBarrierStatus(bool b) { isBarrier = b; }
         public void setPlayStatus(bool b) { inPlay = b; }
         public void setDestoyedStatus(bool s) { isDestroyed = s; }
+
+        public void SetValidity(bool s)
+        {
+            this.isValid = s;
+        }
 
         public void SetTraits(string text)
         {
@@ -147,19 +158,32 @@ using UnityEngine;
 
         public static ShapeTrait GetShape(Card c)
         {
-            Debug.Log(c.name + " is a " + c.GetType().ToString());
+            //Debug.Log(c.name + " is a " + c.GetType().ToString());
             if (c.GetType() == typeof(Landscape))
             {
                 Landscape land = (Landscape)c;
                 return land.Shape;
             }
         
-            throw new Exception("This Trait is not a Landscape and thus doesnt have a shape");
+            throw new Exception("This Card is not a Landscape and thus doesnt have a shape");
         }
 
         private string[] SplitTrait(string s) { return s.Split(','); }
 
-        public abstract void playCard(); //To be defined MUCH later
+        public void MoveToGameStartLocation()
+        {
+            if((this.GetType() == typeof(Accessor)) || (this.GetType() == typeof(Element)) || (this.GetType() == typeof(Mechanism)))
+            {
+                Debug.Log(this.GetType().ToString());
+            }
+            else
+            {
+                this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
+            }
+        
+        }
+
+    public abstract void playCard(); //To be defined MUCH later
 
         public abstract void useEffect(); //To be defined MUCH later
         

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using DataBase;
 using Utilities;
 
@@ -10,6 +11,13 @@ public class GameEventsManager : MonoBehaviour
 {
     public GameObject player1;
     public GameObject player2;
+    public Text deckCount;
+    public Text graveCount;
+    public Text barrierCount;
+    public Text nonUIDeckCount;
+    public Text nonUIGraveCount;
+    public Text nonUIHandCount;
+    public Text nonUIBarrierCount;
 
     private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
@@ -26,6 +34,8 @@ public class GameEventsManager : MonoBehaviour
     
     private Player p1;
     private Player p2;
+    private Majesty p1Majesty;
+    private Majesty p2Majesty;
     
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
@@ -71,6 +81,10 @@ public class GameEventsManager : MonoBehaviour
     {
         Player playReturned = playerPool[playerIndex];
         playerIndex++;
+        if(playerIndex == 2)
+        {
+            playerIndex = 0;
+        }
         return playReturned;
     }
 
@@ -101,32 +115,38 @@ public class GameEventsManager : MonoBehaviour
         playerPool.Add(p2);
 
         CardDataBase.MakePlayerDeck(p1);
+        print("Made player deck?");
         CardDataBase.MakePlayerDeck(p2);
-        
-        
-        //this whole business should be handled in gametime object
-        //p1 = new Player(5);
-        //p2 = new Player();
 
-        if( p1 == null || p2 == null)
+        p1.Majesty = p1.PlayerDeck.GetMajesty();
+        p2.Majesty = p2.PlayerDeck.GetMajesty();
+        print("Should be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
+        foreach(Card c in gameTime.NoUIPlayer.PlayerDeck.GetContents())
+        {
+            print(c.Name);
+        }
+
+        p1.PlayerDeck.GameStartSetup();
+        p2.PlayerDeck.GameStartSetup();
+
+        if ( p1 == null || p2 == null)
         {
             Debug.Log("Player in EventManager is Null as fuck!");
         }
 
-        
-
-        p1.Majesty = p1.PlayerDeck.GetMajesty();
-        p2.Majesty = p2.PlayerDeck.GetMajesty();
-
-
         Instantiate(player1);
         Instantiate(player2);
-
     }
 
     void Start()
     {
-        
+        deckCount = GameObject.FindWithTag("yourDeckCount").GetComponent<Text>();
+        graveCount = GameObject.FindWithTag("yourGraveCount").GetComponent<Text>();
+        barrierCount = GameObject.FindWithTag("yourBarrierCount").GetComponent<Text>();
+        nonUIDeckCount = GameObject.FindWithTag("enemyDeckCount").GetComponent<Text>();
+        nonUIGraveCount = GameObject.FindWithTag("enemyGraveCount").GetComponent<Text>();
+        nonUIHandCount = GameObject.FindWithTag("enemyHandCount").GetComponent<Text>();
+        nonUIBarrierCount = GameObject.FindWithTag("enemyBarrierCount").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -154,7 +174,7 @@ public class GameEventsManager : MonoBehaviour
             {
                 try
                 {
-                    gameTime.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
+                    playerPool = gameTime.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
@@ -168,18 +188,31 @@ public class GameEventsManager : MonoBehaviour
 
                 }
                 setUp = true;
+                p1 = GrabPlayer();
+                p2 = GrabPlayer();
+
             }
         }
+
         
+        deckCount.text = "Deck: " + gameTime.UIPlayer.PlayerDeck.Count;
+        graveCount.text = "Grave: " + gameTime.UIPlayer.GetLocation("Grave").Count;
+        barrierCount.text = "Barriers: " + gameTime.UIPlayer.GetLocation("BZ").Count;
+        nonUIDeckCount.text = "EDeck: " + gameTime.NoUIPlayer.PlayerDeck.Count;
+        nonUIGraveCount.text = "EGrave: " + gameTime.NoUIPlayer.GetLocation("Grave").Count;
+        nonUIHandCount.text = "EHand: " + gameTime.NoUIPlayer.GetLocation("Hand").Count;
+        nonUIBarrierCount.text = "EBarriers: " + gameTime.NoUIPlayer.GetLocation("BZ").Count;
+        
+        print(gameTime.NoUIPlayer.PlayerDeck.Count);
+
+        if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
+        {
+            print("Playing the game");
+        }
 
 
     }
 
-    /// <summary>
-    /// Will actually be a timer one of these days
-    /// </summary>
-    /// <param name="p"></param>
-    /// <param name="temp"></param>
-    /// <returns></returns>
+  
  
 }

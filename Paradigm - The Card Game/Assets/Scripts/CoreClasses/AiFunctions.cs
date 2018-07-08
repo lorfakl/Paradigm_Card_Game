@@ -14,10 +14,27 @@ namespace AI
     {
         public static void ChooseTCCard(Player p, Location destination)
         {
+            Card chosenLand = null;
             int index = UnityEngine.Random.Range(0, 2);
-            Location temp = p.PlayerDeck.GetLandsAsLocation();
-            Card chosenLand = temp.GetContents()[index];
-            temp.MoveContent(chosenLand, destination);
+            foreach(Card c in p.GetLocation("DZ").GetContents())
+            {
+                if(c.GetType() == typeof(Landscape))
+                {
+                    chosenLand = c;
+                }
+            }
+            p.GetLocation("DZ").MoveContent(chosenLand, destination);
+        }
+
+        public static void ChooseBarriers(Player p, int barrierCount)
+        {
+            List<Card> barriers = new List<Card>();
+            for (int i = 0; i < barrierCount; i++)
+            {
+                barriers.Add(p.PlayerDeck.GetContents()[UnityEngine.Random.Range(0, p.PlayerDeck.Count)]);
+            }
+            p.PlayerDeck.MoveContent(barriers, p.GetLocation("BZ"));
+
         }
     }
 }

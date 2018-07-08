@@ -8,6 +8,14 @@ public class PlayerInteraction : MonoBehaviour {
     private Player p = null;
     private bool setUp;
     private Coroutine coroutine;
+    public delegate bool NotifyDoneChoosing();
+    public event NotifyDoneChoosing IsDoneChoosing; 
+
+
+    public Player CurrentPlayer
+    {
+        get { return p; }
+    }
     // Use this for initialization
     void Awake()
     {
@@ -27,19 +35,14 @@ public class PlayerInteraction : MonoBehaviour {
         //p.LoadDeckFromDataBase();
         yield return StartCoroutine(p.ChooseTerritoryChallengeCard(temp));
         print("Temp Size: " + temp.Count);
+        yield return StartCoroutine(p.ChooseBarriers());
         if(p.IsAI)//need to find a better way of doing this, doesnt work with networked play
         {
             gm.GetComponent<GameEventsManager>().NoUiPlayerReturnedLocation = temp;
-            print("Got a TC from AI");
-            print("ai Temp Size: " + temp.Count);
-
         }
         else
         {
             gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
-            print("Got a TC from Human");
-            print("human Temp Size: " + temp.Count);
-
         }
 
     }
@@ -47,8 +50,18 @@ public class PlayerInteraction : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        print("We in update?");
+        if(p.IsAI)
+        {
+            print("Other stuff");
+        }
         
       
 	}
+
+    bool GrabDestination(object sender, Location d)
+    {
+        print("Got our card(s)");
+
+        return true;
+    }
 }

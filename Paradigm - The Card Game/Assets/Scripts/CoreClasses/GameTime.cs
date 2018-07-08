@@ -51,7 +51,7 @@ public class GameTimeManager
 
         if(turnCycles % 3 == 0)
         {
-            //Dimension Twist
+            Debug.Log("Twist Dimensions!");
         }
     }
 

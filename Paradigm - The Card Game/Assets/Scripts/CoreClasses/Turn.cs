@@ -16,6 +16,7 @@ public class Turn
     private Player owner;
     private TurnPhase phase;
     private bool isPhaseComplete;
+    private bool isActiveTurn;
     private static bool isDictionaryPrepared = false;
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
@@ -50,9 +51,15 @@ public class Turn
         get { return this.isPhaseComplete; }
     }
 
+    public bool ActiveTurn
+    {
+        get { return this.isActiveTurn; }
+    }
+
     public void StartTurn()
     {
         this.MoveToNextPhase();
+        this.isActiveTurn = true;
     }
 
     public void EndTurn()
@@ -134,9 +141,6 @@ public class Turn
         //get the selected land from the display function
         GameEventsManager.AddTCLand(lands[UnityEngine.Random.Range(0, 1)]); //choose a random landscape from the deck just for testing
         p.PlayerTurn.Phase = TurnPhase.End; //this line is kinda hacky
-
-
-
     }
 
     private static void StartGatherPhase(GameEventsArgs e)

@@ -83,6 +83,13 @@ public class Location
         
     }
 
+    public void MoveRandomContent(Location destination)
+    {
+        int index = UnityEngine.Random.Range(0, this.Count);
+        Card c = this.contents[index];
+        ProcessLocationChange(c, destination);
+    }
+
     public void AddContent(Card c)
     {
         if (this.contents == null)

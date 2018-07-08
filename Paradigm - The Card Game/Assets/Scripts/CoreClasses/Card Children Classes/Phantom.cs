@@ -39,9 +39,4 @@ public class Phantom : Accessor
         get { return this.canSpawn; }
         set { this.canSpawn = value; }
     }
-
-    public void MoveToGameStartLocation()
-    {
-        this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
-    }
 }

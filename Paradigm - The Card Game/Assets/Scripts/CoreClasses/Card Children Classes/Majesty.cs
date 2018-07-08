@@ -12,7 +12,11 @@ using UnityEngine;
     public bool GetSecretStatus(){ return secrets; }
     public void SetSecretStatus(bool s) { secrets = s; }
 
-    public Majesty() { }
+    public Majesty()
+    {
+        this.SetValidity(false);
+    }
+
     public Majesty(string n, string k,  System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);
@@ -23,6 +27,7 @@ using UnityEngine;
         this.SetHp((int)h);
         Family fam = new Family(k);
         this.setFam(fam);
+        this.SetValidity(true);
     }
 
     public override void playCard()
