@@ -23,6 +23,7 @@ namespace AI
                     chosenLand = c;
                 }
             }
+            p.TCCard = chosenLand;
             p.GetLocation("DZ").MoveContent(chosenLand, destination);
         }
 

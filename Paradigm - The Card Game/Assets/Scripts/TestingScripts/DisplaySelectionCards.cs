@@ -157,6 +157,7 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         //cardPrefab.GetComponent<CardScript>().SetCard(c);
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
+        cardObject.SendMessage("SetMode", true);
         cardObject.GetComponent<CardScript>().SetCard(c);
         objectsCreated.Add(cardObject);
         Transform cardName = cardObject.transform.FindDeepChild("cardName");

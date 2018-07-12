@@ -11,6 +11,7 @@ public class GameEventsManager : MonoBehaviour
 {
     public GameObject player1;
     public GameObject player2;
+    public GameObject rendererManager;
     public Text deckCount;
     public Text graveCount;
     public Text barrierCount;
@@ -147,12 +148,14 @@ public class GameEventsManager : MonoBehaviour
         nonUIGraveCount = GameObject.FindWithTag("enemyGraveCount").GetComponent<Text>();
         nonUIHandCount = GameObject.FindWithTag("enemyHandCount").GetComponent<Text>();
         nonUIBarrierCount = GameObject.FindWithTag("enemyBarrierCount").GetComponent<Text>();
+
+        Instantiate(rendererManager);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!setUp)
+        if (!setUp)
         {
             Location p1Temp = UiPlayerReturnedLocation;
 
@@ -160,7 +163,7 @@ public class GameEventsManager : MonoBehaviour
             if (p1Temp == null || p2Temp == null)
             {
                 print("Someone hasnt selected a TC card yet");
-                if(p1Temp == null)
+                if (p1Temp == null)
                 {
                     print("Human hasnt chosen");
                 }
@@ -190,11 +193,12 @@ public class GameEventsManager : MonoBehaviour
                 setUp = true;
                 p1 = GrabPlayer();
                 p2 = GrabPlayer();
+                activeLand = p2.TCCard;
 
             }
         }
 
-        
+
         deckCount.text = "Deck: " + gameTime.UIPlayer.PlayerDeck.Count;
         graveCount.text = "Grave: " + gameTime.UIPlayer.GetLocation("Grave").Count;
         barrierCount.text = "Barriers: " + gameTime.UIPlayer.GetLocation("BZ").Count;
@@ -202,15 +206,18 @@ public class GameEventsManager : MonoBehaviour
         nonUIGraveCount.text = "EGrave: " + gameTime.NoUIPlayer.GetLocation("Grave").Count;
         nonUIHandCount.text = "EHand: " + gameTime.NoUIPlayer.GetLocation("Hand").Count;
         nonUIBarrierCount.text = "EBarriers: " + gameTime.NoUIPlayer.GetLocation("BZ").Count;
-        
+
         print(gameTime.NoUIPlayer.PlayerDeck.Count);
 
-        if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
+        if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
-            print("Playing the game");
+            if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
+            {
+                print("Playing the game");
+                p1.PlayerTurn.StartTurn();
+            }
+
         }
-
-
     }
 
   

@@ -21,9 +21,11 @@ public class Player
         private int playerID;
         //private AuxiliaryCard tcLandscape = null;
         private Majesty majesty;
+        private Landscape tcCard;
         private List<Landscape> lands;
         private Turn turn;
         private bool isAI;
+    private bool isPreparedToStart;
         private Location returnedLocation;
         private static List<Player> currentPlayers = new List<Player>();
 
@@ -47,6 +49,7 @@ public class Player
             this.playerDeck = new Deck("Deck", this);
             cardLocations["Deck"] = this.playerDeck;
             this.isAI = isAI;
+            this.isPreparedToStart = false;
             DisplaySelectionCards.IsDoneChoosing += GetReturnedLocation;
         }
 
@@ -90,12 +93,17 @@ public class Player
             set { this.timeLeftOnTimer = value; }
         }
         
-   
-        /*public AuxiliaryCard TCLandscape
+        public Card TCCard
         {
-            get { return tcLandscape; }
-            set { tcLandscape = value; }
-        }*/
+            get { return this.tcCard; }
+            set { this.tcCard = (Landscape)value; }
+        }
+   
+        public bool IsPreparedToStart
+        {
+            get { return isPreparedToStart; }
+            set { isPreparedToStart = value; }
+        }
         public void LoadDeckFromDataBase()
         {
             playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
@@ -194,7 +202,11 @@ public class Player
                 }
 
                 this.TimeLeftOnTimer = timerTime;
-                if(temp.Count == 0)
+                try
+                {
+                    tcCard = (Landscape)temp.Content[0];
+                }
+                catch
                 {
                     Debug.Log("Choosing for you");
                     lands.MoveRandomContent(temp);

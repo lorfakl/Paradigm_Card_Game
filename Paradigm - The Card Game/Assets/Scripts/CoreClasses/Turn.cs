@@ -37,7 +37,6 @@ public class Turn
         this.manager = manager;
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
-       
     }
 
     public TurnPhase Phase
@@ -65,6 +64,7 @@ public class Turn
     public void EndTurn()
     {
         this.phase = TurnPhase.End;
+        this.isActiveTurn = false;
     }
 
     private void MoveToNextPhase()

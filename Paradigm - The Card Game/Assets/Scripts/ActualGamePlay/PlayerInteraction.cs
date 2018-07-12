@@ -39,10 +39,12 @@ public class PlayerInteraction : MonoBehaviour {
         if(p.IsAI)//need to find a better way of doing this, doesnt work with networked play
         {
             gm.GetComponent<GameEventsManager>().NoUiPlayerReturnedLocation = temp;
+            gm.GetComponent<GameEventsManager>().NonUIPlayer.IsPreparedToStart = true;
         }
         else
         {
             gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
+            gm.GetComponent<GameEventsManager>().UIPlayer.IsPreparedToStart = true;
         }
 
     }
@@ -54,7 +56,10 @@ public class PlayerInteraction : MonoBehaviour {
         {
             print("Other stuff");
         }
-        
+        else
+        {
+            print("Human Stuff");
+        }
       
 	}
 
