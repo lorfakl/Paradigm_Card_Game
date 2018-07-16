@@ -90,6 +90,13 @@ public class Location
         ProcessLocationChange(c, destination);
     }
 
+    public Card SelectRandomContent()
+    {
+        int index = UnityEngine.Random.Range(0, this.Count);
+        Card c = this.contents[index];
+        return c;
+    }
+
     public void AddContent(Card c)
     {
         if (this.contents == null)

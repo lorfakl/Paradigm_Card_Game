@@ -63,10 +63,13 @@ using UnityEngine;
 
         public List<Card> Draw(int drawVal = 1)
         {
+        Debug.Log("Is this the AI" + this.Owner.IsAI);
+        Debug.Log("Cards in Deck" + this.Count);
             List<Card> cardsDrawn = new List<Card>();
             if (drawVal == 1)
             {
                 cardsDrawn.Add(this.GetContents()[0]);
+            
                 this.RemoveCard(this.GetContents()[0]);
                 return cardsDrawn;
             }
@@ -133,10 +136,20 @@ using UnityEngine;
 
         public void GameStartSetup()
         {
-            foreach(Card c in this.contents)
+            int count = 0;
+            foreach (Card c in this.contents)
             {
-                c.MoveToGameStartLocation();
+                count = count + c.MoveToGameStartLocation();
             }
+            if (Owner.IsAI)
+            {
+                Debug.Log("AI Moved " + count + " cards");
+            }
+            else
+            {
+                Debug.Log("HUman Moved " + count + " cards");
+            }
+            
         }
     }
 

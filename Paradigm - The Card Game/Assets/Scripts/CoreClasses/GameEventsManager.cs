@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DataBase;
@@ -12,6 +13,8 @@ public class GameEventsManager : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     public GameObject rendererManager;
+    private string[] playerInfoTags = { "yourDeckCount", "yourGraveCount", "yourBarrierCount", "enemyDeckCount", "enemyGraveCount", "enemyHandCount", "enemyBarrierCount" };
+    private Text[] playerInfoObjects = new Text[7];
     public Text deckCount;
     public Text graveCount;
     public Text barrierCount;
@@ -32,7 +35,7 @@ public class GameEventsManager : MonoBehaviour
     private bool setUp = false;
     private List<Player> playerPool = new List<Player>();
     private int playerIndex = 0;
-    
+    private int[] initalData;
     private Player p1;
     private Player p2;
     private Majesty p1Majesty;
@@ -41,6 +44,37 @@ public class GameEventsManager : MonoBehaviour
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
+
+    private static void OnEventAdd(object sender, GameEventsArgs data)
+    {
+        if (NotifySubsOfEvent != null) //if there are subcribers
+        {
+            NotifySubsOfEvent(sender, data);
+        }
+    }
+
+    /// <summary>
+    /// This function is used to add GameEvents to the queue, more logic is needed to differeniate GameEvents from one another
+    /// Which will lead into adding things to the stack and doing timer things 
+    /// </summary>
+    /// <param name="e"></param>
+    public static void PublishEvent(object s, GameEventsArgs e)
+    {
+        eventQueue.Enqueue(e);
+        OnEventAdd(s, e);
+    }
+
+    public delegate void UIUpdateHandler(int[] data);
+    public static event UIUpdateHandler UpdateUI;
+
+    private static void OnPlayerInfoChange(int[] data)
+    {
+        if(UpdateUI != null)
+        {
+            UpdateUI(data);
+        }
+    }
+
 
     public Location UiPlayerReturnedLocation
     {
@@ -64,13 +98,7 @@ public class GameEventsManager : MonoBehaviour
         get { return gameTime.NoUIPlayer; }
     }
 
-    private static void OnEventAdd (object sender, GameEventsArgs data)
-    {
-        if(NotifySubsOfEvent != null) //if there are subcribers
-        {
-            NotifySubsOfEvent(sender,data);
-        }
-    }
+
 
     public static void AddTCLand(Card l)
     {
@@ -88,18 +116,6 @@ public class GameEventsManager : MonoBehaviour
         }
         return playReturned;
     }
-
-    /// <summary>
-    /// This function is used to add GameEvents to the queue, more logic is needed to differeniate GameEvents from one another
-    /// Which will lead into adding things to the stack and doing timer things 
-    /// </summary>
-    /// <param name="e"></param>
-    public static void PublishEvent(object s, GameEventsArgs e) 
-    {                                                   
-        eventQueue.Enqueue(e);
-        OnEventAdd(s,e);
-    }
-
     /// <summary>
     /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
     /// Thats why it extends Monobehaviour and has Awake, Update, and Start functions
@@ -122,11 +138,8 @@ public class GameEventsManager : MonoBehaviour
         p1.Majesty = p1.PlayerDeck.GetMajesty();
         p2.Majesty = p2.PlayerDeck.GetMajesty();
         print("Should be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        foreach(Card c in gameTime.NoUIPlayer.PlayerDeck.GetContents())
-        {
-            print(c.Name);
-        }
-
+        print("Human player ID:" + gameTime.UIPlayer.PlayerID);
+        print("AI player ID:" + gameTime.NoUIPlayer.PlayerID);
         p1.PlayerDeck.GameStartSetup();
         p2.PlayerDeck.GameStartSetup();
 
@@ -141,20 +154,17 @@ public class GameEventsManager : MonoBehaviour
 
     void Start()
     {
-        deckCount = GameObject.FindWithTag("yourDeckCount").GetComponent<Text>();
-        graveCount = GameObject.FindWithTag("yourGraveCount").GetComponent<Text>();
-        barrierCount = GameObject.FindWithTag("yourBarrierCount").GetComponent<Text>();
-        nonUIDeckCount = GameObject.FindWithTag("enemyDeckCount").GetComponent<Text>();
-        nonUIGraveCount = GameObject.FindWithTag("enemyGraveCount").GetComponent<Text>();
-        nonUIHandCount = GameObject.FindWithTag("enemyHandCount").GetComponent<Text>();
-        nonUIBarrierCount = GameObject.FindWithTag("enemyBarrierCount").GetComponent<Text>();
-
         Instantiate(rendererManager);
+        print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
+        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
+        initalData = initalInfo;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        CheckPlayerInfo();
         if (!setUp)
         {
             Location p1Temp = UiPlayerReturnedLocation;
@@ -178,6 +188,7 @@ public class GameEventsManager : MonoBehaviour
                 try
                 {
                     playerPool = gameTime.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
+                    print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
@@ -199,13 +210,7 @@ public class GameEventsManager : MonoBehaviour
         }
 
 
-        deckCount.text = "Deck: " + gameTime.UIPlayer.PlayerDeck.Count;
-        graveCount.text = "Grave: " + gameTime.UIPlayer.GetLocation("Grave").Count;
-        barrierCount.text = "Barriers: " + gameTime.UIPlayer.GetLocation("BZ").Count;
-        nonUIDeckCount.text = "EDeck: " + gameTime.NoUIPlayer.PlayerDeck.Count;
-        nonUIGraveCount.text = "EGrave: " + gameTime.NoUIPlayer.GetLocation("Grave").Count;
-        nonUIHandCount.text = "EHand: " + gameTime.NoUIPlayer.GetLocation("Hand").Count;
-        nonUIBarrierCount.text = "EBarriers: " + gameTime.NoUIPlayer.GetLocation("BZ").Count;
+        
 
         print(gameTime.NoUIPlayer.PlayerDeck.Count);
 
@@ -220,6 +225,14 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-  
+    private void CheckPlayerInfo()
+    {
+        int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
+        if(!initalData.SequenceEqual(data))
+        {
+            OnPlayerInfoChange(data);
+            initalData = data;
+        }
+    }
  
 }

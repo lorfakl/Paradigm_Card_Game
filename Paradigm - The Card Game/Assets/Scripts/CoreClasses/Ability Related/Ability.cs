@@ -95,7 +95,6 @@ public class Ability
         this.text = text;
         this.canActivate = false;
         this.canCheckForEvents = false;
-        
     }
 
     

@@ -41,6 +41,10 @@ public class DisplaySelectionCards :MonoBehaviour
         get { return leftToMove; }
     }
 
+    public List<Card> SelectedCards
+    {
+        get { return this.selectedCards; }
+    }
 
 
     /// <summary>
@@ -70,14 +74,14 @@ public class DisplaySelectionCards :MonoBehaviour
     /// <param name="c"></param>
     /// <param name="added"></param>
     /// <returns></returns>
-    public int UpdateSelectedCards(Card c, bool added)
+    public int UpdateSelectedCards(Card c, bool add)
     {
         if (c == null)
         {
             //throw new Exception("The Card's null dumbass!");
         }
 
-        if (added)
+        if (add)
         {
             selectedCards.Add(c);
             leftToMove = numToMove - selectedCards.Count;
@@ -110,8 +114,6 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
-        print("should print twice");
-        
     }
 
     private void Start()

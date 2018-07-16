@@ -43,11 +43,11 @@ public class Player
 
             foreach (string s in validLocations)
             {
-                cardLocations.Add(s, new Location(s, this));
+                this.cardLocations.Add(s, new Location(s, this));
             }
             //Debug.Log("Dictionary Size: " + cardLocations.Count);
             this.playerDeck = new Deck("Deck", this);
-            cardLocations["Deck"] = this.playerDeck;
+            this.cardLocations["Deck"] = this.playerDeck;
             this.isAI = isAI;
             this.isPreparedToStart = false;
             DisplaySelectionCards.IsDoneChoosing += GetReturnedLocation;
@@ -132,19 +132,19 @@ public class Player
 
         public void AddToField(Card c)
         {
-            cardLocations["Hand"].MoveContent(c, cardLocations["Field"]);   
+        this.cardLocations["Hand"].MoveContent(c, this.cardLocations["Field"]);   
         }
     
         public void AddBarrier(Card c)
         {
             c.setShard(true);
             c.setBarrierStatus(true);
-            c.getLocation().MoveContent(c, cardLocations["BZ"]);
+            c.getLocation().MoveContent(c, this.cardLocations["BZ"]);
         }
 
         public void AddToHand(Card c)
         {
-            c.getLocation().MoveContent(c, cardLocations["Hand"]);
+            c.getLocation().MoveContent(c, this.cardLocations["Hand"]);
         }
         //End Adds
 
@@ -152,9 +152,9 @@ public class Player
         //Housing Keeping functions
         public void DestroyBarrier()
         {
-            Card c = cardLocations["BZ"].GetContents()[0];
+            Card c = this.cardLocations["BZ"].GetContents()[0];
             c.setBarrierStatus(false);
-            c.getLocation().MoveContent(c, cardLocations["SC"]);
+            c.getLocation().MoveContent(c, this.cardLocations["SC"]);
         }
         //End Housing Keeping functions
 
@@ -162,12 +162,12 @@ public class Player
         public void SendToGrave(Card c)
         {
             c.setDestoyedStatus(true);
-            c.getLocation().MoveContent(c, cardLocations["Grave"]);
+            c.getLocation().MoveContent(c, this.cardLocations["Grave"]);
         }
 
         public void SendToShardPile(Card c)
         {
-            c.getLocation().MoveContent(c, cardLocations["SC"]);
+            c.getLocation().MoveContent(c, this.cardLocations["SC"]);
         }
 
         public void DrawFromDeck(int drawVal = 1)
@@ -175,7 +175,9 @@ public class Player
             List<Card> cardsDrawn = playerDeck.Draw(drawVal);
             foreach (Card c in cardsDrawn)
             {
-                c.getLocation().MoveContent(c, cardLocations["Hand"]);
+                c.getLocation().MoveContent(c, this.cardLocations["Hand"]);
+                Debug.Log(c.Owner.IsAI);
+                //Debug.Log()
             }
         }
         //End Card Transit
@@ -212,6 +214,7 @@ public class Player
                     lands.MoveRandomContent(temp);
                     GameObject cd = GameObject.FindWithTag("CardSelectionDisplay");
                     cd.GetComponentInChildren<DisplaySelectionCards>().SendSelectionEnd();
+                    this.TimeLeftOnTimer = timerTime;
 
                 }
 
@@ -238,6 +241,31 @@ public class Player
                     this.TimeLeftOnTimer--;
                 }
                 this.TimeLeftOnTimer = timerTime;
+
+                try
+                {
+                    DisplaySelectionCards displayScript = cardDisplay.GetComponentInChildren<DisplaySelectionCards>();
+                    if (displayScript.CardsSelected < 12)
+                    {
+                        for(int i = displayScript.CardsSelected; i < 12; i++)
+                        {
+                            Card c = PlayerDeck.SelectRandomContent();
+                            while(displayScript.SelectedCards.Contains(c))
+                            {
+                                c = PlayerDeck.SelectRandomContent();
+                            }
+
+                            Debug.Log(c.Name);
+                            displayScript.UpdateSelectedCards(c, true);
+                        }
+
+                        displayScript.SendSelectionEnd();
+                    }
+                }
+                catch(Exception)
+                {
+                    
+                }
             }
         }
         

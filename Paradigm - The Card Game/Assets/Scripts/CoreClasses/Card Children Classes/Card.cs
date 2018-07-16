@@ -170,17 +170,20 @@ using UnityEngine;
 
         private string[] SplitTrait(string s) { return s.Split(','); }
 
-        public void MoveToGameStartLocation()
+        public int MoveToGameStartLocation()
         {
-            if((this.GetType() == typeof(Accessor)) || (this.GetType() == typeof(Element)) || (this.GetType() == typeof(Mechanism)))
+            int cardsMoved = 0;
+            string[] typesMoved = { "Phantom", "Source", "Philosopher", "Majesty", "Landscape" };
+            for(int i = 0; i<typesMoved.Length; i++)
             {
-                Debug.Log(this.GetType().ToString());
+                if(this.GetType().ToString() == typesMoved[i])
+                {
+                    Debug.Log("Is this right? " + this.Name + " is of type " + this.GetType().ToString());
+                    this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
+                    cardsMoved++;
+                }
             }
-            else
-            {
-                this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
-            }
-        
+            return cardsMoved;
         }
 
     public abstract void playCard(); //To be defined MUCH later
