@@ -66,24 +66,24 @@ public class Location
 
     public List<Card> GetContents() { return this.contents; }
 
-    public void MoveContent(List<Card> l, Location destination)
+    public void MoveContent(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
         ProcessListLocationChanges(l, destination);
     }
 
-    public void MoveContent(Card c, Location destination)
+    public void MoveContent(Card c, Location destination, bool overrideSamePlayer = false)
     {
         ProcessLocationChange(c, destination);
     }
 
-    public void MoveContent(Location destination)
+    public void MoveContent(Location destination, bool overrideSamePlayer = false)
     {
         Card c = this.contents[0];
         ProcessLocationChange(c, destination);
         
     }
 
-    public void MoveRandomContent(Location destination)
+    public void MoveRandomContent(Location destination, bool overrideSamePlayer = false)
     {
         int index = UnityEngine.Random.Range(0, this.Count);
         Card c = this.contents[index];
@@ -114,8 +114,9 @@ public class Location
         return result;
     }
 
-    private void ProcessListLocationChanges(List<Card> l, Location destination)
+    private void ProcessListLocationChanges(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
+        CheckSamePlayerMoveOverride(overrideSamePlayer, l[0].getLocation(), destination);
         LocationChanges newChanges = new LocationChanges();
         foreach (Card c in l)
         {
@@ -141,8 +142,9 @@ public class Location
         
     }
 
-    private void ProcessLocationChange(Card c, Location destination)
+    private void ProcessLocationChange(Card c, Location destination, bool overrideSamePlayer = false)
     {
+        CheckSamePlayerMoveOverride(overrideSamePlayer, c.getLocation(), destination);
         LocationChanges newChanges = new LocationChanges();
         newChanges.c = c;
         newChanges.destination = destination;
@@ -163,6 +165,18 @@ public class Location
             Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
         }
 
+    }
+
+    private void CheckSamePlayerMoveOverride(bool overrideSamePlayer, Location source, Location destination)
+    {
+        if(!overrideSamePlayer)
+        {
+            if(source.Owner.PlayerID != destination.Owner.PlayerID)
+            {
+                Debug.Log("Content is being moved from " + source.Owner.PlayerID + "'s " + source.Name + " to " + destination.Owner.PlayerID + "'s " + destination.Name);
+                throw new Exception("Content is being moved between Owners without an Override");
+            }
+        }
     }
 
     private MoveAction GetMoveAction(Location from, Location to)

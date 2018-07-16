@@ -130,7 +130,10 @@ using UnityEngine;
                     lands.AddContent(c);
                 }
             }
-
+            if(this.Owner == lands.Owner)
+            {
+                Debug.Log("We Good");
+            }
             return lands;
         }
 
