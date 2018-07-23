@@ -11,7 +11,7 @@ public enum MoveAction
 
 public enum NonMoveAction
 {
-    Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None
+    Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
 }
 
 

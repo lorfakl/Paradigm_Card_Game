@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using UnityEngine;
+using UnityEngine.UI;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
 
@@ -35,6 +36,40 @@ namespace Utilities
             }
             display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(source, destination, numToSelect);
             return display;
+        }
+
+        /// <summary>
+        /// This function Instantiates a Card prefab for you
+        /// </summary>
+        /// <param name="c">Card object that contains the data the Gameobject needs to have</param>
+        /// <param name="inDisplayMode">Boolean to choose whether this GameObject is in DisplaySelection mode</param>
+        /// <param name="parent">Transform of the parent</param>
+        /// <param name="cardPrefab">Optional: If you have a prefab reference or nah</param>
+        /// <returns>GameOject so that the number of objects created can be kept by the caller</returns>
+        public static GameObject CreateCard(Card c, bool inDisplayMode, Transform parent, GameObject cardPrefab = null)
+        {
+            GameObject cardObject = null; 
+            if (cardPrefab == null)
+            {
+                cardObject = GameObject.Instantiate(Resources.Load("Card", typeof(GameObject)), parent) as GameObject;
+            }
+            else
+            {
+                cardObject = GameObject.Instantiate(cardPrefab, parent) as GameObject;
+            }
+            cardObject.SendMessage("SetMode", inDisplayMode);
+            cardObject.GetComponent<CardScript>().SetCard(c);
+            Transform cardName = cardObject.transform.FindDeepChild("cardName");
+            cardName.GetComponent<Text>().text = c.Name;
+            Transform content = cardObject.transform.FindDeepChild("Content");
+            content.GetComponent<Text>().text = c.GetAbilityText();
+            if (c == null)
+            {
+                throw new Exception("The Card's null dumbass!(CreateCard)");
+            }
+            //position = cardObject.transform.position;
+
+            return cardObject;
         }
 
         /// <summary>

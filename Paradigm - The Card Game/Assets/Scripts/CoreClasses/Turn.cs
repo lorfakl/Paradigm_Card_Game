@@ -126,36 +126,28 @@ public class Turn
 
     private void StartGamePhase(GameEventsArgs e)
     {
-        /*Debug.Log("Game Start! Start Territory Challenge!");
-        Player p = e.EventOwner;
-        
-        List<Card> lands = p.PlayerDeck.GetLandscapesInDeck();
-        Debug.Log(lands.Count);
-        //instaniate the display
-        //Debug.Log("Display Landscapes");
-        foreach(Card c in lands)
-        {
-            //Debug.Log(c.getName());
-        }
-        //send the lands to the display function
-        //get the selected land from the display function
-        GameEventsManager.AddTCLand(lands[UnityEngine.Random.Range(0, 1)]); //choose a random landscape from the deck just for testing
-        p.PlayerTurn.Phase = TurnPhase.End; //this line is kinda hacky*/
+        Debug.Log("This is the game start phase, should only happen once a game");
+        Debug.Log("Creating Hand for AI?: " + this.owner.IsAI);
+
+        this.owner.PlayerDeck.Draw(5);
+        Debug.Log("5 Cards shouldve been added to the hand");
     }
 
     private void StartGatherPhase(GameEventsArgs e)
     {
-        if (this.owner.IsAI)
+        
+        Debug.Log("Is this the AI?: " + this.owner.IsAI);
+        Debug.Log("Gather Phase: Draw Card and Abilities check the event queue");
+            
+        if(e.EventOwner.PlayerDeck.Count == 0)
         {
-            Debug.Log("Do some ai stuff");
+            Debug.Log("You Lose");
+            GameEventsArgs gameEnd = new GameEventsArgs(this.owner, this.owner, NonMoveAction.GameEnd);
         }
-        else
-        {
-            Debug.Log("Gather Phase: Draw Card and Abilities check the event queue");
-            e.EventOwner.DrawFromDeck();
-            Debug.Log("Player:" + e.EventOwner.PlayerID + " cards in hand " + e.EventOwner.GetLocation("Hand").Count);
+        e.EventOwner.PlayerDeck.Draw();
+        Debug.Log("Player:" + e.EventOwner.PlayerID + " cards in hand " + e.EventOwner.GetLocation("Hand").Count);
 
-        }
+        
     }
     private void StartAwakenPhase(GameEventsArgs e)
     {

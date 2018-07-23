@@ -62,16 +62,24 @@ public class GameEventsManager : MonoBehaviour
     {
         eventQueue.Enqueue(e);
         OnEventAdd(s, e);
+
+        if(e.ActionEvent == NonMoveAction.GameEnd)
+        {
+            Destroy(GameObject.FindWithTag("Human"));
+            Destroy(GameObject.FindWithTag("AI"));
+
+            throw new Exception("Game over somebody ran outta cards");
+        }
     }
 
-    public delegate void UIUpdateHandler(int[] data);
+    public delegate void UIUpdateHandler(int[] data, List<Card> l);
     public static event UIUpdateHandler UpdateUI;
 
-    private static void OnPlayerInfoChange(int[] data)
+    private static void OnPlayerInfoChange(int[] data, List<Card> handCards)
     {
         if(UpdateUI != null)
         {
-            UpdateUI(data);
+            UpdateUI(data, handCards);
         }
     }
 
@@ -220,17 +228,19 @@ public class GameEventsManager : MonoBehaviour
             {
                 print("Playing the game");
                 p1.PlayerTurn.StartTurn();
+                Debug.Log("Is this the AI?: " + p1.IsAI);
             }
 
         }
     }
 
+   
     private void CheckPlayerInfo()
     {
         int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         if(!initalData.SequenceEqual(data))
         {
-            OnPlayerInfoChange(data);
+            OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents());
             initalData = data;
         }
     }

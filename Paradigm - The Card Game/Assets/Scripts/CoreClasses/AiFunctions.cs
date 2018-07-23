@@ -30,7 +30,7 @@ namespace AI
         public static void ChooseBarriers(Player p, int barrierCount)
         {
             List<Card> barriers = new List<Card>();
-            for (int i = 0; i < barrierCount; i++)
+            for (int i = 0; i <= barrierCount; i++)
             {
                 Card c = p.PlayerDeck.SelectRandomContent();
                 while(barriers.Contains(c))

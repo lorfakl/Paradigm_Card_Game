@@ -129,6 +129,10 @@ public class Player
             return cardLocations[l];
         }
 
+        public int GetLocationCount(string name)
+        {
+            return this.GetLocation(name).Count;
+        }
 
         public void AddToField(Card c)
         {
@@ -170,16 +174,6 @@ public class Player
             c.getLocation().MoveContent(c, this.cardLocations["SC"]);
         }
 
-        public void DrawFromDeck(int drawVal = 1)
-        {
-            List<Card> cardsDrawn = playerDeck.Draw(drawVal);
-            foreach (Card c in cardsDrawn)
-            {
-                c.getLocation().MoveContent(c, this.cardLocations["Hand"]);
-                Debug.Log(c.Owner.IsAI);
-                //Debug.Log()
-            }
-        }
         //End Card Transit
 
         public IEnumerator ChooseTerritoryChallengeCard(Location temp)

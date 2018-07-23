@@ -122,6 +122,7 @@ public class DisplaySelectionCards :MonoBehaviour
         canvas = gameObject.transform.parent.parent;
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
         DisplayCards();
+        
     }
 
     private void Update()
@@ -132,6 +133,14 @@ public class DisplaySelectionCards :MonoBehaviour
 
         if (isDoneSelecting)
         {
+            if (source.Owner.PlayerID == destination.Owner.PlayerID)
+            {
+                print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
+            }
+            else
+            {
+                print("theres a fickin problem");
+            }
             source.MoveContent(selectedCards, destination);
             print(destination.Count);
             IsDoneChoosing(this, destination);

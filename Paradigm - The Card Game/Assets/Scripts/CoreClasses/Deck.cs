@@ -61,26 +61,18 @@ using UnityEngine;
             this.RemoveContent(c);
         }
 
-        public List<Card> Draw(int drawVal = 1)
+        public void Draw(int drawVal = 1)
         {
-        Debug.Log("Is this the AI" + this.Owner.IsAI);
-        Debug.Log("Cards in Deck" + this.Count);
-            List<Card> cardsDrawn = new List<Card>();
+            Debug.Log("Is this the AI" + this.Owner.IsAI);
+            Debug.Log("Cards in Deck" + this.Count);
+            
             if (drawVal == 1)
             {
-                cardsDrawn.Add(this.GetContents()[0]);
-            
-                this.RemoveCard(this.GetContents()[0]);
-                return cardsDrawn;
+                this.MoveContent(this.Owner.GetLocation("Hand"));
             }
             else
             {
-                for (int i = 0; i < drawVal; i++)
-                {
-                    cardsDrawn.Add(this.GetContents()[i]);
-                    this.RemoveCard(this.GetContents()[i]);
-                }
-                return cardsDrawn;
+                this.MoveContent(drawVal, this.Owner.GetLocation("Hand"));
             }
         }
 

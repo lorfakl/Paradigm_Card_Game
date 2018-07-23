@@ -76,6 +76,16 @@ public class Location
         ProcessLocationChange(c, destination);
     }
 
+    public void MoveContent(int size, Location destination, bool overrideSamePlayer = false)
+    {
+        List<Card> cards = new List<Card>();
+        for(int i = 0; i < size; i++)
+        {
+            cards.Add(SelectContent(i));
+        }
+        ProcessListLocationChanges(cards, destination);
+    }
+
     public void MoveContent(Location destination, bool overrideSamePlayer = false)
     {
         Card c = this.contents[0];
@@ -97,6 +107,13 @@ public class Location
         return c;
     }
 
+    public Card SelectContent(int index = 0)
+    {
+        Card c = this.contents[index];
+        return c;
+    }
+
+
     public void AddContent(Card c)
     {
         if (this.contents == null)
@@ -116,7 +133,17 @@ public class Location
 
     private void ProcessListLocationChanges(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
-        CheckSamePlayerMoveOverride(overrideSamePlayer, l[0].getLocation(), destination);
+        try
+        {
+            CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
+        }
+        catch (Exception)
+        {
+            string newDestinationName = destination.Name;
+            destination = this.Owner.GetLocation(newDestinationName);
+            Debug.Log("The Error for cross player card movement with no override triggered");
+        }
+
         LocationChanges newChanges = new LocationChanges();
         foreach (Card c in l)
         {
@@ -126,15 +153,15 @@ public class Location
             changes.Add(newChanges);
             destination.contents.Add(c);
             c.setLocation(destination);
-            if(!(this.contents.Remove(c)))
+            if(!(RemoveContent(c)))
             {
                 Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
                                                                                                             + this.name);
             }
             else
             {
-                //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
-                                                               // + destination.owner.PlayerID + "'s " + destination.Name);
+                Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
+                                                                + destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
                 Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
@@ -144,7 +171,17 @@ public class Location
 
     private void ProcessLocationChange(Card c, Location destination, bool overrideSamePlayer = false)
     {
-        CheckSamePlayerMoveOverride(overrideSamePlayer, c.getLocation(), destination);
+        try
+        {
+            CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
+        }
+        catch(Exception)
+        {
+            string newDestinationName = destination.Name;
+            destination = this.Owner.GetLocation(newDestinationName);
+            Debug.Log("The Error for cross player card movement with no override triggered");
+        }
+
         LocationChanges newChanges = new LocationChanges();
         newChanges.c = c;
         newChanges.destination = destination;
@@ -152,7 +189,7 @@ public class Location
         changes.Add(newChanges);
         destination.contents.Add(c);
         c.setLocation(destination);
-        if (!(this.contents.Remove(c)))
+        if (!(RemoveContent(c)))
         {
             Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
                                                                                                             + this.name);
