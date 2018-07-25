@@ -51,7 +51,7 @@ public class GameTimeManager
 
         if(turnCycles % 3 == 0)
         {
-            Debug.Log("Twist Dimensions!");
+           // Debug.Log("Twist Dimensions!");
         }
     }
 
@@ -79,7 +79,7 @@ public class GameTimeManager
             }
 
             endTurnButton.onClick.AddListener(p1.PlayerTurn.EndTurn);
-            nextPhaseButton.onClick.AddListener(p1.PlayerTurn.StartTurn);
+            //nextPhaseButton.onClick.AddListener(p1.PlayerTurn.StartTurn);
 
         }
         else

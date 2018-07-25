@@ -92,6 +92,11 @@ public class Player
             get { return this.timeLeftOnTimer; }
             set { this.timeLeftOnTimer = value; }
         }
+
+        public int OriginalTimerTime
+        {
+            get { return timerTime; }
+        }
         
         public Card TCCard
         {

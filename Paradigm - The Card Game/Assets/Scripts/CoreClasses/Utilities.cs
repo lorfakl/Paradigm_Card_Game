@@ -72,6 +72,13 @@ namespace Utilities
             return cardObject;
         }
 
+
+        public static MonoBehaviour AccessMonoBehaviour()
+        {
+            GameObject monoAccess = GameObject.FindWithTag("MonobehaviourAccessor");
+            return monoAccess.GetComponent<MonoBehaviourAccessor>();
+        }
+
         /// <summary>
         /// Raise a new event that is the direct result of a card effect
         /// </summary>

@@ -63,8 +63,8 @@ using UnityEngine;
 
         public void Draw(int drawVal = 1)
         {
-            Debug.Log("Is this the AI" + this.Owner.IsAI);
-            Debug.Log("Cards in Deck" + this.Count);
+            //Debug.Log("Is this the AI" + this.Owner.IsAI);
+            Debug.Log(this.Owner.IsAI +  " Cards in Deck " + this.Count);
             
             if (drawVal == 1)
             {

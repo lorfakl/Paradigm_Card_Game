@@ -160,8 +160,8 @@ public class Location
             }
             else
             {
-                Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
-                                                                + destination.owner.PlayerID + "'s " + destination.Name);
+                //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
+                                                                //+ destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
                 Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
@@ -196,8 +196,8 @@ public class Location
         }
         else
         {
-            Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
-                                                            + destination.owner.PlayerID + "'s " + destination.Name);
+            //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
+                                                            //+ destination.owner.PlayerID + "'s " + destination.Name);
             changesDict[this] = changes;
             Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
         }

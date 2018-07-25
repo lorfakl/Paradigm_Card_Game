@@ -220,15 +220,16 @@ public class GameEventsManager : MonoBehaviour
 
         
 
-        print(gameTime.NoUIPlayer.PlayerDeck.Count);
+        //print(gameTime.NoUIPlayer.PlayerDeck.Count);
 
         if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
-                print("Playing the game");
-                p1.PlayerTurn.StartTurn();
-                Debug.Log("Is this the AI?: " + p1.IsAI);
+                //print("Playing the game");
+                StartCoroutine(p1.PlayerTurn.StartTurn());
+                StartCoroutine(p2.PlayerTurn.StartTurn());
+                //Debug.Log("Is this the AI?: " + p1.IsAI);
             }
 
         }
