@@ -11,9 +11,13 @@ public class RenderManager : MonoBehaviour
     private string[] playerInfoTags = { "yourDeckCount","yourGraveCount","yourBarrierCount","enemyDeckCount","enemyGraveCount","enemyHandCount","enemyBarrierCount" };
     private string[] playerInfoPreambles = { "Deck: ", "Grave: ", "Barriers: ", "EDeck: ", "EGrave: ", "EHand: ", "EBarriers: " };
     private Text[] playerInfoObjects = new Text[7];
-    private List<Card> displayHandContent = new List<Card>();
+    private List<Card> uiHandContent = new List<Card>();
+    private List<Card> uiFieldContent = new List<Card>();
+    private List<Card> noUiHandContent = new List<Card>();
+    private List<Card> noUiFieldContent = new List<Card>();
     private List<GameObject> objectsCreated = new List<GameObject>();
-    private Transform parent;
+    private Player p1;
+    private Player p2;
     // Use this for initialization
 
     private void Awake()
@@ -27,7 +31,10 @@ public class RenderManager : MonoBehaviour
             playerInfoObjects[i] = GameObject.FindWithTag(playerInfoTags[i]).GetComponent<Text>();
         }
 
-        parent = GameObject.FindWithTag("PlayField").transform;
+        if(p1 == null)
+        {
+            throw new Exception("Eyy buddy you didnt make a send mesage call when instaniating the RenderManager, what up with that?");
+        }
     }
 	
 	// Update is called once per frame
@@ -36,20 +43,29 @@ public class RenderManager : MonoBehaviour
         
     }
 
-    private void ChangePlayerInfo(int[] data, List<Card> cardsInHand)
+    private void ChangePlayerInfo(int[] data, List<Card> cardsInHand, List<Card> cardsOnField, List<Card> nonUiCardsInHand, List<Card> nonUiCardsOnField)
     {
         for(int i = 0; i < 7; i++)
         {
             playerInfoObjects[i].text = playerInfoPreambles[i] + data[i];
         }
+        List<List<Card>> newData = new List<List<Card>> {cardsInHand, cardsOnField, nonUiCardsInHand, nonUiCardsOnField };
+        List<List<Card>> oldData = new List<List<Card>> { uiHandContent, uiFieldContent, noUiHandContent, noUiFieldContent };
+        List<String> tags = new List<string> { "playerHand", "playerField", "enemyHand", "enemyField" };
 
-        displayHandContent = cardsInHand;
-        //if (!displayHandContent.SequenceEqual(data))
-        ShowCardsInHand(cardsInHand);
-        //PositionCards();
+        for(int i = 0; i < 4; i++)
+        {
+            oldData[i] = newData[i];
+            GameObject parent = GameObject.FindWithTag(tags[i]);
+            if (parent != null)
+            {
+                ShowCards(oldData[i], parent.transform);
+            }
+        }
+
     }
 
-    private void ShowCardsInHand(List<Card> cardsToMake)
+    private void ShowCards(List<Card> cardsToMake, Transform parent)
     {
         DestroyCards();
         int cardsMade = 0;
@@ -73,15 +89,13 @@ public class RenderManager : MonoBehaviour
         
         
     }
-    private void PositionCards()
-    {
-        Vector3 position = objectsCreated[0].transform.position;
 
-        for(int i = 1; i < objectsCreated.Count; i++)
-        {
-            position.x += 20;
-        }
+    public void SetPlayers(List<Player> players)
+    {
+        p1 = players[0];
+        p2 = players[1];
     }
+
     private void DestroyCards()
     {
         foreach(GameObject g in objectsCreated)

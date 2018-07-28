@@ -48,24 +48,28 @@ public class CardScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-		if(Input.GetMouseButtonDown(0))
-        {
-            Ray rayLine = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit objectHit;
 
-            if(Physics.Raycast(rayLine, out objectHit))
+        if (Input.GetMouseButtonDown(0)) //If the mouse button is clicked
+        {
+            Ray rayLine = Camera.main.ScreenPointToRay(Input.mousePosition); //cast a ray from the camera to the mouse position
+            RaycastHit objectHit; //gameobject the ray hit
+
+            if (Physics.Raycast(rayLine, out objectHit)) //if the ray hits a collider
             {
-                if(objectHit.transform == gameObject.transform)
+                if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
                 {
-                    selected = !selected;
-                    if(displayMode)
+                    if (displayMode) //if the script is in displayMode, for selection from the overlay
                     {
-                        ChangeSprite(selected);
+                        selected = !selected; //invert selection bool
+                        ChangeSprite(selected); //update the selection status sprite
+                    }
+                    else
+                    {
+                        this.cardData.PlayCard();
                     }
                 }
             }
         }
-
     }
 
     private void ChangeSprite(bool s)

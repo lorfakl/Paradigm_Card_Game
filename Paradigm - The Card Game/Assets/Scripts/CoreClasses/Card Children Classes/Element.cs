@@ -28,25 +28,7 @@ public class Element: Card
             this.setFam(fam);
         }
 
-        
-
-        public override void playCard()
-        {
-            Player p = this.getOwner();
-            for(int i = 0; i < p.GetLocation("Field").Count; i++)
-            {
-                if(p.GetLocation("Field").GetContents()[i] is Accessor)
-                {
-                    Accessor a = (Accessor)p.GetLocation("Field").GetContents()[i];
-                    if (a.GetElementStatus())
-                    {
-                        this.getLocation().MoveContent(this, p.GetLocation("Field"));
-                    }
-                }
-            }
-        }
-
-        public override void useEffect()
+        public override void UseEffect()
         {
 
         }

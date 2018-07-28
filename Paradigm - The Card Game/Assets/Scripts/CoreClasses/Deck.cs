@@ -65,14 +65,16 @@ using UnityEngine;
         {
             //Debug.Log("Is this the AI" + this.Owner.IsAI);
             Debug.Log(this.Owner.IsAI +  " Cards in Deck " + this.Count);
-            
-            if (drawVal == 1)
+            if (this.Count > 0)
             {
-                this.MoveContent(this.Owner.GetLocation("Hand"));
-            }
-            else
-            {
-                this.MoveContent(drawVal, this.Owner.GetLocation("Hand"));
+                if (drawVal == 1)
+                {
+                    this.MoveContent(this.Owner.GetLocation("Hand"));
+                }
+                else
+                {
+                    this.MoveContent(drawVal, this.Owner.GetLocation("Hand"));
+                }
             }
         }
 

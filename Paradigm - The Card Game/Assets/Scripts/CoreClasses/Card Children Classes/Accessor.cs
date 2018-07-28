@@ -63,21 +63,19 @@ public class Accessor: Card
         public int GetHp() { return hp; }
         public bool GetElementStatus() { return elemental; }
 
-
-        public override void playCard()
-        {
-            Player p = this.getOwner();
-            this.getLocation().MoveContent(this, p.GetLocation("Field"));
-        }
-
-        public override void useEffect()
+        public override void UseEffect()
         {
             throw new NotImplementedException();
         }
 
-        public void Attack()
+        protected void Attack()
         {
 
-        }   
+        }
+    
+        protected void Block()
+        {
+
+        }
 }
 

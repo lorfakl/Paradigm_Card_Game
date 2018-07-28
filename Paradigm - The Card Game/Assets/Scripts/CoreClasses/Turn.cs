@@ -158,7 +158,8 @@ public class Turn
         if(e.EventOwner.PlayerDeck.Count == 0)
         {
             Debug.Log("You Lose");
-            GameEventsArgs gameEnd = new GameEventsArgs(this.owner, this.owner, NonMoveAction.GameEnd);
+            HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.GameEnd);
+           
         }
         e.EventOwner.PlayerDeck.Draw();
         //Debug.Log("Player:" + e.EventOwner.PlayerID + " cards in hand " + e.EventOwner.GetLocation("Hand").Count);

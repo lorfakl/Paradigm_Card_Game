@@ -27,17 +27,7 @@ public class AuxiliaryCard: Card
         this.setFam(fam);
     }
 
-    public void MoveToGameStartLocation()
-    {
-        this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
-    }
-
-    public override void playCard()
-    {
-
-    }
-
-    public override void useEffect()
+    public override void UseEffect()
     {
 
     }

@@ -13,8 +13,6 @@ public class GameEventsManager : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     public GameObject rendererManager;
-    private string[] playerInfoTags = { "yourDeckCount", "yourGraveCount", "yourBarrierCount", "enemyDeckCount", "enemyGraveCount", "enemyHandCount", "enemyBarrierCount" };
-    private Text[] playerInfoObjects = new Text[7];
     public Text deckCount;
     public Text graveCount;
     public Text barrierCount;
@@ -27,7 +25,6 @@ public class GameEventsManager : MonoBehaviour
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
     private static List<Card> tcBuffer = new List<Card>();
     private static Card activeLand;
-    private static bool isTCDone = false;
     private static int numOfTurns = 0;
     private GameTimeManager gameTime = null;
     private Location uiPlayerReturnedLocation = null;
@@ -44,6 +41,17 @@ public class GameEventsManager : MonoBehaviour
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
+
+    /// <summary>
+    /// the delegate for updating the UI, sends out a message to the RenderManager's subscriber
+    /// </summary>
+    /// <param name="data">Int array to update the values of the player and enemy card locations</param>
+    /// <param name="uiHand">A list of cards that represent the cards that the player has in their hand</param>
+    /// <param name="uiField">A list of cards that represent the cards that the player has on their field</param>
+    /// <param name="noUiField">A list of cards that represent the cards that the enemy has on their field</param>
+    /// <param name="noUiHand">A list of cards that represent the cards that the enemy has in their hand</param>
+    public delegate void UIUpdateHandler(int[] data, List<Card> uiHand, List<Card> uiField, List<Card> noUiHand, List<Card> noUiField); 
+    public static event UIUpdateHandler UpdateUI; 
 
     private static void OnEventAdd(object sender, GameEventsArgs data)
     {
@@ -72,14 +80,11 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-    public delegate void UIUpdateHandler(int[] data, List<Card> l);
-    public static event UIUpdateHandler UpdateUI;
-
-    private static void OnPlayerInfoChange(int[] data, List<Card> handCards)
+    private static void OnPlayerInfoChange(int[] data, List<Card> handCards, List<Card> fieldCards, List<Card> enemyHandCards, List<Card> enemyFieldCards)
     {
         if(UpdateUI != null)
         {
-            UpdateUI(data, handCards);
+            UpdateUI(data, handCards, fieldCards, enemyHandCards, enemyFieldCards);
         }
     }
 
@@ -162,7 +167,8 @@ public class GameEventsManager : MonoBehaviour
 
     void Start()
     {
-        Instantiate(rendererManager);
+        GameObject rm = Instantiate(rendererManager);
+        rm.SendMessage("SetPlayers", playerPool);
         print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
         int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         initalData = initalInfo;
@@ -241,7 +247,7 @@ public class GameEventsManager : MonoBehaviour
         int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         if(!initalData.SequenceEqual(data))
         {
-            OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents());
+            OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents(), UIPlayer.GetLocation("Field").GetContents(), NonUIPlayer.GetLocation("Hand").GetContents(), NonUIPlayer.GetLocation("Field").GetContents());
             initalData = data;
         }
     }

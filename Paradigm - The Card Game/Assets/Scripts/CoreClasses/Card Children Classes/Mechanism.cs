@@ -26,13 +26,7 @@ public class Mechanism: Card
         this.setFam(fam);
     }
 
-    public override void playCard()
-    {
-        Player p = this.getOwner();
-        
-    }
-
-    public override void useEffect()
+    public override void UseEffect()
     {
 
     }
