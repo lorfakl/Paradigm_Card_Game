@@ -52,6 +52,7 @@ namespace Utilities
             if (cardPrefab == null)
             {
                 cardObject = GameObject.Instantiate(Resources.Load("Card", typeof(GameObject)), parent) as GameObject;
+                Debug.Log("Instantiated prefab");
             }
             else
             {

@@ -274,6 +274,10 @@ public class Player
             //this.ReturnedLocation = d;
         }
         
+    public void PlayCard(String cardType)
+    {
+
+    }
         
 }
 

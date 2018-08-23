@@ -11,11 +11,11 @@ public class PlayGameButton : MonoBehaviour
     void Start()
     {
         Button play = playgamebutton.GetComponent<Button>();
-        play.onClick.AddListener(loadlevel);
+        play.onClick.AddListener(Loadlevel);
     }
 
     // Update is called once per frame
-    void loadlevel()
+    void Loadlevel()
     {
         Debug.Log("Game not available, that being retooled");
         //SceneManager.LoadScene("playgame");

@@ -178,7 +178,7 @@ using UnityEngine;
             {
                 if(this.GetType().ToString() == typesMoved[i])
                 {
-                    Debug.Log("Is this right? " + this.Name + " is of type " + this.GetType().ToString());
+                    //Debug.Log("Is this right? " + this.Name + " is of type " + this.GetType().ToString());
                     this.getLocation().MoveContent(this, this.getOwner().GetLocation("DZ"));
                     cardsMoved++;
                 }

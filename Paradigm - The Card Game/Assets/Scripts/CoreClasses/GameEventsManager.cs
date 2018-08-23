@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using DataBase;
 using Utilities;
 
@@ -73,10 +74,13 @@ public class GameEventsManager : MonoBehaviour
 
         if(e.ActionEvent == NonMoveAction.GameEnd)
         {
-            Destroy(GameObject.FindWithTag("Human"));
-            Destroy(GameObject.FindWithTag("AI"));
+            Destroy(GameObject.FindWithTag("Player"));
+            Destroy(GameObject.FindWithTag("AiPlayer"));
 
-            throw new Exception("Game over somebody ran outta cards");
+            SceneManager.LoadScene("mainmenu");
+            //throw new Exception("Game over somebody ran outta cards");
+            
+
         }
     }
 
@@ -121,12 +125,14 @@ public class GameEventsManager : MonoBehaviour
 
     public Player GrabPlayer()
     {
-        Player playReturned = playerPool[playerIndex];
-        playerIndex++;
+        
         if(playerIndex == 2)
         {
             playerIndex = 0;
         }
+        //print("prolly no players " + playerPool.Count);
+        Player playReturned = playerPool[playerIndex];
+        playerIndex++;
         return playReturned;
     }
     /// <summary>
@@ -143,7 +149,7 @@ public class GameEventsManager : MonoBehaviour
 
         p2 = gameTime.NoUIPlayer;
         playerPool.Add(p2);
-
+        print("Litterally just added the shit" + playerPool.Count);
         CardDataBase.MakePlayerDeck(p1);
         print("Made player deck?");
         CardDataBase.MakePlayerDeck(p2);

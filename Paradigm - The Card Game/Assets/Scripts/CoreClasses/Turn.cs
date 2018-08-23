@@ -142,11 +142,14 @@ public class Turn
     {
         //Debug.Log("This is the game start phase, should only happen once a game");
         //Debug.Log("Creating Hand for AI?: " + this.owner.IsAI);
-
-        this.owner.PlayerDeck.Draw(5);
-        Debug.Log("5 Cards shouldve been added to the hand");
-        yield return new WaitForSeconds(1);
-        this.isStartDone = true;
+        Debug.Log("Value of Start Bool:" + isStartDone);
+        if(!isStartDone)
+        {
+            this.owner.PlayerDeck.Draw(5);
+            Debug.Log("5 Cards shouldve been added to the hand");
+            this.isStartDone = true;
+            yield return new WaitForSeconds(1);
+        }
     }
 
     private IEnumerator StartGatherPhase(GameEventsArgs e)
