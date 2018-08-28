@@ -67,7 +67,7 @@ public class RenderManager : MonoBehaviour
 
     private void ShowCards(List<Card> cardsToMake, Transform parent)
     {
-        DestroyCards();
+        //DestroyCards();
         print("Show Cards was called");
         int cardsMade = 0;
         Vector3 position = new Vector3();
@@ -103,7 +103,6 @@ public class RenderManager : MonoBehaviour
         { 
             foreach (GameObject g in objectsCreated)
             {
-
                 Destroy(g);
             }
             objectsCreated.Clear();

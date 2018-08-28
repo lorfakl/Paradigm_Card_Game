@@ -22,6 +22,7 @@ public class CardScript : MonoBehaviour {
     {
         parent = gameObject.transform.parent;
         defaultCard = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+        print("THis is the Awake function");
         selected = false;
         
     }
@@ -104,6 +105,10 @@ public class CardScript : MonoBehaviour {
             this.cardData = c;
             //print(c.Name);
         }
+    }
+    private void OnDestroy()
+    {
+        print("Its been destroyed");
     }
 
     private void SetMode(bool mode)

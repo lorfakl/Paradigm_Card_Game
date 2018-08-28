@@ -14,6 +14,7 @@ public class GameEventsManager : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     public GameObject rendererManager;
+    //public GameObject eventProcessor;
     public Text deckCount;
     public Text graveCount;
     public Text barrierCount;
@@ -115,6 +116,10 @@ public class GameEventsManager : MonoBehaviour
         get { return gameTime.NoUIPlayer; }
     }
 
+    public Queue<GameEventsArgs> GetQueue
+    {
+        get { return eventQueue; }
+    }
 
 
     public static void AddTCLand(Card l)
@@ -230,7 +235,7 @@ public class GameEventsManager : MonoBehaviour
         }
 
 
-        
+        print("Events enqueued: " + eventQueue.Count);
 
         //print(gameTime.NoUIPlayer.PlayerDeck.Count);
 
