@@ -12,18 +12,19 @@ public class EventProcessor: MonoBehaviour
 {
     private struct ParameterBundle
     {
-        
+        public String functionID;
     }
 
     private bool areDictsPrepared;
-    private Dictionary<String, Type> senderDictionary = new Dictionary<string, Type>();
+    //each type will map to a dictionary containing a string id key with a function value
     private Dictionary<Type, Dictionary<String, Func<ParameterBundle, bool>>> senderFunctionPoolDictionary = new Dictionary<Type, Dictionary<String, Func<ParameterBundle, bool>>>();
+    //not sure what the functions should return if anything so right now they return a bool it might be placeholder
     private Dictionary<String, Func<ParameterBundle, bool>> functionDictionary = new Dictionary<string, Func<ParameterBundle, bool>>();
 
     private void Awake()
     {
         GameEventsManager.NotifySubsOfEvent += ProcessEvent;
-        if(senderDictionary.Count < 1)
+        if(senderFunctionPoolDictionary.Count < 1)
         {
             areDictsPrepared = false;
             PrepareDictionaries();
@@ -33,7 +34,7 @@ public class EventProcessor: MonoBehaviour
 
     public void ProcessEvent(object s, GameEventsArgs e)
     {
-        
+        ExecuteFunction(senderFunctionPoolDictionary[s.GetType()], e);
     }
 
     /// <summary>
@@ -53,27 +54,24 @@ public class EventProcessor: MonoBehaviour
 
     private void PrepareSenderDict()
     {
-        senderDictionary.Add("Ability", typeof(Ability));
-        senderDictionary.Add("Accessor", typeof(Accessor));
-        senderDictionary.Add("Action", typeof(Action));
-        senderDictionary.Add("Block", typeof(Block));
-        senderDictionary.Add("Condition", typeof(Condition));
-        senderDictionary.Add("Cost", typeof(Cost));
-        senderDictionary.Add("Deck", typeof(Deck));
-        senderDictionary.Add("Element", typeof(Element));
-        senderDictionary.Add("Family", typeof(Family));
-        senderDictionary.Add("Landscape", typeof(Landscape));
-        senderDictionary.Add("Location", typeof(Location));
-        senderDictionary.Add("Majesty", typeof(Majesty));
-        senderDictionary.Add("Mechanism", typeof(Mechanism));
-        senderDictionary.Add("Phantom", typeof(Phantom));
-        senderDictionary.Add("Philosopher", typeof(Philosopher));
-        senderDictionary.Add("Source", typeof(Source));;
-        senderDictionary.Add("Trait", typeof(Trait));
-        senderDictionary.Add("Turn", typeof(Turn));
-        //senderDictionary.Add("Ability", typeof(Ability));
+      
     }
     //END DICTIONARY PREP FUNCTIONS
+
+    private void ExecuteFunction(Dictionary<String, Func<ParameterBundle, bool>> functionDict, GameEventsArgs e)
+    {
+        ParameterBundle parameters = ParseEvent(e);
+        Func<ParameterBundle, bool> function = functionDict[parameters.functionID];
+        function(parameters);
+
+    }
+
+    private ParameterBundle ParseEvent(GameEventsArgs e)
+    {
+        ParameterBundle p = new ParameterBundle();
+
+        return p;
+    }
 
     private static void DrawEvent(GameEventsArgs e)
     {
