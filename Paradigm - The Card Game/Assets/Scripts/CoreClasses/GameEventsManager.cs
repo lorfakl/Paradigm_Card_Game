@@ -140,6 +140,22 @@ public class GameEventsManager : MonoBehaviour
         playerIndex++;
         return playReturned;
     }
+
+    public PlayerInteraction GetPlayerInteraction(bool ai)
+    {
+        GameObject g = null;
+        if (ai)
+        {
+            g = GameObject.FindWithTag("AiPlayer");
+        }
+        else
+        {
+           g = GameObject.FindWithTag("Player");
+        }
+
+        return g.GetComponent<PlayerInteraction>();
+
+    }
     /// <summary>
     /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
     /// Thats why it extends Monobehaviour and has Awake, Update, and Start functions
@@ -235,7 +251,7 @@ public class GameEventsManager : MonoBehaviour
         }
 
 
-        print("Events enqueued: " + eventQueue.Count);
+        //print("Events enqueued: " + eventQueue.Count);
 
         //print(gameTime.NoUIPlayer.PlayerDeck.Count);
 
@@ -243,9 +259,9 @@ public class GameEventsManager : MonoBehaviour
         {
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
-                //print("Playing the game");
-                StartCoroutine(p1.PlayerTurn.StartTurn());
-                StartCoroutine(p2.PlayerTurn.StartTurn());
+                print("Playing the game");
+                p1.PlayerTurn.StartTurn();
+                p2.PlayerTurn.StartTurn();
                 //Debug.Log("Is this the AI?: " + p1.IsAI);
             }
 

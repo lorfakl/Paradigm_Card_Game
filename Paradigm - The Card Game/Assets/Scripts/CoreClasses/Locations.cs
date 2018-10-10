@@ -66,6 +66,25 @@ public class Location
 
     public List<Card> GetContents() { return this.contents; }
 
+    public List<Card> GetContents(Type t)
+    {
+        List<Card> cardsOfTypet = new List<Card>();
+        foreach(Card c in contents)
+        {
+            if (c.GetType() == t)
+            {
+                cardsOfTypet.Add(c);
+            }
+        }
+
+        if(cardsOfTypet.Count < 1)
+        {
+            return null;
+        }
+
+        return cardsOfTypet;
+    }
+
     public void MoveContent(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
         ProcessListLocationChanges(l, destination);

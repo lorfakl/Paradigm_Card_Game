@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour {
     public GameObject player;
     public GameObject gm;
+    public int attackChance;
     private Player p = null;
     private bool setUp;
     private Coroutine coroutine;
@@ -16,6 +17,19 @@ public class PlayerInteraction : MonoBehaviour {
     {
         get { return p; }
     }
+
+    public IEnumerator CentralPhaseAction()
+    {
+        print("Central Coroutine started?");
+        yield return StartCoroutine(p.ChooseCentralPhaseActions());
+    }
+
+    public IEnumerator CrystalPhaseAction()
+    {
+        print("Crystal Coroutine started?");
+
+        yield return StartCoroutine(p.ChooseCrystalPhaseActions());
+    }
     // Use this for initialization
     void Awake()
     {
@@ -25,7 +39,7 @@ public class PlayerInteraction : MonoBehaviour {
         }
 
         p = gm.GetComponent<GameEventsManager>().GrabPlayer();
-
+        
     }
     
 
@@ -55,6 +69,8 @@ public class PlayerInteraction : MonoBehaviour {
         if(p.IsAI)
         {
             print("Other stuff");
+            p.AttackChance = attackChance;
+        
         }
         else
         {

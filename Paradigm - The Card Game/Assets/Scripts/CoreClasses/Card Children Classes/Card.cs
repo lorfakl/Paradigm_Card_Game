@@ -186,10 +186,7 @@ using UnityEngine;
             return cardsMoved;
         }
 
-        public void PlayCard()
-        {
-            this.Owner.PlayCard(this.GetType().ToString());
-        }
+        public abstract void PlayCard();
         
         public abstract void UseEffect(); //To be defined MUCH later
         

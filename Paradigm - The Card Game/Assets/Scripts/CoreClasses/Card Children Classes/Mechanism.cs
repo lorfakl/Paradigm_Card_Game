@@ -26,6 +26,11 @@ public class Mechanism: Card
         this.setFam(fam);
     }
 
+    public override void PlayCard()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void UseEffect()
     {
 

@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DataBase;
 
+
 /// <summary>
-/// The purpose of this class is to processor the card events as they are published to the event queue.
+/// The purpose of this class is to process the card events as they are published to the event queue.
+/// A Note about Abilties: The abilities need to be encoded to contain the function or series of functions
+/// that need to be called and the required parameters for the effect to take place
 /// Once received the events will be parsed and translated into actions this include animations, sound, etc
 /// </summary>
 public class EventProcessor: MonoBehaviour
@@ -13,18 +16,23 @@ public class EventProcessor: MonoBehaviour
     private struct ParameterBundle
     {
         public String functionID;
+        public EventType type;
+
     }
 
-    private bool areDictsPrepared;
-    //each type will map to a dictionary containing a string id key with a function value
-    private Dictionary<Type, Dictionary<String, Func<ParameterBundle, bool>>> senderFunctionPoolDictionary = new Dictionary<Type, Dictionary<String, Func<ParameterBundle, bool>>>();
-    //not sure what the functions should return if anything so right now they return a bool it might be placeholder
+    
+    /// <summary>
+    /// There should be only one dictionary, the game shouldnt care what object generated the event.
+    /// This dictionary should map a specific ID to a specific function this ID should also be used when
+    /// abilities wish to call said function
+    /// </summary>
     private Dictionary<String, Func<ParameterBundle, bool>> functionDictionary = new Dictionary<string, Func<ParameterBundle, bool>>();
+    private bool areDictsPrepared;
 
     private void Awake()
     {
         GameEventsManager.NotifySubsOfEvent += ProcessEvent;
-        if(senderFunctionPoolDictionary.Count < 1)
+        if(functionDictionary.Count < 1)
         {
             areDictsPrepared = false;
             PrepareDictionaries();
@@ -34,36 +42,20 @@ public class EventProcessor: MonoBehaviour
 
     public void ProcessEvent(object s, GameEventsArgs e)
     {
-        ExecuteFunction(senderFunctionPoolDictionary[s.GetType()], e);
+        ExecuteFunction(e);
     }
 
-    /// <summary>
-    /// BEGIN DICTIONARY PREPARE FUNCTIONS
-    /// Effectivly this section just adds all the dictionary key value pairs to all the dictionaries that will be used for
-    /// Event Processing
-    /// </summary>
     private void PrepareDictionaries()
     {
-        PrepareSenderDict();
+        //Prepare the function dictionary
     }
 
-    private void PrepareLocationDict()
+    private void ExecuteFunction(GameEventsArgs e)
     {
-
-    }
-
-    private void PrepareSenderDict()
-    {
-      
-    }
-    //END DICTIONARY PREP FUNCTIONS
-
-    private void ExecuteFunction(Dictionary<String, Func<ParameterBundle, bool>> functionDict, GameEventsArgs e)
-    {
+        return;
         ParameterBundle parameters = ParseEvent(e);
-        Func<ParameterBundle, bool> function = functionDict[parameters.functionID];
+        Func<ParameterBundle, bool> function = functionDictionary[parameters.functionID];
         function(parameters);
-
     }
 
     private ParameterBundle ParseEvent(GameEventsArgs e)
