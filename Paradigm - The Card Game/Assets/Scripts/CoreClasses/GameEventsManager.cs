@@ -43,6 +43,7 @@ public class GameEventsManager : MonoBehaviour
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
+    //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
 
     /// <summary>
     /// the delegate for updating the UI, sends out a message to the RenderManager's subscriber

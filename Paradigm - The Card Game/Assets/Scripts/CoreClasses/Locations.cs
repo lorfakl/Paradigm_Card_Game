@@ -12,6 +12,8 @@ public struct LocationChanges  //this struct is for containing infomation regard
     public Location destination;
 }
 
+public enum ContainsCriteria { Name, Type, Reference, ID}
+
 public class Location
 {
     private string name;
@@ -142,6 +144,48 @@ public class Location
         }
 
         this.contents.Add(c);    
+    }
+
+    public Card Contains(Card target, ContainsCriteria criteria)
+    {
+        foreach (Card c in contents)
+        {
+            switch (criteria)
+            {
+                case ContainsCriteria.ID:
+                    if (target.ID == c.ID)
+                    {
+                        return c;
+                    } 
+                    break;
+
+                case ContainsCriteria.Name:
+                    if (target.Name == c.Name)
+                    {
+                        return c;
+                    }
+                    break;
+
+                case ContainsCriteria.Type:
+                    if (target.GetType() == c.GetType())
+                    {
+                        return c;
+                    }
+                    break;
+
+                default:
+                    Debug.Log("Done goofed");
+                    break;
+            }
+        }
+        foreach (Card c in contents)
+        {
+            if(target.ClassType ==  c.ClassType || target.Name == c.Name)
+            {
+                return c;
+            }
+        }
+        return null;
     }
 
     protected bool RemoveContent(Card c)
