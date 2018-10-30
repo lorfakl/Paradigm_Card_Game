@@ -22,7 +22,7 @@ public class CardScript : MonoBehaviour {
     {
         parent = gameObject.transform.parent;
         defaultCard = gameObject.GetComponentInChildren<SpriteRenderer>().sprite;
-        print("THis is the Awake function");
+        //print("THis is the Awake function");
         selected = false;
         
     }

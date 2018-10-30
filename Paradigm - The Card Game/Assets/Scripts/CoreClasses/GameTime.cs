@@ -62,8 +62,8 @@ public class GameTimeManager
     /// </summary>
     private void GameStart()
     {
-        p1 = new Player(this);
-        p2 = new Player(this, 3, true); //arbitrary as fuck
+        p1 = new HumanPlayer(this, 5);
+        p2 = new AIPlayer(this, 3); //arbitrary as fuck
         GameObject[] buttons = GameObject.FindGameObjectsWithTag("playerUI");
         if (buttons != null)
         {

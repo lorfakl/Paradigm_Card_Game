@@ -6,14 +6,14 @@ public class PlayerInteraction : MonoBehaviour {
     public GameObject player;
     public GameObject gm;
     public int attackChance;
-    private Player p = null;
+    private IPlayable p = null;
     private bool setUp;
     private Coroutine coroutine;
     public delegate bool NotifyDoneChoosing();
     public event NotifyDoneChoosing IsDoneChoosing; 
 
 
-    public Player CurrentPlayer
+    public IPlayable CurrentPlayer
     {
         get { return p; }
     }
@@ -21,14 +21,14 @@ public class PlayerInteraction : MonoBehaviour {
     public IEnumerator CentralPhaseAction()
     {
         print("Central Coroutine started?");
-        yield return StartCoroutine(p.ChooseCentralPhaseActions());
+        yield return StartCoroutine(p.PerformCentral());
     }
 
     public IEnumerator CrystalPhaseAction()
     {
         print("Crystal Coroutine started?");
 
-        yield return StartCoroutine(p.ChooseCrystalPhaseActions());
+        yield return StartCoroutine(p.PerformCrystal());
     }
     // Use this for initialization
     void Awake()

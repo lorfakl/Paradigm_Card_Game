@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -61,6 +62,7 @@ public class Turn
     public void StartTurn()
     {
         this.isActiveTurn = true;
+        this.phase = TurnPhase.Start;
         this.MoveToNextPhase();
         
     }
@@ -75,48 +77,14 @@ public class Turn
     {
         foreach(TurnPhase t in Enum.GetValues(typeof(TurnPhase)))
         {
+            this.phase = t;
             SetDelegate();
-            //if((!isStartDone) || (t != TurnPhase.Start))
-            //{
-                GameEventsArgs tturnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
-                timeManager.AdvanceGameTime();
-                this.PerformPhaseAction(tturnPhaseEvent);
-                Debug.Log(owner.PlayerName + "'s turn phase: " + t.ToString());
-            //}
-            
-            
-            
+            GameEventsArgs tturnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
+            timeManager.AdvanceGameTime();
+            this.PerformPhaseAction(tturnPhaseEvent);
+            Debug.Log(owner.PlayerName + "'s turn phase: " + phase);
         }
-        /*
-        timeManager.AdvanceGameTime();
-        SetDelegate();
-        GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
-        //Debug.Log(this.phase.ToString());
-
-        if (isStartDone && this.Phase == TurnPhase.Start)
-        {
-            Debug.Log("Start already ran");
-            this.phase++;
-            Debug.Log("New phase is " + this.phase);
-        }
-        this.PerformPhaseAction(turnPhaseEvent); //once this line finishes the turn phase is over
-
-        TurnPhase currentPhase = this.phase; 
-        
-        if(currentPhase == TurnPhase.End)//if the End phase was the last turn phase to occur
-        {
-            Debug.Log("This turn is over should be ending");
-            this.phase = TurnPhase.Gather; //set the turn phase to Gather for the next turn
-            return; 
-        }
-        else
-        { 
-            currentPhase++;
-            TurnPhase nextPhase = currentPhase;//(TurnPhase)currentPhase;
-            this.phase = nextPhase;
-        }*/
-
-        
+       
     }
 
     private void PerformPhaseAction(GameEventsArgs e)
@@ -136,6 +104,7 @@ public class Turn
         }
 
         this.turnPhaseFunction = phaseDict[this.phase];
+        Debug.Log("Current turn phase function: " + phaseDict[this.phase].ToString());
         
     }
 
@@ -204,7 +173,15 @@ public class Turn
 
     private void StartEndPhase(GameEventsArgs e)
     {
-        
+        bool answer = EditorUtility.DisplayDialog("End Turn", "Are you sure you want to end your turn?", "End Turn", "Nah Fam! I'm not done");
+        if(!answer)
+        {
+            StartEndPhase(e);
+        }
+        else
+        {
+            Debug.Log("Ending current turn, starting Next one");
+        }
         //Card abilities
     }
 

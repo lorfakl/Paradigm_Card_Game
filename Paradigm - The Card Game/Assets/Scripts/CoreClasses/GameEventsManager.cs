@@ -198,7 +198,7 @@ public class GameEventsManager : MonoBehaviour
         GameObject rm = Instantiate(rendererManager);
         rm.SendMessage("SetPlayers", playerPool);
         print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
+        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         initalData = initalInfo;
     }
 
@@ -206,7 +206,7 @@ public class GameEventsManager : MonoBehaviour
     void Update()
     {
 
-        CheckPlayerInfo();
+        //CheckPlayerInfo();
         if (!setUp)
         {
             Location p1Temp = UiPlayerReturnedLocation;
@@ -269,9 +269,12 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-   
+   /// <summary>
+   /// THIS IS GARBAGE USE THE OBSERVER PATTERN
+   /// </summary>
     private void CheckPlayerInfo()
     {
+        
         int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         if(!initalData.SequenceEqual(data))
         {
