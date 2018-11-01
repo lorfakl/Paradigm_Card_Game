@@ -203,7 +203,7 @@ public class Location
         catch (Exception)
         {
             string newDestinationName = destination.Name;
-            destination = this.Owner.GetLocation(newDestinationName);
+            //destination = this.Owner.GetLocation(newDestinationName);
             Debug.Log("The Error for cross player card movement with no override triggered");
         }
 
@@ -241,7 +241,7 @@ public class Location
         catch(Exception)
         {
             string newDestinationName = destination.Name;
-            destination = this.Owner.GetLocation(newDestinationName);
+            //destination = this.Owner.GetLocation(newDestinationName);
             Debug.Log("The Error for cross player card movement with no override triggered");
         }
 

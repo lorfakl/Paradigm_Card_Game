@@ -14,7 +14,7 @@ public enum TurnPhase
 
 public class Turn
 {
-    private Player owner;
+    private IPlayable owner;
     private TurnPhase phase;
     private bool isPhaseComplete;
     private bool isActiveTurn;
@@ -25,9 +25,10 @@ public class Turn
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
     private GameTimeManager timeManager;
     private GameEventsManager eventsManager;
+    private PlayerInteraction playerAction;
 
 
-    public Turn(Player p, GameTimeManager timeManager)
+    public Turn(IPlayable p, GameTimeManager timeManager)
     {
         if(!isDictionaryPrepared)
         {
@@ -39,6 +40,7 @@ public class Turn
         this.isPhaseComplete = false;
         this.isStartDone = false;
         this.timeManager = timeManager;
+        this.playerAction = owner.GetInteraction();
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
     }
@@ -62,7 +64,7 @@ public class Turn
     public void StartTurn()
     {
         this.isActiveTurn = true;
-        this.phase = TurnPhase.Start;
+        this.phase = TurnPhase.Gather;
         this.MoveToNextPhase();
         
     }
@@ -79,10 +81,10 @@ public class Turn
         {
             this.phase = t;
             SetDelegate();
-            GameEventsArgs tturnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.TurnPhase);
+            GameEventsArgs tturnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
             timeManager.AdvanceGameTime();
             this.PerformPhaseAction(tturnPhaseEvent);
-            Debug.Log(owner.PlayerName + "'s turn phase: " + phase);
+            Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
        
     }
@@ -124,7 +126,7 @@ public class Turn
         Debug.Log("Value of Start Bool:" + isStartDone);
         if (!isStartDone)
         {
-            this.owner.PlayerDeck.Draw(5);
+            //HANDLED BY PLAYERINTERACTION this.owner.PlayerDeck.Draw(5);
             Debug.Log("5 Cards shouldve been added to the hand");
             this.isStartDone = true;
         }
@@ -132,63 +134,44 @@ public class Turn
 
     private void StartGatherPhase(GameEventsArgs e)
     {
-        Debug.Log("Gather Phase: Draw Card and Abilities check the event queue");
 
+
+        Debug.Log("Its the beginning of a duel");
+        /*
         if (e.EventOwner.PlayerDeck.Count == 0)
         {
             Debug.Log("You Lose");
-            HelperFunctions.RaiseNewEvent(this, this.owner, this.owner, NonMoveAction.GameEnd);
+            HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.GameEnd);
 
         }
         e.EventOwner.PlayerDeck.Draw();
+        */
     }
 
     private void StartAwakenPhase(GameEventsArgs e)
     {
         Debug.Log("Awaken Phase");
+        playerAction.AwakenPhaseStart();
     }
 
     private void StartCentralPhase(GameEventsArgs e)
     {
-        Debug.Log("Central Phase");
-        PlayerInteraction pi = GetEventsManager(e);
-        MonoBehaviour mono = HelperFunctions.AccessMonoBehaviour();
-        mono.StartCoroutine(pi.CentralPhaseAction());
-        
+        Debug.Log("Central Phase");         
+        playerAction.CentralPhaseStart();  
     }
 
     private void StartCrystalPhase(GameEventsArgs e)
     {
-        if (e.EventOwner.GetLocation(ValidLocations.SC).Count < 3)
-        {
-            Debug.Log("Skipping this Crystallize phase not enough resources");
-        }
-        else
-        {
-            Debug.Log("Crystal Phase");
-            PlayerInteraction pi = GetEventsManager(e);
-            pi.CrystalPhaseAction();
-        }
+        
+        Debug.Log("Crystal Phase");
+        playerAction.CrystalPhaseStart();
     }
 
     private void StartEndPhase(GameEventsArgs e)
     {
-        bool answer = EditorUtility.DisplayDialog("End Turn", "Are you sure you want to end your turn?", "End Turn", "Nah Fam! I'm not done");
-        if(!answer)
-        {
-            StartEndPhase(e);
-        }
-        else
-        {
-            Debug.Log("Ending current turn, starting Next one");
-        }
-        //Card abilities
+        Debug.Log("End Phase");          
+        playerAction.EndPhaseStart();
     }
 
-    private PlayerInteraction GetEventsManager(GameEventsArgs e)
-    {
-        GameEventsManager gm = GameObject.FindWithTag("GameManager").GetComponent<GameEventsManager>();
-        return gm.GetPlayerInteraction(e.EventOwner.IsAI);
-    }
 }
 

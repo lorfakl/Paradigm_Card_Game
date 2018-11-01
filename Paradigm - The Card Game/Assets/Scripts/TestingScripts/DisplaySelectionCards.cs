@@ -103,7 +103,7 @@ public class DisplaySelectionCards :MonoBehaviour
     public bool SendSelectionEnd()
     {
         PlayerInteraction playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerInteraction>();
-        Player p = playerScript.CurrentPlayer;
+        Player p = (Player)playerScript.CurrentPlayer;
         p.TimeLeftOnTimer = 0;
         isDoneSelecting = true;
         return true;
@@ -143,7 +143,7 @@ public class DisplaySelectionCards :MonoBehaviour
             }
             source.MoveContent(selectedCards, destination);
             print(destination.Count);
-            IsDoneChoosing(this, destination);
+            //IsDoneChoosing(this, destination);
             Destroy(canvas.gameObject);
         }
     }

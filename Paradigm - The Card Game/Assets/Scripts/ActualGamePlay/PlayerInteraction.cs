@@ -18,17 +18,29 @@ public class PlayerInteraction : MonoBehaviour {
         get { return p; }
     }
 
-    public IEnumerator CentralPhaseAction()
+    public void GatherPhaseStart()
     {
-        print("Central Coroutine started?");
-        yield return StartCoroutine(p.PerformCentral());
+        GatherPhaseAction();
     }
 
-    public IEnumerator CrystalPhaseAction()
+    public void AwakenPhaseStart()
     {
-        print("Crystal Coroutine started?");
+        AwakenPhaseAction();
+    }
 
-        yield return StartCoroutine(p.PerformCrystal());
+    public void CentralPhaseStart()
+    {
+        CentralPhaseAction();
+    }
+
+    public void CrystalPhaseStart()
+    {
+        CrystalPhaseAction();
+    }
+
+    public void EndPhaseStart()
+    {
+        EndPhaseAction();
     }
     // Use this for initialization
     void Awake()
@@ -45,12 +57,13 @@ public class PlayerInteraction : MonoBehaviour {
 
 	IEnumerator Start ()
     {
-        Location temp = new Location("temp", p);
+        Location temp = new Location("temp", (Player)p);
         //p.LoadDeckFromDataBase();
         yield return StartCoroutine(p.ChooseTerritoryChallengeCard(temp));
         print("Temp Size: " + temp.Count);
-        yield return StartCoroutine(p.ChooseBarriers());
-        if(p.IsAI)//need to find a better way of doing this, doesnt work with networked play
+        yield return StartCoroutine(p.ChooseBarriers(12));
+        
+        if(p.GetPlayerUIStatus())//need to find a better way of doing this, doesnt work with networked play
         {
             gm.GetComponent<GameEventsManager>().NoUiPlayerReturnedLocation = temp;
             gm.GetComponent<GameEventsManager>().NonUIPlayer.IsPreparedToStart = true;
@@ -66,16 +79,7 @@ public class PlayerInteraction : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if(p.IsAI)
-        {
-            print("Other stuff");
-            p.AttackChance = attackChance;
         
-        }
-        else
-        {
-            print("Human Stuff");
-        }
       
 	}
 
@@ -84,5 +88,34 @@ public class PlayerInteraction : MonoBehaviour {
         print("Got our card(s)");
 
         return true;
+    }
+
+    private IEnumerator GatherPhaseAction()
+    {
+        print("Gather Coroutine started?");
+        yield return StartCoroutine(p.PerformGather());
+    }
+
+    private IEnumerator AwakenPhaseAction()
+    {
+        print("Awaken Coroutine started?");
+        yield return StartCoroutine(p.PerformAwaken());
+    }
+    private IEnumerator CentralPhaseAction()
+    {
+        print("Central Coroutine started?");
+        yield return StartCoroutine(p.PerformCentral());
+    }
+
+    private IEnumerator CrystalPhaseAction()
+    {
+        print("Crystal Coroutine started?");
+        yield return StartCoroutine(p.PerformCrystal());
+    }
+
+    private IEnumerator EndPhaseAction()
+    {
+        print("End Coroutine started?");
+        yield return StartCoroutine(p.PerformEnd());
     }
 }

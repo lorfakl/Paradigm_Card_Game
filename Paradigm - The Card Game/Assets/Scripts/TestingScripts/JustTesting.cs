@@ -13,7 +13,7 @@ public class JustTesting : MonoBehaviour
     int count = 0;
 	void Awake ()
     {
-        MakeTestPlayer.MakePlayer(new GameTimeManager());
+        //MakeTestPlayer.MakePlayer(new GameTimeManager());
         CardDataBase.GetDataBaseData();
         List<Card> AllCards = CardDataBase.GetAllCards();
 
@@ -43,6 +43,7 @@ public class JustTesting : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        /*
         Debug.Log("Num To Select: " + numToSelect);
         if (Input.GetKeyUp(KeyCode.Return))
         {
@@ -55,6 +56,6 @@ public class JustTesting : MonoBehaviour
         }
 
         print("Hand size" + MakeTestPlayer.P1.GetLocation("Hand").Count);
-     
+        */
 	}
 }

@@ -7,7 +7,7 @@ using Utilities;
 using AI;
 
 public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
-public abstract class Player
+public abstract class Player:IPlayable
 {
 
     //private Turn playerTurn;
@@ -27,6 +27,9 @@ public abstract class Player
     
     private bool isPreparedToStart;
     private Location returnedLocation;
+    public static readonly int timerTime = 45;
+    protected int timeLeftOnTimer = timerTime;
+    protected PlayerInteraction gamePlayHook;
 
     public Player(GameTimeManager mgmt, int addTo = 0)
     {
@@ -98,6 +101,18 @@ public abstract class Player
     {
         get { return isPreparedToStart; }
         set { isPreparedToStart = value; }
+    }
+
+    public int TimeLeftOnTimer
+    {
+        get { return this.timeLeftOnTimer; }
+        set { this.timeLeftOnTimer = value; }
+    }
+
+    public PlayerInteraction GamePlayHook
+    {
+        get { return gamePlayHook; }
+        set { gamePlayHook = value; }
     }
 
     public void LoadDeckFromDataBase()
@@ -177,10 +192,16 @@ public abstract class Player
 
     //End Card Transit
         
-    public void PlayCard(String cardType)
-    {
 
-    }
-        
+    public abstract PlayerInteraction GetInteraction();
+    public abstract IEnumerator ChooseTerritoryChallengeCard(Location t);
+    public abstract IEnumerator ChooseBarriers(int barrierCount);
+    public abstract IEnumerator PerformGather();
+    public abstract IEnumerator PerformAwaken();
+    public abstract IEnumerator PerformCentral();
+    public abstract IEnumerator PerformCrystal();
+    public abstract IEnumerator PerformEnd();
+    public abstract void PlayCard();
+    public abstract bool GetPlayerUIStatus();
 }
 

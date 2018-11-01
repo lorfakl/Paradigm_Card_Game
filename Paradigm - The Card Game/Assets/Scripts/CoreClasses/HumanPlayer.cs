@@ -6,8 +6,7 @@ using Utilities;
 
 public class HumanPlayer : Player, IPlayable
 {
-    public static readonly int timerTime = 45;
-    private int timeLeftOnTimer = timerTime;
+    
 
     public HumanPlayer(GameTimeManager mgmt, int id) :base(mgmt, id)
     {
@@ -15,28 +14,24 @@ public class HumanPlayer : Player, IPlayable
         this.type = "Human";
     }
 
-    public int TimeLeftOnTimer
-    {
-        get { return this.timeLeftOnTimer; }
-        set { this.timeLeftOnTimer = value; }
-    }
+    
 
     public int OriginalTimerTime
     {
         get { return timerTime; }
     }
 
-    public IEnumerator PerformAwaken()
+    public override IEnumerator PerformAwaken()
     {
         throw new System.NotImplementedException();
     }
 
-    public IEnumerator PerformCentral()
+    public override IEnumerator PerformCentral()
     {
         throw new System.NotImplementedException();
     }
 
-    public IEnumerator PerformCrystal()
+    public override IEnumerator PerformCrystal()
     {
         Debug.Log("SC count: " + this.GetLocation(ValidLocations.SC).Count);
         Debug.Log("If its less than three then issa not gonna crystalize which it should be");
@@ -57,12 +52,12 @@ public class HumanPlayer : Player, IPlayable
         }
     }
 
-    public IEnumerator PerformGather()
+    public override IEnumerator PerformGather()
     {
         throw new System.NotImplementedException();
     }
 
-    public IEnumerator ChooseTerritoryChallengeCard(Location temp)
+    public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
     {
         Location lands = this.PlayerDeck.GetLandsAsLocation();
         //Debug.Log("Show me your size: " + lands.Count);
@@ -96,9 +91,9 @@ public class HumanPlayer : Player, IPlayable
         gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
     }
 
-    public IEnumerator ChooseBarriers()
+    public override IEnumerator ChooseBarriers(int barrierAmount)
     {
-        GameObject cardDisplay = HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 12);
+        GameObject cardDisplay = HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), barrierAmount);
 
         while (this.TimeLeftOnTimer > 0)
         {
@@ -108,12 +103,12 @@ public class HumanPlayer : Player, IPlayable
         }
         this.TimeLeftOnTimer = timerTime;
 
-        try //when the timer is up and the human hasnt selected the 12 barriers do it for them
+        try //when the timer is up and the human hasnt selected the barrierAmount barriers do it for them
         {
             DisplaySelectionCards displayScript = cardDisplay.GetComponentInChildren<DisplaySelectionCards>();
-            if (displayScript.CardsSelected < 12)
+            if (displayScript.CardsSelected < barrierAmount)
             {
-                for (int i = displayScript.CardsSelected; i < 12; i++)
+                for (int i = displayScript.CardsSelected; i < barrierAmount; i++)
                 {
                     Card c = PlayerDeck.SelectRandomContent();
                     while (displayScript.SelectedCards.Contains(c))
@@ -134,7 +129,22 @@ public class HumanPlayer : Player, IPlayable
         }
     }
 
-    public void PlayCard()
+    public override void PlayCard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override PlayerInteraction GetInteraction()
+    {
+        return gamePlayHook;
+    }
+
+    public override bool GetPlayerUIStatus()
+    {
+        return true;
+    }
+
+    public override IEnumerator PerformEnd()
     {
         throw new NotImplementedException();
     }

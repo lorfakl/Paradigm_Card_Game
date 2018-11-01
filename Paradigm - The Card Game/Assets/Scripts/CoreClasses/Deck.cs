@@ -64,16 +64,16 @@ using UnityEngine;
         public void Draw(int drawVal = 1)
         {
             //Debug.Log("Is this the AI" + this.Owner.IsAI);
-            Debug.Log(this.Owner.IsAI +  " Cards in Deck " + this.Count);
+            Debug.Log(this.Owner.Type +  " Cards in Deck " + this.Count);
             if (this.Count > 0)
             {
                 if (drawVal == 1)
                 {
-                    this.MoveContent(this.Owner.GetLocation("Hand"));
+                    this.MoveContent(this.Owner.GetLocation(ValidLocations.Hand));
                 }
                 else
                 {
-                    this.MoveContent(drawVal, this.Owner.GetLocation("Hand"));
+                    this.MoveContent(drawVal, this.Owner.GetLocation(ValidLocations.Hand));
                 }
             }
         }
@@ -138,7 +138,7 @@ using UnityEngine;
             {
                 count = count + c.MoveToGameStartLocation();
             }
-            if (Owner.IsAI)
+            if (Owner.Type == "AI")
             {
                 Debug.Log("AI Moved " + count + " cards");
             }

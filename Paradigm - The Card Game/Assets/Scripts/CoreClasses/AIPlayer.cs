@@ -4,9 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIPlayer : Player, IPlayable
+public class AIPlayer : Player
 {
     private int aiAttackChance;
+    
 
     public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
     {
@@ -20,12 +21,12 @@ public class AIPlayer : Player, IPlayable
         set { aiAttackChance = value; }
     }
 
-    public IEnumerator PerformAwaken()
+    public override IEnumerator PerformAwaken()
     {
         throw new System.NotImplementedException();
     }
 
-    public IEnumerator PerformCentral()
+    public override IEnumerator PerformCentral()
     {
         List<Card> hand = GetLocation(ValidLocations.Hand).GetContents(typeof(Accessor));
         if (hand != null) //there are accessors in the AI's hand
@@ -55,7 +56,7 @@ public class AIPlayer : Player, IPlayable
         yield return 5;
     }
 
-    public IEnumerator PerformCrystal()
+    public override IEnumerator PerformCrystal()
     {
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
@@ -75,12 +76,12 @@ public class AIPlayer : Player, IPlayable
         yield return 5;
     }
 
-    public IEnumerator PerformGather()
+    public override IEnumerator PerformGather()
     {
         throw new System.NotImplementedException();
     }
 
-    public IEnumerator ChooseTerritoryChallengeCard(Location t)
+    public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Card chosenLand = null;
         int index = UnityEngine.Random.Range(0, 2);
@@ -96,7 +97,7 @@ public class AIPlayer : Player, IPlayable
         yield return 5;
     }
 
-    public IEnumerator ChooseBarriers(int barrierCount)
+    public override IEnumerator ChooseBarriers(int barrierCount)
     {
         List<Card> barriers = new List<Card>();
         for (int i = 0; i <= barrierCount; i++)
@@ -112,7 +113,22 @@ public class AIPlayer : Player, IPlayable
         yield return 5;
     }
 
-    public void PlayCard()
+    public override void PlayCard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override PlayerInteraction GetInteraction()
+    {
+        return gamePlayHook;
+    }
+
+    public override bool GetPlayerUIStatus()
+    {
+        return false;
+    }
+
+    public override IEnumerator PerformEnd()
     {
         throw new NotImplementedException();
     }

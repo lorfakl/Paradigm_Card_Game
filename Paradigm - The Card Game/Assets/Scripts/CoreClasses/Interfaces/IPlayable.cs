@@ -4,6 +4,9 @@ using UnityEngine;
 
 public interface IPlayable
 {
+    PlayerInteraction GetInteraction();
+    bool GetPlayerUIStatus();
+
     IEnumerator ChooseTerritoryChallengeCard(Location t);
     IEnumerator ChooseBarriers(int barrierCount);
 
@@ -11,6 +14,7 @@ public interface IPlayable
     IEnumerator PerformAwaken();
     IEnumerator PerformCentral();
     IEnumerator PerformCrystal();
+    IEnumerator PerformEnd();
     void PlayCard();
 
 }

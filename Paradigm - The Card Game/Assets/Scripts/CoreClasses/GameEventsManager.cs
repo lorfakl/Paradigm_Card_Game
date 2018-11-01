@@ -189,8 +189,10 @@ public class GameEventsManager : MonoBehaviour
             Debug.Log("Player in EventManager is Null as fuck!");
         }
 
-        Instantiate(player1);
-        Instantiate(player2);
+        GameObject player1Obj = Instantiate(player1);
+        GameObject player2Obj = Instantiate(player2);
+        p1.GamePlayHook = player1Obj.GetComponent<PlayerInteraction>();
+        p2.GamePlayHook = player2Obj.GetComponent<PlayerInteraction>();
     }
 
     void Start()
@@ -198,7 +200,7 @@ public class GameEventsManager : MonoBehaviour
         GameObject rm = Instantiate(rendererManager);
         rm.SendMessage("SetPlayers", playerPool);
         print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
+        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.Hand).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count };
         initalData = initalInfo;
     }
 
@@ -254,7 +256,7 @@ public class GameEventsManager : MonoBehaviour
 
         //print("Events enqueued: " + eventQueue.Count);
 
-        //print(gameTime.NoUIPlayer.PlayerDeck.Count);
+        print("Is anybody out there!?!");
 
         if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
@@ -274,13 +276,12 @@ public class GameEventsManager : MonoBehaviour
    /// </summary>
     private void CheckPlayerInfo()
     {
-        
-        int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
+        /*int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
         if(!initalData.SequenceEqual(data))
         {
             OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents(), UIPlayer.GetLocation("Field").GetContents(), NonUIPlayer.GetLocation("Hand").GetContents(), NonUIPlayer.GetLocation("Field").GetContents());
             initalData = data;
-        }
+        }*/
     }
  
 }
