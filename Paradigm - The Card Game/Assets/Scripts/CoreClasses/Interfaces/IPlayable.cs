@@ -15,6 +15,7 @@ public interface IPlayable
     IEnumerator PerformCentral();
     IEnumerator PerformCrystal();
     IEnumerator PerformEnd();
-    void PlayCard();
+    IEnumerator PerformAttack();
+    void PlayCard(Card c);
 
 }

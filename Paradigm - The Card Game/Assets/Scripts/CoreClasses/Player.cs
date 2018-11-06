@@ -30,6 +30,7 @@ public abstract class Player:IPlayable
     public static readonly int timerTime = 45;
     protected int timeLeftOnTimer = timerTime;
     protected PlayerInteraction gamePlayHook;
+    protected int centralActions = 3;
 
     public Player(GameTimeManager mgmt, int addTo = 0)
     {
@@ -191,7 +192,11 @@ public abstract class Player:IPlayable
     }
 
     //End Card Transit
-        
+
+    public void PlayCard(Card c)
+    {
+        c.PlayCard();
+    }
 
     public abstract PlayerInteraction GetInteraction();
     public abstract IEnumerator ChooseTerritoryChallengeCard(Location t);
@@ -201,7 +206,7 @@ public abstract class Player:IPlayable
     public abstract IEnumerator PerformCentral();
     public abstract IEnumerator PerformCrystal();
     public abstract IEnumerator PerformEnd();
-    public abstract void PlayCard();
     public abstract bool GetPlayerUIStatus();
+    public abstract IEnumerator PerformAttack();
 }
 

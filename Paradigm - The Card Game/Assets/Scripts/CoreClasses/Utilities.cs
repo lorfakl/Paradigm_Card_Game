@@ -69,6 +69,7 @@ namespace Utilities
                 throw new Exception("The Card's null dumbass!(CreateCard)");
             }
             //position = cardObject.transform.position;
+            c.GameObj = cardObject;
 
             return cardObject;
         }

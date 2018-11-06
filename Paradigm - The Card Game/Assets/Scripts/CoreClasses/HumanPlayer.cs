@@ -21,6 +21,21 @@ public class HumanPlayer : Player, IPlayable
         get { return timerTime; }
     }
 
+    public override IEnumerator PerformGather()
+    {
+        HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+        Debug.Log("Human Draw a Card!");
+        if(PlayerDeck.Count > 0)
+        {
+            PlayerDeck.Draw();
+        }
+        else
+        {
+            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+        }
+        yield return new WaitForSeconds(1);
+    }
+
     public override IEnumerator PerformAwaken()
     {
         throw new System.NotImplementedException();
@@ -28,7 +43,20 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformCentral()
     {
-        throw new System.NotImplementedException();
+        if(centralActions > 0)
+        {
+            Location hand = GetLocation(ValidLocations.Hand);
+            SetCardScript(false); //Disable the CardScript
+            
+            while(centralActions > 0)
+            {
+                Debug.Log("Not sure what to put in this while loop honestly");
+            }
+
+            SetCardScript(true); //enable it back
+        }
+
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCrystal()
@@ -37,6 +65,7 @@ public class HumanPlayer : Player, IPlayable
         Debug.Log("If its less than three then issa not gonna crystalize which it should be");
         if (this.GetLocation(ValidLocations.SC).Count >= 3)
         {
+            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
             Debug.Log("Human just started crystallized");
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 1);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Grave), 1);
@@ -50,11 +79,10 @@ public class HumanPlayer : Player, IPlayable
 
             this.TimeLeftOnTimer = timerTime;
         }
-    }
-
-    public override IEnumerator PerformGather()
-    {
-        throw new System.NotImplementedException();
+        else
+        {
+            Debug.Log("Less than three bro, no crystalize");
+        }
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
@@ -129,11 +157,6 @@ public class HumanPlayer : Player, IPlayable
         }
     }
 
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
-
     public override PlayerInteraction GetInteraction()
     {
         return gamePlayHook;
@@ -147,5 +170,29 @@ public class HumanPlayer : Player, IPlayable
     public override IEnumerator PerformEnd()
     {
         throw new NotImplementedException();
+    }
+
+    public override IEnumerator PerformAttack()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SetCardScript(bool status)
+    {
+        throw new Exception("You tried to run this...idiot. This function shouldnt disable cardscript it should flip some sort of control switch within CardScript");
+        foreach (Card c in GetLocation(ValidLocations.Hand).GetContents())
+        {
+            try
+            {
+                CardScript cs = c.GameObj.GetComponent<CardScript>();
+                cs.enabled = status;
+                //CentralPhaseCardScript cpcs = c.GameObj.GetComponent<CentralPhaseCardScript>();
+                //cpcs.enabled = !status;
+            }
+            catch (NullReferenceException)
+            {
+                throw new Exception("There is no Cardscript or CentralPhaseCardScript attached to these Gameobjects");
+            }
+        }
     }
 }

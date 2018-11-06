@@ -3,11 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 public class AIPlayer : Player
 {
-    private int aiAttackChance;
     
+    private int initChance = 41;
+    private int spawnChance = 60;
+    private int aiAttackChance = 50;
 
     public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
     {
@@ -18,46 +21,67 @@ public class AIPlayer : Player
     public int AttackChance
     {
         get { return aiAttackChance; }
-        set { aiAttackChance = value; }
     }
 
     public override IEnumerator PerformAwaken()
     {
+        Debug.Log("Wanna do more UI work before implementation");
         throw new System.NotImplementedException();
     }
 
     public override IEnumerator PerformCentral()
     {
-        List<Card> hand = GetLocation(ValidLocations.Hand).GetContents(typeof(Accessor));
-        if (hand != null) //there are accessors in the AI's hand
+        do
         {
-            for (int i = 0; i < 2; i++)
+            Location hand = GetLocation(ValidLocations.Hand);
+
+            if (GetChanceSuccess(spawnChance))//if random suceeds
             {
-                if (hand != null)
+                Debug.Log("AI Spawn");
+                if (hand.Contains(typeof(Accessor)))
                 {
-                    int index = UnityEngine.Random.Range(0, hand.Count);
-                    Card c = hand[index];
-                    GetLocation(ValidLocations.Hand).MoveContent(c, GetLocation(ValidLocations.Field));
-                    hand = GetLocation(ValidLocations.Hand).GetContents(typeof(Accessor));
+                    List<Card> accessors = hand.GetContents(typeof(Accessor));
+                    int index = GetRandomVal(accessors.Count);
+                    Card choice = accessors[index];
+                    PlayCard(choice);
+                    centralActions--;
                 }
             }
 
-            int chance = UnityEngine.Random.Range(0, AttackChance);
-            if (chance == AttackChance)
+            if (GetChanceSuccess(initChance))
             {
-                Debug.Log("Launch an Attack!");
-            }
-        }
-        else //there are not any accessors in the AI's hand
-        {
-            //skip turn?
-        }
+                List<Card> targetCards = null;
+                Debug.Log("AI Initiate");
 
-        yield return 5;
+                if (hand.Contains(typeof(Element)))
+                {
+                    targetCards = hand.GetContents(typeof(Element));
+                }
+                else if(hand.Contains(typeof(Mechanism)))
+                {
+                    targetCards = hand.GetContents(typeof(Mechanism));
+                }
+
+                int index = GetRandomVal(targetCards.Count);
+                Card choice = targetCards[index];
+                PlayCard(choice);
+                centralActions--;
+            }
+
+            if (GetChanceSuccess(aiAttackChance))
+            {
+                Debug.Log("AI Attack");
+                PerformAttack();
+            }
+        } while (centralActions > 0);
+
+        yield return new WaitForSeconds(5);
     }
 
     public override IEnumerator PerformCrystal()
     {
+        Debug.Log("AI Crystallize");
+
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
         {
@@ -72,13 +96,23 @@ public class AIPlayer : Player
                 sc.MoveContent(c, destination);
             }
         }
-
-        yield return 5;
+        yield return new WaitForSeconds(5);
+        
     }
 
     public override IEnumerator PerformGather()
     {
-        throw new System.NotImplementedException();
+        HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+        Debug.Log("AI Draw a Card!");
+        if (PlayerDeck.Count > 0)
+        {
+            PlayerDeck.Draw();
+        }
+        else
+        {
+            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+        }
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
@@ -113,11 +147,6 @@ public class AIPlayer : Player
         yield return 5;
     }
 
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
-
     public override PlayerInteraction GetInteraction()
     {
         return gamePlayHook;
@@ -131,5 +160,28 @@ public class AIPlayer : Player
     public override IEnumerator PerformEnd()
     {
         throw new NotImplementedException();
+    }
+
+    public override IEnumerator PerformAttack()
+    {
+        throw new NotImplementedException();
+    }
+
+    private int GetRandomVal(int max)
+    {
+        return UnityEngine.Random.Range(0, max + 1);
+    }
+
+    private bool GetChanceSuccess(int chanceVal)
+    {
+        int thresh = UnityEngine.Random.Range(0, 101);
+        if(thresh > chanceVal)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

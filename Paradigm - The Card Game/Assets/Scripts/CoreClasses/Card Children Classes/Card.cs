@@ -20,7 +20,8 @@ using UnityEngine;
         private bool isBarrier;
         private bool isDestroyed;
         private bool isValid;
-        private Location currentLocation;
+        protected GameObject g;
+        protected Location currentLocation;
 
         protected void RemoveAttribute(string l)
         {
@@ -84,6 +85,15 @@ using UnityEngine;
         public bool IsValid
         {
             get { return this.isValid; }
+        }
+        
+        /// <summary>
+        /// Provides a link between the Card class instance and the physical GameObject using it's data
+        /// </summary>
+        public GameObject GameObj
+        {
+            get { return g; }
+            set { g = value; }
         }
 
         //Getters

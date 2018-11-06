@@ -65,14 +65,7 @@ public class Accessor: Card
 
     public override void PlayCard()
     {
-        if(this.Owner.PlayerTurn.Phase == TurnPhase.Central)
-        {
-
-        }
-        else
-        {
-
-        }
+        currentLocation.MoveContent(this, this.Owner.GetLocation(ValidLocations.Field));
     }
 
     public override void UseEffect()

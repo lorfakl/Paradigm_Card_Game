@@ -188,6 +188,19 @@ public class Location
         return null;
     }
 
+    public bool Contains(Type cardType)
+    {
+        foreach(Card c in this.contents)
+        {
+            if(c.GetType() == cardType)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
