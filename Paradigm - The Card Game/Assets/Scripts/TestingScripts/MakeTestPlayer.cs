@@ -8,7 +8,7 @@ using Utilities;
 public static class MakeTestPlayer
 {
 
-    private static Player p1;
+    /*private static Player p1;
     private static Player p2;
 
     public static Player P1

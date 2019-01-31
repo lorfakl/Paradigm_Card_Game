@@ -11,23 +11,16 @@ public enum ShapeTrait
 
 public class Trait
 {
-    private string text;
     private string cardName;
     private Card cardOwner;
     private bool isEnabled;
-    private ShapeTrait shape;
+
     public delegate void ActivateTrait(GameEventsArgs e);
     ActivateTrait traitFunction;
 
-    public ShapeTrait Shape
-    {
-        get { return this.shape; }
-    }
+    public ShapeTrait Shape { get; private set; }
 
-    public string TraitText
-    {
-        get { return this.text; }
-    }
+    public string TraitText { get; private set; }
 
     public void LinkToCard(string n)
     {
@@ -48,25 +41,25 @@ public class Trait
     public Trait(string t, string cN)
     {
         GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
-        this.text = t;
-        this.cardName = cN;
+        this.TraitText = t;
+        cardName = cN;
         this.isEnabled = false;
-        this.shape = ShapeTrait.None;
+        this.Shape = ShapeTrait.None;
 
         foreach(var v in Enum.GetValues(typeof(ShapeTrait)))
         {
             //Debug.Log("Trait Constructor");
             //Debug.Log("Raw Text: " + this.text + "Current Enum val: " + v.ToString());
 
-            if (this.text == v.ToString())
+            if (this.TraitText == v.ToString())
             {
                 //Debug.Log("Trait Constructor");
                 //Debug.Log("Raw Text: " + this.text + "Current Enum val: " + v.ToString());
-                this.shape = (ShapeTrait)v;
+                this.Shape = (ShapeTrait)v;
             }
         }
 
-        if(this.shape == ShapeTrait.None)
+        if(this.Shape == ShapeTrait.None)
         {
             //Debug.Log("Trait Constructor: Not a Landscape");
         }  

@@ -54,6 +54,10 @@ public class PlayerInteraction : MonoBehaviour {
         
     }
     
+    public void StatusCheck()
+    {
+        print("Called from playerInteraction");
+    }
 
 	IEnumerator Start ()
     {

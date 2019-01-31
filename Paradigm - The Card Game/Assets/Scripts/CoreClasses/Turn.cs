@@ -25,7 +25,7 @@ public class Turn
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
     private GameTimeManager timeManager;
     private GameEventsManager eventsManager;
-    private PlayerInteraction playerAction;
+    private PlayerInteraction playerAction = new PlayerInteraction();
 
 
     public Turn(IPlayable p, GameTimeManager timeManager)
@@ -40,7 +40,11 @@ public class Turn
         this.isPhaseComplete = false;
         this.isStartDone = false;
         this.timeManager = timeManager;
-        this.playerAction = owner.GetInteraction();
+        if(owner == null)
+        {
+            throw new Exception("Big ol prollem");
+        }
+        
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
     }
@@ -65,6 +69,19 @@ public class Turn
     {
         this.isActiveTurn = true;
         this.phase = TurnPhase.Gather;
+        if(playerAction == null)
+        {
+            PlayerInteraction pi = owner.GetInteraction();
+            if(pi == null)
+            {
+                throw new Exception("PlayerInteraction is Turn.cs is null");
+            }
+            else
+            {
+                playerAction = pi;
+            }
+        }
+      
         this.MoveToNextPhase();
         
     }
@@ -81,9 +98,9 @@ public class Turn
         {
             this.phase = t;
             SetDelegate();
-            GameEventsArgs tturnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
+            GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
             timeManager.AdvanceGameTime();
-            this.PerformPhaseAction(tturnPhaseEvent);
+            this.PerformPhaseAction(turnPhaseEvent);
             Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
        
@@ -137,7 +154,7 @@ public class Turn
 
 
         Debug.Log("Its the beginning of a duel");
-        /*
+        
         if (e.EventOwner.PlayerDeck.Count == 0)
         {
             Debug.Log("You Lose");
@@ -145,13 +162,17 @@ public class Turn
 
         }
         e.EventOwner.PlayerDeck.Draw();
-        */
+        
     }
 
     private void StartAwakenPhase(GameEventsArgs e)
     {
         Debug.Log("Awaken Phase");
-        playerAction.AwakenPhaseStart();
+        if(playerAction != null)
+        {
+            playerAction.AwakenPhaseStart();
+        }
+        
     }
 
     private void StartCentralPhase(GameEventsArgs e)

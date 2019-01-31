@@ -23,18 +23,15 @@ public class GameEventsManager : MonoBehaviour
     public Text nonUIHandCount;
     public Text nonUIBarrierCount;
 
-    private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
     private static List<Card> tcBuffer = new List<Card>();
     private static Card activeLand;
-    private static int numOfTurns = 0;
     private GameTimeManager gameTime = null;
     private Location uiPlayerReturnedLocation = null;
     private Location noUiPlayerReturnedLocation = null;
     private bool setUp = false;
     private List<Player> playerPool = new List<Player>();
     private int playerIndex = 0;
-    private int[] initalData;
     private Player p1;
     private Player p2;
     private Majesty p1Majesty;
@@ -197,11 +194,9 @@ public class GameEventsManager : MonoBehaviour
 
     void Start()
     {
-        GameObject rm = Instantiate(rendererManager);
-        rm.SendMessage("SetPlayers", playerPool);
+        
         print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.Hand).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count };
-        initalData = initalInfo;
+        
     }
 
     // Update is called once per frame
@@ -269,19 +264,6 @@ public class GameEventsManager : MonoBehaviour
             }
 
         }
-    }
-
-   /// <summary>
-   /// THIS IS GARBAGE USE THE OBSERVER PATTERN
-   /// </summary>
-    private void CheckPlayerInfo()
-    {
-        /*int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
-        if(!initalData.SequenceEqual(data))
-        {
-            OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents(), UIPlayer.GetLocation("Field").GetContents(), NonUIPlayer.GetLocation("Hand").GetContents(), NonUIPlayer.GetLocation("Field").GetContents());
-            initalData = data;
-        }*/
     }
  
 }

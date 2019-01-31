@@ -15,7 +15,6 @@ namespace AI
         public static void ChooseTCCard(Player p, Location destination)
         {
             Card chosenLand = null;
-            int index = UnityEngine.Random.Range(0, 2);
             foreach(Card c in p.GetLocation(ValidLocations.DZ).GetContents())
             {
                 if(c.GetType() == typeof(Landscape))

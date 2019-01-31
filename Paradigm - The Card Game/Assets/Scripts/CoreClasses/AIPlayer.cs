@@ -13,6 +13,7 @@ public class AIPlayer : Player
     {
         //Calls constructor defined in Player class
         this.type = "AI";
+        
     }
 
     public int AttackChance
@@ -84,7 +85,6 @@ public class AIPlayer : Player
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Card chosenLand = null;
-        int index = UnityEngine.Random.Range(0, 2);
         foreach (Card c in GetLocation(ValidLocations.DZ).GetContents())
         {
             if (c.GetType() == typeof(Landscape))
@@ -120,7 +120,12 @@ public class AIPlayer : Player
 
     public override PlayerInteraction GetInteraction()
     {
-        return gamePlayHook;
+        gamePlayHook = FindPlayerInteraction("AiPlayer");
+        if (gamePlayHook == null)
+        {
+            throw new Exception("GamePlay Hook is null, check that the IPlayable instances are linked properly to the PlayerInteraction script");
+        }
+        return gamePlayHook; ;
     }
 
     public override bool GetPlayerUIStatus()

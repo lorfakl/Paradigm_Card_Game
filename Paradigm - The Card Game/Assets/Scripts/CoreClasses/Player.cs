@@ -7,6 +7,8 @@ using Utilities;
 using AI;
 
 public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
+
+[RequireComponent(typeof(PlayerInteraction))]
 public abstract class Player:IPlayable
 {
 
@@ -191,7 +193,21 @@ public abstract class Player:IPlayable
     }
 
     //End Card Transit
-        
+
+    protected PlayerInteraction FindPlayerInteraction(string tag)
+    {
+        GameObject go = GameObject.FindGameObjectWithTag(tag);
+        if (go != null)
+        {
+            PlayerInteraction gph = go.GetComponent<PlayerInteraction>();
+            if(gph != null)
+            {
+                Debug.Log("Not null");
+                return gph;
+            }
+        }
+        return null;
+    }
 
     public abstract PlayerInteraction GetInteraction();
     public abstract IEnumerator ChooseTerritoryChallengeCard(Location t);

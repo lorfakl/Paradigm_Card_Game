@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class Phantom : Accessor
 {
-    private string spawnCondText;
-    private bool canSpawn;
-    private Ability spawnCondition;
+    private Ability spawnCondition = null;
 
     public Phantom(string n, string k, System.Int64 p, System.Int64 h, string t, string a, string a2, string a3, string sp)
         :base(n, k, p, h, t, a, a2, a3)
@@ -23,20 +21,12 @@ public class Phantom : Accessor
             sp = a2;
             RemoveAttribute("a");
         }
-        this.spawnCondText = sp;
-        this.canSpawn = false;
-        this.spawnCondition = new Ability(this.getName(), spawnCondText);
+        this.SpawnConditionText = sp;
+        this.CanSpawn = false;
+        this.spawnCondition = new Ability(this.getName(), SpawnConditionText);
     }
 
-    public string SpawnConditionText
-    {
-        get { return this.spawnCondText; }
-        set { this.spawnCondText = value; }
-    }
+    public string SpawnConditionText { get; set; }
 
-    public bool CanSpawn
-    {
-        get { return this.canSpawn; }
-        set { this.canSpawn = value; }
-    }
+    public bool CanSpawn { get; set; }
 }

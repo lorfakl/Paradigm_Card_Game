@@ -18,7 +18,7 @@ public class Ability
     private bool canActivate;
     private Player playerOwner;
 
-    private Condition condition;
+
     private bool canCheckForEvents; //so abilities dont check for events from the deck
     private int timesUsed;
     private Card cardOwner;

@@ -12,6 +12,7 @@ public class HumanPlayer : Player, IPlayable
     {
         //Calls constructor defined in Player class
         this.type = "Human";
+        
     }
 
     
@@ -22,6 +23,11 @@ public class HumanPlayer : Player, IPlayable
     }
 
     public override IEnumerator PerformAwaken()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override IEnumerator PerformGather()
     {
         throw new System.NotImplementedException();
     }
@@ -52,9 +58,14 @@ public class HumanPlayer : Player, IPlayable
         }
     }
 
-    public override IEnumerator PerformGather()
+    public override void PlayCard()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
+    }
+
+    public override IEnumerator PerformEnd()
+    {
+        throw new NotImplementedException();
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
@@ -127,15 +138,15 @@ public class HumanPlayer : Player, IPlayable
         {
 
         }
-    }
-
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
+    } 
 
     public override PlayerInteraction GetInteraction()
     {
+        gamePlayHook = FindPlayerInteraction("Player");
+        if(gamePlayHook == null)
+        {
+            throw new Exception("GamePlay Hook is null, check that the IPlayable instances are linked properly to the PlayerInteraction script");
+        }
         return gamePlayHook;
     }
 
@@ -144,8 +155,5 @@ public class HumanPlayer : Player, IPlayable
         return true;
     }
 
-    public override IEnumerator PerformEnd()
-    {
-        throw new NotImplementedException();
-    }
+    
 }
