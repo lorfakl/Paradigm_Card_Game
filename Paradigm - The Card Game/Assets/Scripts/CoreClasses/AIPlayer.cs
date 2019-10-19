@@ -9,7 +9,7 @@ public class AIPlayer : Player
     private int aiAttackChance;
     
 
-    public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
+    public AIPlayer() : base()
     {
         //Calls constructor defined in Player class
         this.type = "AI";

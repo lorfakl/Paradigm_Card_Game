@@ -14,7 +14,7 @@ public enum NonMoveAction
     Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
 }
 
-public enum EventType
+public enum MyEventType
 {
     Gameplay, VisualEffect, UIUpdate
 }
@@ -30,7 +30,7 @@ public class GameEventsArgs : EventArgs
     private Player playerTarget;
     private List<Card> cardTargets;
     private Card targetCard;
-    private EventType type;
+    private MyEventType type;
 
     public GameEventsArgs() 
     {

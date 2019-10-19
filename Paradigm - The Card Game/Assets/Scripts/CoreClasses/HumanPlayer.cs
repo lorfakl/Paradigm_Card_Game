@@ -8,7 +8,7 @@ public class HumanPlayer : Player, IPlayable
 {
     
 
-    public HumanPlayer(GameTimeManager mgmt, int id) :base(mgmt, id)
+    public HumanPlayer() :base()
     {
         //Calls constructor defined in Player class
         this.type = "Human";

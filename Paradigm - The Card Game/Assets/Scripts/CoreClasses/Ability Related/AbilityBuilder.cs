@@ -65,7 +65,7 @@ namespace Builder
 
         public static bool ThisTurn(GameEventsArgs e, Card c, string m = "")
         {
-            if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.Start)
+            if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.Gather)
             {
                 return true;
             }
