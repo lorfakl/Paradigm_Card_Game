@@ -88,6 +88,7 @@ using UnityEngine;
                     c = (Majesty)this.GetContents()[i];
                 }
             }
+            
             return c;
         }
 
@@ -128,6 +129,24 @@ using UnityEngine;
                 Debug.Log("We Good");
             }
             return lands;
+        }
+
+        public void GameStartSetup()
+        {
+            int count = 0;
+            foreach (Card c in this.contents)
+            {
+                count = count + c.MoveToGameStartLocation();
+            }
+            if (Owner.Type == "AI")
+            {
+                Debug.Log("AI Moved " + count + " cards");
+            }
+            else
+            {
+                Debug.Log("HUman Moved " + count + " cards");
+            }
+            
         }
     }
 

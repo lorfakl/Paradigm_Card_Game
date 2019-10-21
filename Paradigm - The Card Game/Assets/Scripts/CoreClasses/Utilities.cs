@@ -12,11 +12,10 @@ using System.Collections.Generic;
 namespace Utilities
 {
     
+    
     public static class HelperFunctions
     {
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
-
-        //public static string 
 
         /// <summary>
         /// TODO ADD A FILTER TO CHOOSE WHICH CARDS ARE DISPLAYED(most work to be 
@@ -74,58 +73,6 @@ namespace Utilities
             return cardObject;
         }
 
-        public static List<Player> StartTerritoryChallenge(Card p1Pick, Card p2Pick)
-        {
-            List<Player> playerTurnOrder = new List<Player>();
-
-            //throw new Exception("The guts havent been made yet these card objects are hella null");
-            Player p1 = p1Pick.Owner;
-            Player p2 = p2Pick.Owner;
-
-            if (Card.GetShape(p1Pick) > Card.GetShape(p2Pick))
-            {
-                if (Card.GetShape(p1Pick) == ShapeTrait.Triangle)
-                {
-                    playerTurnOrder.Add(p2); //P2 loses TC goes first
-                    playerTurnOrder.Add(p1);
-                    return playerTurnOrder;
-                }
-                else
-                {
-                    playerTurnOrder.Add(p1);//P1 loses TC goes first
-                    playerTurnOrder.Add(p2);
-                    return playerTurnOrder;
-                }
-            }
-            else if (Card.GetShape(p2Pick) == ShapeTrait.Triangle)
-            {
-                playerTurnOrder.Add(p1);//P1 loses TC goes first
-                playerTurnOrder.Add(p2);
-                return playerTurnOrder;
-            }
-            else if (Card.GetShape(p1Pick) == Card.GetShape(p2Pick))
-            {
-                int num = UnityEngine.Random.Range(0, 100);
-                if (num > 50)
-                {
-                    playerTurnOrder.Add(p1);//P1 loses TC goes first
-                    playerTurnOrder.Add(p2);
-                    return playerTurnOrder;
-                }
-                else
-                {
-                    playerTurnOrder.Add(p2);//P2 loses TC goes first
-                    playerTurnOrder.Add(p1);
-                    return playerTurnOrder;
-                }
-            }
-            else
-            {
-                playerTurnOrder.Add(p2);//P2 loses TC goes first
-                playerTurnOrder.Add(p1);
-                return playerTurnOrder;
-            }
-        }
 
         public static MonoBehaviour AccessMonoBehaviour()
         {

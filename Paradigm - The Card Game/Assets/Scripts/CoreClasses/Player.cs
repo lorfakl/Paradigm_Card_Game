@@ -18,7 +18,7 @@ public abstract class Player:IPlayable
     private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
     private static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
     private Deck playerDeck;
-    private string playerID;
+    private int playerID;
  
     private Majesty majesty;
     protected Landscape tcCard;
@@ -29,16 +29,19 @@ public abstract class Player:IPlayable
     
     private bool isPreparedToStart;
     private Location returnedLocation;
-    public static int timerTime = 45;
+    public static readonly int timerTime = 45;
     protected int timeLeftOnTimer = timerTime;
     protected PlayerInteraction gamePlayHook;
 
-    public Player(int timerLength = 45)
+    public Player(GameTimeManager mgmt, int addTo = 0)
     {
-        this.playerID = UnityEngine.Random.Range(0,256).ToString();
-        
+        this.playerID = UnityEngine.Random.Range(0,256);
+        if (addTo != 0)
+        {
+            this.playerID = this.playerID + UnityEngine.Random.Range(510, 2048);
+        }
 
-        this.turn = new Turn(this);
+        this.turn = new Turn(this, mgmt);
 
         foreach (string s in validLocations)
         {
@@ -47,22 +50,23 @@ public abstract class Player:IPlayable
         this.playerDeck = new Deck("Deck", this);
         this.cardLocations["Deck"] = this.playerDeck;
         this.majesty = playerDeck.GetMajesty();
-        timerTime = timerLength;
-        this.isPreparedToStart = false;
-        GameStartSetup();
+
+        this.isPreparedToStart = false;    
     }
 
     public Deck PlayerDeck
     {
         get { return playerDeck; }
+        set { playerDeck = value; }
     }
 
     public Majesty Majesty
     {
         get { return majesty; }
+        set { majesty = value; }
     }
 
-    public string PlayerID
+    public int PlayerID
     {
         get { return playerID; }
     }
@@ -189,25 +193,6 @@ public abstract class Player:IPlayable
     }
 
     //End Card Transit
-
-    private void GameStartSetup()
-    {
-        int count = 0;
-        foreach (Card c in PlayerDeck.GetContents())
-        {
-            count = count + c.MoveToGameStartLocation();
-        }
-        if (PlayerDeck.Owner.Type == "AI")
-        {
-            Debug.Log("AI Moved " + count + " cards");
-        }
-        else
-        {
-            Debug.Log("HUman Moved " + count + " cards");
-        }
-
-        PlayerDeck.Draw(5);
-    }
 
     protected PlayerInteraction FindPlayerInteraction(string tag)
     {

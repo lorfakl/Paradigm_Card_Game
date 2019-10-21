@@ -26,6 +26,7 @@ public class GameEventsManager : MonoBehaviour
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
     private static List<Card> tcBuffer = new List<Card>();
     private static Card activeLand;
+    private GameTimeManager gameTime = null;
     private Location uiPlayerReturnedLocation = null;
     private Location noUiPlayerReturnedLocation = null;
     private bool setUp = false;
@@ -105,12 +106,12 @@ public class GameEventsManager : MonoBehaviour
 
     public Player UIPlayer
     {
-        get { return p2; }
+        get { return gameTime.UIPlayer; }
     }
 
     public Player NonUIPlayer
     {
-        get { return p1; }
+        get { return gameTime.NoUIPlayer; }
     }
 
     public Queue<GameEventsArgs> GetQueue
@@ -161,18 +162,24 @@ public class GameEventsManager : MonoBehaviour
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
-        p1 = new AIPlayer();
+        gameTime = new GameTimeManager();
+        p1 = gameTime.UIPlayer;
         playerPool.Add(p1);
 
-        p2 = new HumanPlayer();
+        p2 = gameTime.NoUIPlayer;
         playerPool.Add(p2);
         print("Litterally just added the shit" + playerPool.Count);
         CardDataBase.MakePlayerDeck(p1);
         print("Made player deck?");
         CardDataBase.MakePlayerDeck(p2);
 
-       
-
+        p1.Majesty = p1.PlayerDeck.GetMajesty();
+        p2.Majesty = p2.PlayerDeck.GetMajesty();
+        print("Should be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
+        print("Human player ID:" + gameTime.UIPlayer.PlayerID);
+        print("AI player ID:" + gameTime.NoUIPlayer.PlayerID);
+        p1.PlayerDeck.GameStartSetup();
+        p2.PlayerDeck.GameStartSetup();
 
         if ( p1 == null || p2 == null)
         {
@@ -188,59 +195,75 @@ public class GameEventsManager : MonoBehaviour
     void Start()
     {
         
-        print("Should still be a full deck" + NonUIPlayer.PlayerDeck.Count);
+        print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
         
-        Location p1Temp = UiPlayerReturnedLocation;
-        Location p2Temp = NoUiPlayerReturnedLocation;
-
-        if (p1Temp == null || p2Temp == null)
-        {
-            print("Someone hasnt selected a TC card yet");
-            if (p1Temp == null)
-            {
-                print("Human hasnt chosen");
-            }
-            else
-            {
-                print("Ai hasnt chosen");
-            }
-        }
-        else
-        {
-            try
-            {
-                playerPool = HelperFunctions.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
-                print("Should be a slightly less full deck" + NonUIPlayer.PlayerDeck.Count);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                print("One of the locations was null");
-                print(e.Message);
-                List<Card> p1Lands = p1.PlayerDeck.GetLandscapesInDeck();
-                List<Card> p2Lands = p2.PlayerDeck.GetLandscapesInDeck();
-                int i = UnityEngine.Random.Range(0, p1Lands.Count);
-                int j = UnityEngine.Random.Range(0, p2Lands.Count);
-                HelperFunctions.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
-
-            }
-            p1 = GrabPlayer();
-            p2 = GrabPlayer();
-            activeLand = p2.TCCard;
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        print("Is anybody out there!?!");
-  
-        if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
+
+        //CheckPlayerInfo();
+        if (!setUp)
         {
-            print("Playing the game");
-            p1.PlayerTurn.StartTurn();
-            p2.PlayerTurn.StartTurn();
-            //Debug.Log("Is this the AI?: " + p1.IsAI);
-        } 
+            Location p1Temp = UiPlayerReturnedLocation;
+
+            Location p2Temp = NoUiPlayerReturnedLocation;
+            if (p1Temp == null || p2Temp == null)
+            {
+                print("Someone hasnt selected a TC card yet");
+                if (p1Temp == null)
+                {
+                    print("Human hasnt chosen");
+                }
+                else
+                {
+                    print("Ai hasnt chosen");
+                }
+
+            }
+            else
+            {
+                try
+                {
+                    playerPool = gameTime.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
+                    print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    print("One of the locations was null");
+                    print(e.Message);
+                    List<Card> p1Lands = p1.PlayerDeck.GetLandscapesInDeck();
+                    List<Card> p2Lands = p2.PlayerDeck.GetLandscapesInDeck();
+                    int i = UnityEngine.Random.Range(0, p1Lands.Count);
+                    int j = UnityEngine.Random.Range(0, p2Lands.Count);
+                    gameTime.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
+
+                }
+                setUp = true;
+                p1 = GrabPlayer();
+                p2 = GrabPlayer();
+                activeLand = p2.TCCard;
+
+            }
+        }
+
+
+        //print("Events enqueued: " + eventQueue.Count);
+
+        print("Is anybody out there!?!");
+
+        if (p1.IsPreparedToStart && p2.IsPreparedToStart)
+        {
+            if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
+            {
+                print("Playing the game");
+                p1.PlayerTurn.StartTurn();
+                p2.PlayerTurn.StartTurn();
+                //Debug.Log("Is this the AI?: " + p1.IsAI);
+            }
+
+        }
     }
  
 }

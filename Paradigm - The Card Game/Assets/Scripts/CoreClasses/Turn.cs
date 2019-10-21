@@ -9,9 +9,8 @@ using Utilities;
 
 public enum TurnPhase
 {
-    Gather, Awaken, Central, Crystallize, End
+    Start, Gather, Awaken, Central, Crystallize, End
 }
-
 
 public class Turn
 {
@@ -19,15 +18,17 @@ public class Turn
     private TurnPhase phase;
     private bool isPhaseComplete;
     private bool isActiveTurn;
+    private bool isStartDone;
     private static bool isDictionaryPrepared = false;
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
+    private GameTimeManager timeManager;
     private GameEventsManager eventsManager;
     private PlayerInteraction playerAction = new PlayerInteraction();
-    private static int turnCycles;
 
-    public Turn(IPlayable p)
+
+    public Turn(IPlayable p, GameTimeManager timeManager)
     {
         if(!isDictionaryPrepared)
         {
@@ -35,8 +36,10 @@ public class Turn
         }
       
         this.owner = p;
-        this.phase = TurnPhase.Gather;
+        this.phase = TurnPhase.Start;
         this.isPhaseComplete = false;
+        this.isStartDone = false;
+        this.timeManager = timeManager;
         if(owner == null)
         {
             throw new Exception("Big ol prollem");
@@ -96,6 +99,7 @@ public class Turn
             this.phase = t;
             SetDelegate();
             GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
+            timeManager.AdvanceGameTime();
             this.PerformPhaseAction(turnPhaseEvent);
             Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
@@ -125,6 +129,7 @@ public class Turn
 
     private void PrepareDictionary()
     {
+        phaseDict.Add(TurnPhase.Start, this.StartGamePhase);
         phaseDict.Add(TurnPhase.Gather, this.StartGatherPhase);
         phaseDict.Add(TurnPhase.Awaken, this.StartAwakenPhase);
         phaseDict.Add(TurnPhase.Central, this.StartCentralPhase);
@@ -133,6 +138,16 @@ public class Turn
         isDictionaryPrepared = true;
     }
 
+    private void StartGamePhase(GameEventsArgs e)
+    {
+        Debug.Log("Value of Start Bool:" + isStartDone);
+        if (!isStartDone)
+        {
+            //HANDLED BY PLAYERINTERACTION this.owner.PlayerDeck.Draw(5);
+            Debug.Log("5 Cards shouldve been added to the hand");
+            this.isStartDone = true;
+        }
+    }
 
     private void StartGatherPhase(GameEventsArgs e)
     {
@@ -177,7 +192,6 @@ public class Turn
     {
         Debug.Log("End Phase");          
         playerAction.EndPhaseStart();
-        turnCycles++;
     }
 
 }
