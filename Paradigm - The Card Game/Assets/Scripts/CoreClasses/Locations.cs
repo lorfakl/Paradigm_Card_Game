@@ -124,6 +124,11 @@ public class Location
     public Card SelectRandomContent()
     {
         int index = UnityEngine.Random.Range(0, this.Count);
+        if(this.contents.Count == 0)
+        {
+            throw new Exception("This location " + this.Name + " is empty and this will fail or Count: " + this.Count);
+        }
+        
         Card c = this.contents[index];
         return c;
     }

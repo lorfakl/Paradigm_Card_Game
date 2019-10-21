@@ -73,6 +73,57 @@ namespace Utilities
             return cardObject;
         }
 
+        public static List<Player> StartTerritoryChallenge(Card p1Pick, Card p2Pick)
+        {
+            List<Player> playerTurnOrder = new List<Player>();
+
+            //throw new Exception("The guts havent been made yet these card objects are hella null");
+
+            if (Card.GetShape(p1Pick) > Card.GetShape(p2Pick))
+            {
+                if (Card.GetShape(p1Pick) == ShapeTrait.Triangle)
+                {
+                    playerTurnOrder.Add(p2Pick.Owner); //p2Pick.Owner loses TC goes first
+                    playerTurnOrder.Add(p1Pick.Owner);
+                    return playerTurnOrder;
+                }
+                else
+                {
+                    playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
+                    playerTurnOrder.Add(p2Pick.Owner);
+                    return playerTurnOrder;
+                }
+            }
+            else if (Card.GetShape(p2Pick) == ShapeTrait.Triangle)
+            {
+                playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
+                playerTurnOrder.Add(p2Pick.Owner);
+                return playerTurnOrder;
+            }
+            else if (Card.GetShape(p1Pick) == Card.GetShape(p2Pick))
+            {
+                int num = UnityEngine.Random.Range(0, 100);
+                if (num > 50)
+                {
+                    playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
+                    playerTurnOrder.Add(p2Pick.Owner);
+                    return playerTurnOrder;
+                }
+                else
+                {
+                    playerTurnOrder.Add(p2Pick.Owner);//p2Pick.Owner loses TC goes first
+                    playerTurnOrder.Add(p1Pick.Owner);
+                    return playerTurnOrder;
+                }
+            }
+            else
+            {
+                playerTurnOrder.Add(p2Pick.Owner);//p2Pick.Owner loses TC goes first
+                playerTurnOrder.Add(p1Pick.Owner);
+                return playerTurnOrder;
+            }
+
+        }
 
         public static MonoBehaviour AccessMonoBehaviour()
         {
@@ -93,7 +144,7 @@ namespace Utilities
                                 NonMoveAction notMoveAction, List<Card> cardTargets)
         {
             GameEventsArgs newEvent = new GameEventsArgs(boardChanges, source, moveAction, notMoveAction, cardTargets);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventManager.PublishEvent(sender, newEvent);
         }
 
         /// <summary>
@@ -105,7 +156,7 @@ namespace Utilities
         public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventManager.PublishEvent(sender, newEvent);
             return newEvent;
         }
 
@@ -118,13 +169,13 @@ namespace Utilities
         public static void RaiseNewEvent(object sender, List<LocationChanges> boardChanges, MoveAction moveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(boardChanges, moveAction);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventManager.PublishEvent(sender, newEvent);
         }
 
         public static void RaiseNewEvent(object sender, Card cardSource, NonMoveAction notMoveAction, Card cardTarget)
         {
             GameEventsArgs newEvent = new GameEventsArgs(cardSource, notMoveAction, cardTarget);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventManager.PublishEvent(sender, newEvent);
         }
 
         /// <summary>

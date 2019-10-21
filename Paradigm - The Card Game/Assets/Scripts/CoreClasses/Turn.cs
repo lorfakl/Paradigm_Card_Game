@@ -23,12 +23,11 @@ public class Turn
     public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
-    private GameTimeManager timeManager;
-    private GameEventsManager eventsManager;
+    private EventManager eventsManager;
     private PlayerInteraction playerAction = new PlayerInteraction();
 
 
-    public Turn(IPlayable p, GameTimeManager timeManager)
+    public Turn(IPlayable p)
     {
         if(!isDictionaryPrepared)
         {
@@ -39,7 +38,7 @@ public class Turn
         this.phase = TurnPhase.Start;
         this.isPhaseComplete = false;
         this.isStartDone = false;
-        this.timeManager = timeManager;
+       
         if(owner == null)
         {
             throw new Exception("Big ol prollem");
@@ -99,9 +98,8 @@ public class Turn
             this.phase = t;
             SetDelegate();
             GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
-            timeManager.AdvanceGameTime();
             this.PerformPhaseAction(turnPhaseEvent);
-            Debug.Log(owner.GetType() + "'s turn phase: " + phase);
+            //Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
        
     }

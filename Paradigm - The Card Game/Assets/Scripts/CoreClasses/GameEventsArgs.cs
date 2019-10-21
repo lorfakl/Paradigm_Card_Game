@@ -14,7 +14,7 @@ public enum NonMoveAction
     Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
 }
 
-public enum EventType
+public enum CustomEventType
 {
     Gameplay, VisualEffect, UIUpdate
 }

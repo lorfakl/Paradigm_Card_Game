@@ -8,14 +8,17 @@ public class HumanPlayer : Player, IPlayable
 {
     
 
-    public HumanPlayer(GameTimeManager mgmt, int id) :base(mgmt, id)
+    public HumanPlayer(int id) :base(id)
     {
         //Calls constructor defined in Player class
         this.type = "Human";
         
     }
 
-    
+    public new bool UIStatus
+    {
+        get { return true; }
+    }
 
     public int OriginalTimerTime
     {
@@ -70,10 +73,11 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
     {
+        
         Location lands = this.PlayerDeck.GetLandsAsLocation();
-        //Debug.Log("Show me your size: " + lands.Count);
+        Debug.Log("Show me your size: " + lands.Count);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
-        //Debug.Log("Now we wait!");
+        Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
         while (this.TimeLeftOnTimer > 0)
@@ -99,7 +103,7 @@ public class HumanPlayer : Player, IPlayable
         }
 
         GameObject gm = GameObject.FindWithTag("GameManager");
-        gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
+        gm.GetComponent<EventManager>().UiPlayerReturnedLocation = temp;
     }
 
     public override IEnumerator ChooseBarriers(int barrierAmount)

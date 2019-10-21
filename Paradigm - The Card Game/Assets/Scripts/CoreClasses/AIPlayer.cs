@@ -9,11 +9,16 @@ public class AIPlayer : Player
     private int aiAttackChance;
     
 
-    public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
+    public AIPlayer(int id) : base(id)
     {
         //Calls constructor defined in Player class
         this.type = "AI";
         
+    }
+
+    public new bool UIStatus
+    {
+        get { return true; }
     }
 
     public int AttackChance
@@ -85,6 +90,7 @@ public class AIPlayer : Player
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Card chosenLand = null;
+        Debug.Log("I think its empty: " + GetLocation(ValidLocations.DZ).Count);
         foreach (Card c in GetLocation(ValidLocations.DZ).GetContents())
         {
             if (c.GetType() == typeof(Landscape))
@@ -92,9 +98,14 @@ public class AIPlayer : Player
                 chosenLand = c;
             }
         }
-        TCCard = chosenLand;
-        GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
-        yield return 5;
+
+        if (chosenLand != null)
+        {
+            Debug.Log("AI is a TC card");
+            TCCard = chosenLand;
+            GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
+            yield return 5;
+        }
     }
 
     public override IEnumerator ChooseBarriers(int barrierCount)

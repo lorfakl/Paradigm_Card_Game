@@ -91,7 +91,7 @@ public class Ability
 
     public Ability(string cName, string text) 
     {
-        GameEventsManager.NotifySubsOfEvent += CheckNewEvent;
+        EventManager.NotifySubsOfEvent += CheckNewEvent;
         this.text = text;
         this.canActivate = false;
         this.canCheckForEvents = false;

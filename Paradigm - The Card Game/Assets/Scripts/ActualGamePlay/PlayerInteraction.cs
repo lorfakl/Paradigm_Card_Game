@@ -50,7 +50,7 @@ public class PlayerInteraction : MonoBehaviour {
             gm = GameObject.FindWithTag("GameManager");
         }
 
-        p = gm.GetComponent<GameEventsManager>().GrabPlayer();
+        p = gm.GetComponent<EventManager>().GrabPlayer();
         
     }
     
@@ -69,15 +69,17 @@ public class PlayerInteraction : MonoBehaviour {
         
         if(p.GetPlayerUIStatus())//need to find a better way of doing this, doesnt work with networked play
         {
-            gm.GetComponent<GameEventsManager>().NoUiPlayerReturnedLocation = temp;
-            gm.GetComponent<GameEventsManager>().NonUIPlayer.IsPreparedToStart = true;
+            gm.GetComponent<EventManager>().NoUiPlayerReturnedLocation = temp;
+            gm.GetComponent<EventManager>().NonUIPlayer.IsPreparedToStart = true;
         }
         else
         {
-            gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
-            gm.GetComponent<GameEventsManager>().UIPlayer.IsPreparedToStart = true;
+            gm.GetComponent<EventManager>().UiPlayerReturnedLocation = temp;
+            gm.GetComponent<EventManager>().UIPlayer.IsPreparedToStart = true;
         }
 
+        Player testP = (Player)p;
+        print("Card count after all things Type:" + testP.GetPlayerUIStatus() + testP.PlayerDeck.Count);
     }
 	
 	// Update is called once per frame

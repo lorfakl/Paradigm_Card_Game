@@ -88,7 +88,7 @@ using UnityEngine;
                     c = (Majesty)this.GetContents()[i];
                 }
             }
-            
+            //MoveContent(c, c.Owner.GetLocation(ValidLocations.DZ), true);
             return c;
         }
 
@@ -124,28 +124,38 @@ using UnityEngine;
                     lands.AddContent(c);
                 }
             }
+
+        if (lands.Count == 0)//check the dormant zone
+            {
+                foreach(Card c in Owner.GetLocation(ValidLocations.DZ).GetContents())
+                {
+                    if (c is Landscape)
+                    {
+                        //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
+                        lands.AddContent(c);
+                    }
+                }
+            }
+
             if(this.Owner == lands.Owner)
             {
                 Debug.Log("We Good");
             }
+
             return lands;
         }
 
-        public void GameStartSetup()
+        public void GameStartSetup(bool status)
         {
             int count = 0;
-            foreach (Card c in this.contents)
+            foreach (Card c in this.contents.ToArray())
             {
                 count = count + c.MoveToGameStartLocation();
+                
             }
-            if (Owner.Type == "AI")
-            {
-                Debug.Log("AI Moved " + count + " cards");
-            }
-            else
-            {
-                Debug.Log("HUman Moved " + count + " cards");
-            }
+            
+            //Debug.Log(status + " Moved " + count + " cards");
+            
             
         }
     }

@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using Utilities;
 using AI;
+using DataBase;
 
 public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
 
@@ -28,12 +29,13 @@ public abstract class Player:IPlayable
     protected string type;
     
     private bool isPreparedToStart;
+    private bool uiStatus;
     private Location returnedLocation;
     public static readonly int timerTime = 45;
     protected int timeLeftOnTimer = timerTime;
     protected PlayerInteraction gamePlayHook;
 
-    public Player(GameTimeManager mgmt, int addTo = 0)
+    public Player(int addTo = 0)
     {
         this.playerID = UnityEngine.Random.Range(0,256);
         if (addTo != 0)
@@ -41,7 +43,7 @@ public abstract class Player:IPlayable
             this.playerID = this.playerID + UnityEngine.Random.Range(510, 2048);
         }
 
-        this.turn = new Turn(this, mgmt);
+        this.turn = new Turn(this);
 
         foreach (string s in validLocations)
         {
@@ -49,9 +51,12 @@ public abstract class Player:IPlayable
         }
         this.playerDeck = new Deck("Deck", this);
         this.cardLocations["Deck"] = this.playerDeck;
-        this.majesty = playerDeck.GetMajesty();
+        this.isPreparedToStart = false;
 
-        this.isPreparedToStart = false;    
+        CardDataBase.MakePlayerDeck(this);
+        PlayerDeck.GameStartSetup(UIStatus);
+
+        this.majesty = playerDeck.GetMajesty();
     }
 
     public Deck PlayerDeck
@@ -117,6 +122,11 @@ public abstract class Player:IPlayable
         set { gamePlayHook = value; }
     }
 
+    public bool UIStatus
+    {
+        get { return uiStatus; }
+    }
+
     public void LoadDeckFromDataBase()
     {
         playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
@@ -146,7 +156,14 @@ public abstract class Player:IPlayable
 
         return cardLocations[l];
     }
-
+    public void ListLocationSizes(bool status)
+    {
+        foreach(string l in validLocations)
+        {
+            Location loc = GetLocation(l);
+            Debug.Log(status + " Name: " + loc.Name + " Count: " + loc.Count);
+        }
+    }
     public int GetLocationCount(string name)
     {
         return this.GetLocation(name).Count;
