@@ -88,7 +88,19 @@ using UnityEngine;
                     c = (Majesty)this.GetContents()[i];
                 }
             }
+            
             //MoveContent(c, c.Owner.GetLocation(ValidLocations.DZ), true);
+            if(c.HP == 0)
+            {
+                foreach(Card crd in this.Owner.GetLocation(ValidLocations.DZ).GetContents())
+                {
+                    if(crd is Majesty)
+                    {
+                        c = (Majesty)crd;
+                    }
+                }
+            }
+
             return c;
         }
 
@@ -125,7 +137,7 @@ using UnityEngine;
                 }
             }
 
-        if (lands.Count == 0)//check the dormant zone
+            if (lands.Count == 0)//check the dormant zone
             {
                 foreach(Card c in Owner.GetLocation(ValidLocations.DZ).GetContents())
                 {

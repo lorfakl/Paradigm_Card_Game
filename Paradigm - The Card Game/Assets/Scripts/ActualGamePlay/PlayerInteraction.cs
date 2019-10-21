@@ -18,29 +18,29 @@ public class PlayerInteraction : MonoBehaviour {
         get { return p; }
     }
 
-    public void GatherPhaseStart()
+    public IEnumerator GatherPhaseStart()
     {
-        GatherPhaseAction();
+        yield return GatherPhaseAction();
     }
 
-    public void AwakenPhaseStart()
+    public IEnumerator AwakenPhaseStart()
     {
-        AwakenPhaseAction();
+        yield return AwakenPhaseAction();
     }
 
-    public void CentralPhaseStart()
+    public IEnumerator CentralPhaseStart()
     {
-        CentralPhaseAction();
+        yield return CentralPhaseAction();
     }
 
-    public void CrystalPhaseStart()
+    public IEnumerator CrystalPhaseStart()
     {
-        CrystalPhaseAction();
+        yield return CrystalPhaseAction();
     }
 
-    public void EndPhaseStart()
+    public IEnumerator EndPhaseStart()
     {
-        EndPhaseAction();
+        yield return EndPhaseAction();
     }
     // Use this for initialization
     void Awake()

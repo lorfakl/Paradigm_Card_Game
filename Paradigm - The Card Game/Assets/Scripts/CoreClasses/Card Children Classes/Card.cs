@@ -110,6 +110,12 @@ using UnityEngine;
         public void setPlayStatus(bool b) { inPlay = b; }
         public void setDestoyedStatus(bool s) { isDestroyed = s; }
 
+        public void PrintData()
+        {
+            string mess = this.Name + "/n" + GetAbilityText() + "/n";
+            Debug.Log(mess);
+        }
+
         public void SetValidity(bool s)
         {
             this.isValid = s;
@@ -178,7 +184,7 @@ using UnityEngine;
             {
                 if(this.GetType().ToString() == typesMoved[i])
                 {
-                    Debug.Log(this.Owner.GetPlayerUIStatus() + "Moved" + this.Name + " is of type " + this.GetType().ToString());
+                    //Debug.Log(this.Owner.GetPlayerUIStatus() + "Moved" + this.Name + " is of type " + this.GetType().ToString());
                     this.getLocation().MoveContent(this, this.getOwner().GetLocation(ValidLocations.DZ));
                     cardsMoved++;
                 }

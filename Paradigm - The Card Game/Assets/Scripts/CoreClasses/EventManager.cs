@@ -168,9 +168,14 @@ public class EventManager : MonoBehaviour
         p2 = new AIPlayer(12);
         playerPool.Add(p2);
 
-        //p1.ListLocationSizes(p1.UIStatus);
+        p1.Majesty = p1.PlayerDeck.GetMajesty();
+        //p1.Majesty.PrintData();
+        p2.Majesty = p2.PlayerDeck.GetMajesty();
+        //p2.Majesty.PrintData();
+        
+        p1.ListLocationSizes(p1.UIStatus);
         print("Now other one");
-        //p2.ListLocationSizes(p2.UIStatus);
+        p2.ListLocationSizes(p2.UIStatus);
 
         if ( p1 == null || p2 == null)
         {
@@ -247,12 +252,12 @@ public class EventManager : MonoBehaviour
 
         if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
-            print(p1.Majesty.Name + "P1 HP: " + p1.Majesty.HP);
-            print(p2.Majesty.Name + "P2 HP: " + p2.Majesty.HP);
+            //print(p1.Majesty.Name + "P1 HP: " + p1.Majesty.HP);
+            //print(p2.Majesty.Name + "P2 HP: " + p2.Majesty.HP);
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
                 print("Playing the game");
-                p1.PlayerTurn.StartTurn();
+                StartCoroutine( p1.PlayerTurn.StartGatherPhase(new GameEventsArgs()));
                 p2.PlayerTurn.StartTurn();
                 //Debug.Log("Is this the AI?: " + p1.IsAI);
             }
