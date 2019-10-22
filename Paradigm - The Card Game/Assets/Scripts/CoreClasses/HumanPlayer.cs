@@ -80,6 +80,7 @@ public class HumanPlayer : Player, IPlayable
         
         Location lands = this.PlayerDeck.GetLandsAsLocation();
         Debug.Log("Show me your size: " + lands.Count);
+        Debug.Log("Show me your ID: " + lands.Owner.PlayerID);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
         Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
@@ -108,6 +109,9 @@ public class HumanPlayer : Player, IPlayable
 
         GameObject gm = GameObject.FindWithTag("GameManager");
         gm.GetComponent<EventManager>().UiPlayerReturnedLocation = temp;
+
+        Debug.Log("Frpm human " + temp.Owner.PlayerID);
+        Debug.Log("This ID: " + temp.Content[0].Owner.PlayerID);
     }
 
     public override IEnumerator ChooseBarriers(int barrierAmount)

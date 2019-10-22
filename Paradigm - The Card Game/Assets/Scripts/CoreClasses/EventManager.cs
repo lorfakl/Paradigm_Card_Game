@@ -225,6 +225,15 @@ public class EventManager : MonoBehaviour
             {
                 try
                 {
+                    if (p2Temp.Owner.PlayerID == p1Temp.Owner.PlayerID)
+                    {
+                        throw new Exception("Somehow these are the same");
+                    }
+                    else
+                    {
+                        Debug.Log("Not the same we are not the same");
+                        Debug.Log("p1 Card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID + "p2 Card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
+                    }
                     playerPool = HelperFunctions.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
                     //print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
                     //print("Human  count Should be a slightly less full deck" + gameTime.UIPlayer.PlayerDeck.Count);

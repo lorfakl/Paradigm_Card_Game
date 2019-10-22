@@ -62,12 +62,14 @@ public class PlayerInteraction : MonoBehaviour {
 	IEnumerator Start ()
     {
         Location temp = new Location("temp", (Player)p);
-        //p.LoadDeckFromDataBase();
+        print("Temp ID: " + temp.Owner.PlayerID);
+        // p.LoadDeckFromDataBase();
         yield return StartCoroutine(p.ChooseTerritoryChallengeCard(temp));
         print("Temp Size: " + temp.Count);
+        
         yield return StartCoroutine(p.ChooseBarriers(12));
         
-        if(p.GetPlayerUIStatus())//need to find a better way of doing this, doesnt work with networked play
+        /*if(p.GetPlayerUIStatus())//need to find a better way of doing this, doesnt work with networked play
         {
             gm.GetComponent<EventManager>().NoUiPlayerReturnedLocation = temp;
             gm.GetComponent<EventManager>().NonUIPlayer.IsPreparedToStart = true;
@@ -76,10 +78,10 @@ public class PlayerInteraction : MonoBehaviour {
         {
             gm.GetComponent<EventManager>().UiPlayerReturnedLocation = temp;
             gm.GetComponent<EventManager>().UIPlayer.IsPreparedToStart = true;
-        }
+        }*/
 
         Player testP = (Player)p;
-        print("Card count after all things Type:" + testP.GetPlayerUIStatus() + testP.PlayerDeck.Count);
+        print("Card count after all things Type:" + testP.PlayerID + testP.PlayerDeck.Count);
     }
 	
 	// Update is called once per frame

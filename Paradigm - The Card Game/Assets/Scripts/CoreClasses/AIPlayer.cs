@@ -100,7 +100,8 @@ public class AIPlayer : Player
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Card chosenLand = null;
-        Debug.Log("I think its empty: " + GetLocation(ValidLocations.DZ).Count);
+        Debug.Log("I think its empty: " + this.GetLocation(ValidLocations.DZ).Count);
+        Debug.Log("This ID: " + this.PlayerID + " the location ID: " + GetLocation(ValidLocations.DZ).Owner.PlayerID);
         foreach (Card c in GetLocation(ValidLocations.DZ).GetContents())
         {
             if (c.GetType() == typeof(Landscape))
@@ -113,7 +114,12 @@ public class AIPlayer : Player
         {
             Debug.Log("AI is a TC card");
             TCCard = chosenLand;
-            GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
+            Debug.Log("This ID: " + TCCard.Owner.PlayerID);
+
+           GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
+            GameObject gm = GameObject.FindWithTag("GameManager");
+            gm.GetComponent<EventManager>().NoUiPlayerReturnedLocation = t;
+            Debug.Log("Frpm AI " + t.Owner.PlayerID);
             yield return new WaitForSeconds(1);
         }
     }

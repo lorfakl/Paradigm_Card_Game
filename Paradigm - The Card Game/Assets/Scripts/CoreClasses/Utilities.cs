@@ -75,6 +75,12 @@ namespace Utilities
 
         public static List<Player> StartTerritoryChallenge(Card p1Pick, Card p2Pick)
         {
+            if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+            {
+                Debug.Log(" They equal: " + p2Pick.Owner.Equals(p1Pick.Owner));
+                Debug.Log(" P2 ID: " + p2Pick.Owner.PlayerID + " P! ID: " + p1Pick.Owner.PlayerID);
+                throw new Exception("Somehow these are the same");
+            }
             List<Player> playerTurnOrder = new List<Player>();
 
             //throw new Exception("The guts havent been made yet these card objects are hella null");
@@ -85,12 +91,21 @@ namespace Utilities
                 {
                     playerTurnOrder.Add(p2Pick.Owner); //p2Pick.Owner loses TC goes first
                     playerTurnOrder.Add(p1Pick.Owner);
+                    if(p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                    {
+                        throw new Exception("Somehow these are the same 7");
+                    }
+
                     return playerTurnOrder;
                 }
                 else
                 {
                     playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
                     playerTurnOrder.Add(p2Pick.Owner);
+                    if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                    {
+                        throw new Exception("Somehow these are the same 6");
+                    }
                     return playerTurnOrder;
                 }
             }
@@ -98,6 +113,10 @@ namespace Utilities
             {
                 playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
                 playerTurnOrder.Add(p2Pick.Owner);
+                if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                {
+                    throw new Exception("Somehow these are the same 5");
+                }
                 return playerTurnOrder;
             }
             else if (Card.GetShape(p1Pick) == Card.GetShape(p2Pick))
@@ -107,12 +126,20 @@ namespace Utilities
                 {
                     playerTurnOrder.Add(p1Pick.Owner);//p1Pick.Owner loses TC goes first
                     playerTurnOrder.Add(p2Pick.Owner);
+                    if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                    {
+                        throw new Exception("Somehow these are the same 4");
+                    }
                     return playerTurnOrder;
                 }
                 else
                 {
                     playerTurnOrder.Add(p2Pick.Owner);//p2Pick.Owner loses TC goes first
                     playerTurnOrder.Add(p1Pick.Owner);
+                    if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                    {
+                        throw new Exception("Somehow these are the same 3");
+                    }
                     return playerTurnOrder;
                 }
             }
@@ -120,6 +147,10 @@ namespace Utilities
             {
                 playerTurnOrder.Add(p2Pick.Owner);//p2Pick.Owner loses TC goes first
                 playerTurnOrder.Add(p1Pick.Owner);
+                if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
+                {
+                    throw new Exception("Somehow these are the same 2");
+                }
                 return playerTurnOrder;
             }
 
