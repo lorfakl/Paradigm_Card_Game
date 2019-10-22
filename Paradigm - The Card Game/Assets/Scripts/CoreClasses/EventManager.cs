@@ -35,7 +35,10 @@ public class EventManager : MonoBehaviour
     private Player p2;
     private Majesty p1Majesty;
     private Majesty p2Majesty;
-    
+    Player firtTurnPlayer;
+    Player secTurnPlayer;
+
+
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
@@ -173,9 +176,9 @@ public class EventManager : MonoBehaviour
         p2.Majesty = p2.PlayerDeck.GetMajesty();
         //p2.Majesty.PrintData();
         
-        p1.ListLocationSizes(p1.UIStatus);
+        p1.ListLocationSizes();
         print("Now other one");
-        p2.ListLocationSizes(p2.UIStatus);
+        p2.ListLocationSizes();
 
         if ( p1 == null || p2 == null)
         {
@@ -238,8 +241,14 @@ public class EventManager : MonoBehaviour
 
                 }
                 setUp = true;
-                p1 = GrabPlayer();
-                p2 = GrabPlayer();
+                firtTurnPlayer = playerPool[0];
+                secTurnPlayer = playerPool[1];
+
+                if(firtTurnPlayer.PlayerID == secTurnPlayer.PlayerID)
+                {
+                    throw new Exception("Thery the same, TC eval function is fucked");
+                }
+
                 activeLand = p2.TCCard;
 
             }
@@ -252,14 +261,14 @@ public class EventManager : MonoBehaviour
 
         if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
-            //print(p1.Majesty.Name + "P1 HP: " + p1.Majesty.HP);
-            //print(p2.Majesty.Name + "P2 HP: " + p2.Majesty.HP);
+            print("P1 HP: " + p1.GetPlayerUIStatus());
+            print("P2 HP: " + p2.GetPlayerUIStatus());
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
                 print("Playing the game");
-                StartCoroutine( p1.PlayerTurn.StartGatherPhase(new GameEventsArgs()));
-                p2.PlayerTurn.StartTurn();
-                //Debug.Log("Is this the AI?: " + p1.IsAI);
+                firtTurnPlayer.PlayerTurn.StartTurn();
+                secTurnPlayer.PlayerTurn.StartTurn();
+                Debug.Log("Is this the AI?: " + p1.PlayerID + " " + p2.PlayerID);
             }
 
         }

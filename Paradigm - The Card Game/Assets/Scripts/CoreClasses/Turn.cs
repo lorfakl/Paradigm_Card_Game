@@ -20,30 +20,30 @@ public class Turn
     private bool isActiveTurn;
     private bool isStartDone;
     private static bool isDictionaryPrepared = false;
-    public delegate IEnumerator TurnPhaseFunction(GameEventsArgs e);
+    public delegate void TurnPhaseFunction(GameEventsArgs e);
     TurnPhaseFunction turnPhaseFunction;
     private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
-    private EventManager eventsManager;
-    private PlayerInteraction playerAction = new PlayerInteraction();
+    private EventManager eventManager;
+    
 
 
     public Turn(IPlayable p)
     {
-        if(!isDictionaryPrepared)
+        if (!isDictionaryPrepared)
         {
             PrepareDictionary();
         }
-      
+
         this.owner = p;
-        this.phase = TurnPhase.Gather;
+        this.phase = TurnPhase.Start;
         this.isPhaseComplete = false;
         this.isStartDone = false;
-       
-        if(owner == null)
+
+        if (owner == null)
         {
             throw new Exception("Big ol prollem");
         }
-        
+        eventManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<EventManager>();
         SetDelegate();
         Debug.Log("New Turn was just created at the " + this.phase.ToString() + " turnPhase which is before the game starts");
     }
@@ -68,21 +68,16 @@ public class Turn
     {
         this.isActiveTurn = true;
         this.phase = TurnPhase.Gather;
-        if(playerAction == null)
-        {
-            PlayerInteraction pi = owner.GetInteraction();
-            if(pi == null)
-            {
-                throw new Exception("PlayerInteraction is Turn.cs is null");
-            }
-            else
-            {
-                playerAction = pi;
-            }
-        }
-      
-        this.MoveToNextPhase();
         
+        if(eventManager == null)
+        {
+            throw new Exception("Event manager in turn class is null");
+        }
+        else
+        {
+            Debug.Log("not null" + eventManager);
+        }
+        this.MoveToNextPhase();
     }
 
     public void EndTurn()
@@ -93,7 +88,7 @@ public class Turn
 
     private void MoveToNextPhase()
     {
-        foreach(TurnPhase t in Enum.GetValues(typeof(TurnPhase)))
+        foreach (TurnPhase t in Enum.GetValues(typeof(TurnPhase)))
         {
             this.phase = t;
             SetDelegate();
@@ -101,7 +96,7 @@ public class Turn
             this.PerformPhaseAction(turnPhaseEvent);
             //Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
-       
+
     }
 
     private void PerformPhaseAction(GameEventsArgs e)
@@ -121,12 +116,13 @@ public class Turn
         }
 
         this.turnPhaseFunction = phaseDict[this.phase];
-        Debug.Log("Current turn phase function: " + phaseDict[this.phase].ToString());
-        
+        //Debug.Log("Current turn phase function: " + phaseDict[this.phase].ToString());
+
     }
 
     private void PrepareDictionary()
     {
+        phaseDict.Add(TurnPhase.Start, this.StartGamePhase);
         phaseDict.Add(TurnPhase.Gather, this.StartGatherPhase);
         phaseDict.Add(TurnPhase.Awaken, this.StartAwakenPhase);
         phaseDict.Add(TurnPhase.Central, this.StartCentralPhase);
@@ -135,53 +131,49 @@ public class Turn
         isDictionaryPrepared = true;
     }
 
-    
-
-    public IEnumerator StartGatherPhase(GameEventsArgs e)
+    private void StartGamePhase(GameEventsArgs e)
     {
-
-
-        Debug.Log("Its the beginning of a duel");
-        
-        /*if (e.EventOwner.PlayerDeck.Count == 0)
+        Debug.Log("Value of Start Bool:" + isStartDone);
+        if (!isStartDone)
         {
-            Debug.Log("You Lose");
-            HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.GameEnd);
-
-        }*/
-        //e.EventOwner.PlayerDeck.Draw();
-        return playerAction.GatherPhaseStart();
-
-
+            //HANDLED BY PLAYERINTERACTION this.owner.PlayerDeck.Draw(5);
+            Debug.Log("5 Cards shouldve been added to the hand");
+            this.isStartDone = true;
+        }
     }
 
-    private IEnumerator StartAwakenPhase(GameEventsArgs e)
+    private void StartGatherPhase(GameEventsArgs e)
     {
-        StartCentralPhase(e);
-        yield return playerAction.AwakenPhaseStart();
-        StartCentralPhase(e);
+        Debug.Log("Its the beginning of a duel");
+        if(owner == null)
+        {
+            throw new Exception("damn bro dont know how that happened");
+        }
+        if(eventManager == null)
+        {
+            throw new Exception("the value changed somehow");
+        }
+        eventManager.StartCoroutine(owner.PerformGather());
     }
 
-    private IEnumerator StartCentralPhase(GameEventsArgs e)
+    private void StartAwakenPhase(GameEventsArgs e)
     {
-        Debug.Log("Central Phase");         
-        yield return playerAction.CentralPhaseStart();
-        StartCrystalPhase(e);
+        eventManager.StartCoroutine(owner.PerformAwaken());
     }
 
-    private IEnumerator StartCrystalPhase(GameEventsArgs e)
+    private void StartCentralPhase(GameEventsArgs e)
     {
-        
-        Debug.Log("Crystal Phase");
-        yield return playerAction.CrystalPhaseStart();
-        StartEndPhase(e);
+        eventManager.StartCoroutine(owner.PerformCentral());
     }
 
-    private IEnumerator StartEndPhase(GameEventsArgs e)
+    private void StartCrystalPhase(GameEventsArgs e)
     {
-        Debug.Log("End Phase");          
-        return playerAction.EndPhaseStart();
+        eventManager.StartCoroutine(owner.PerformCrystal());
+    }
+
+    private void StartEndPhase(GameEventsArgs e)
+    {
+        eventManager.StartCoroutine(owner.PerformEnd());
     }
 
 }
-

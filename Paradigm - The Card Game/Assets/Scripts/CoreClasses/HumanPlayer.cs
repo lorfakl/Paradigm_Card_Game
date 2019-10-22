@@ -27,17 +27,20 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformAwaken()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Awaken phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformGather()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Gather phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCentral()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Central phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCrystal()
@@ -61,12 +64,13 @@ public class HumanPlayer : Player, IPlayable
         }
     }
 
-    public override void PlayCard()
+    public override IEnumerator PerformEnd()
     {
-        throw new NotImplementedException();
+        Debug.Log("End phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
-    public override IEnumerator PerformEnd()
+    public override void PlayCard()
     {
         throw new NotImplementedException();
     }
@@ -159,5 +163,12 @@ public class HumanPlayer : Player, IPlayable
         return true;
     }
 
-    
+    public override void ListLocationSizes()
+    {
+        foreach (string l in validLocations)
+        {
+            Location loc = GetLocation(l);
+            Debug.Log(true + " Name: " + loc.Name + " Count: " + loc.Count);
+        }
+    }
 }

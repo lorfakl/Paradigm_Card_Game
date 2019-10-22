@@ -18,7 +18,7 @@ public class AIPlayer : Player
 
     public new bool UIStatus
     {
-        get { return true; }
+        get { return false; }
     }
 
     public int AttackChance
@@ -27,13 +27,21 @@ public class AIPlayer : Player
         set { aiAttackChance = value; }
     }
 
+    public override IEnumerator PerformGather()
+    {
+        Debug.Log("AI Gather phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
+    }
+
     public override IEnumerator PerformAwaken()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("AI Awaken phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCentral()
     {
+        Debug.Log("AI Central Phase");
         List<Card> hand = GetLocation(ValidLocations.Hand).GetContents(typeof(Accessor));
         if (hand != null) //there are accessors in the AI's hand
         {
@@ -59,11 +67,12 @@ public class AIPlayer : Player
             //skip turn?
         }
 
-        yield return 5;
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCrystal()
     {
+        Debug.Log("AI Crystal Phase");
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
         {
@@ -79,12 +88,13 @@ public class AIPlayer : Player
             }
         }
 
-        yield return 5;
+        yield return new WaitForSeconds(1);
     }
 
-    public override IEnumerator PerformGather()
+    public override IEnumerator PerformEnd()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("AI End phase");//throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
@@ -104,12 +114,13 @@ public class AIPlayer : Player
             Debug.Log("AI is a TC card");
             TCCard = chosenLand;
             GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
-            yield return 5;
+            yield return new WaitForSeconds(1);
         }
     }
 
     public override IEnumerator ChooseBarriers(int barrierCount)
     {
+        Debug.Log("Does this even get called? AI BZ");
         List<Card> barriers = new List<Card>();
         for (int i = 0; i <= barrierCount; i++)
         {
@@ -121,7 +132,7 @@ public class AIPlayer : Player
             barriers.Add(c);
         }
         PlayerDeck.MoveContent(barriers, GetLocation(ValidLocations.BZ));
-        yield return 5;
+        yield return new WaitForSeconds(1);
     }
 
     public override void PlayCard()
@@ -144,8 +155,12 @@ public class AIPlayer : Player
         return false;
     }
 
-    public override IEnumerator PerformEnd()
+    public override void ListLocationSizes()
     {
-        throw new NotImplementedException();
+        foreach (string l in validLocations)
+        {
+            Location loc = GetLocation(l);
+            Debug.Log(false + " Name: " + loc.Name + " Count: " + loc.Count);
+        }
     }
 }

@@ -17,7 +17,7 @@ public abstract class Player:IPlayable
     
         
     private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
-    private static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
+    protected static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
     private Deck playerDeck;
     private int playerID;
  
@@ -28,7 +28,7 @@ public abstract class Player:IPlayable
 
     protected string type;
     
-    private bool isPreparedToStart;
+    protected bool isPreparedToStart;
     private bool uiStatus;
     private Location returnedLocation;
     public static readonly int timerTime = 45;
@@ -137,7 +137,7 @@ public abstract class Player:IPlayable
         return GetLocation(l.ToString());
     }
 
-    private Location GetLocation(string l)
+    protected Location GetLocation(string l)
     {
         bool validVal = false;
         foreach (string s in validLocations)
@@ -156,14 +156,7 @@ public abstract class Player:IPlayable
 
         return cardLocations[l];
     }
-    public void ListLocationSizes(bool status)
-    {
-        foreach(string l in validLocations)
-        {
-            Location loc = GetLocation(l);
-            Debug.Log(status + " Name: " + loc.Name + " Count: " + loc.Count);
-        }
-    }
+    
     public int GetLocationCount(string name)
     {
         return this.GetLocation(name).Count;
@@ -236,5 +229,8 @@ public abstract class Player:IPlayable
     public abstract IEnumerator PerformEnd();
     public abstract void PlayCard();
     public abstract bool GetPlayerUIStatus();
+
+    public abstract void ListLocationSizes();
+    
 }
 

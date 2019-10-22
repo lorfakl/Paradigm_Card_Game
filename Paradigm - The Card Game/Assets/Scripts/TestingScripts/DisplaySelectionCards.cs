@@ -114,7 +114,7 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
-        Debug.Log("Awake Displaying Cards?");
+        //Debug.Log("Awake Displaying Cards?");
     }
 
     private void Start()
@@ -122,7 +122,7 @@ public class DisplaySelectionCards :MonoBehaviour
         //print("Start!");
         canvas = gameObject.transform.parent.parent;
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
-        Debug.Log("Start Displaying Cards?");
+        //Debug.Log("Start Displaying Cards?");
         DisplayCards();
         
     }
@@ -131,20 +131,20 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         //print("Total Cards to Select: " + numToMove);
         //print("Cards Selected: " + selectedCards.Count);
-        print("Number of Cards left to select: " + leftToMove);
+        //print("Number of Cards left to select: " + leftToMove);
 
         if (isDoneSelecting)
         {
             if (source.Owner.PlayerID == destination.Owner.PlayerID)
             {
-                print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
+                //print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
             }
             else
             {
                 print("theres a fickin problem");
             }
             source.MoveContent(selectedCards, destination);
-            print(destination.Count);
+            //print(destination.Count);
             //IsDoneChoosing(this, destination);
             Destroy(canvas.gameObject);
         }
@@ -152,12 +152,12 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void DisplayCards()
     {
-        Debug.Log("Displaying Cards? " + (source != null && destination != null) + "so why: " + source.Name);
+        //Debug.Log("Displaying Cards? " + (source != null && destination != null) + "so why: " + source.Name);
         if (source != null && destination != null)
         {                                          
             foreach(Card c in source.GetContents())
             {
-                Debug.Log("Eat my fucking ass");
+                //Debug.Log("Eat my fucking ass");
                 CreateCard(c);
             }
         }
@@ -171,7 +171,7 @@ public class DisplaySelectionCards :MonoBehaviour
     private void CreateCard(Card c)
     {
         //cardPrefab.GetComponent<CardScript>().SetCard(c);
-        Debug.Log("Cards?");
+        //Debug.Log("Cards?");
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
         cardObject.SendMessage("SetMode", true);
         cardObject.GetComponent<CardScript>().SetCard(c);
