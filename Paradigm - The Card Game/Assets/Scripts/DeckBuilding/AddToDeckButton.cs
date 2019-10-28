@@ -24,7 +24,7 @@ public class AddToDeckButton : MonoBehaviour {
         if(manager.GetComponent<DeckManager>().GetDeck().Count > 0)
         {
             Debug.Log("Something has been loaded");
-            foreach(Card c in playerDeck.GetContents())
+            foreach(Card c in playerDeck)
             {
                 Debug.Log("Card UI to Add: " + c.getName());
                 cardToAdd = c;
@@ -68,7 +68,7 @@ public class AddToDeckButton : MonoBehaviour {
     {
         print("Card has been added deck size: " + playerDeck.Count);
 
-        foreach (Card c in playerDeck.GetContents())
+        foreach (Card c in playerDeck)
         {
             print(c.getName());
         }

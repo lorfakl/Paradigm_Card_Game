@@ -30,7 +30,7 @@ public class DeckManager : MonoBehaviour {
             playDeck.AddCard(c);
             Debug.Log("Card Added: " + c.getName());
         }
-        initialDeck.AddRange(playDeck.GetContents());
+        initialDeck.AddRange(playDeck.Content);
 
         Debug.Log("Called Awake Function");
     }
@@ -70,7 +70,7 @@ public class DeckManager : MonoBehaviour {
         {
             for(int i =0; i < playDeck.Count; i++)
             {
-                if(initialDeck[i] != playDeck.GetContents()[i])
+                if(initialDeck[i] != playDeck.Content[i])
                 {
                     return true;
                 }

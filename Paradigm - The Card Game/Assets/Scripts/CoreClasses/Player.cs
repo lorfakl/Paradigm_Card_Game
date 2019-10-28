@@ -7,7 +7,7 @@ using Utilities;
 using AI;
 using DataBase;
 
-public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
+public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, DZ, Field, Deck}
 
 [RequireComponent(typeof(PlayerInteraction))]
 public abstract class Player:IPlayable
@@ -17,14 +17,14 @@ public abstract class Player:IPlayable
     
         
     private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
-    protected static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "PZ", "DZ", "Field", "Deck" };
+    protected static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "DZ", "Field", "Deck" };
     private Deck playerDeck;
     private int playerID;
  
     private Majesty majesty;
     protected Landscape tcCard;
     private List<Landscape> lands;
-    private Turn turn;
+    protected Turn turn;
 
     protected string type;
     
@@ -43,7 +43,7 @@ public abstract class Player:IPlayable
             this.playerID = this.playerID + UnityEngine.Random.Range(510, 2048);
         }
 
-        this.turn = new Turn(this);
+        //this.turn = new Turn(this);
 
         foreach (string s in validLocations)
         {
@@ -54,7 +54,7 @@ public abstract class Player:IPlayable
         this.isPreparedToStart = false;
 
         CardDataBase.MakePlayerDeck(this);
-        PlayerDeck.GameStartSetup(UIStatus);
+        //PlayerDeck.GameStartSetup(UIStatus);
 
         this.majesty = playerDeck.GetMajesty();
     }
@@ -184,7 +184,7 @@ public abstract class Player:IPlayable
     //Housing Keeping functions
     public void DestroyBarrier()
     {
-        Card c = this.cardLocations["BZ"].GetContents()[0];
+        Card c = this.cardLocations["BZ"].Content[0];
         c.setBarrierStatus(false);
         c.getLocation().MoveContent(c, this.cardLocations["SC"]);
     }

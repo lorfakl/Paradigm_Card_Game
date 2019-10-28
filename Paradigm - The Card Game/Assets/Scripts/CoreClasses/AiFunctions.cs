@@ -15,7 +15,7 @@ namespace AI
         public static void ChooseTCCard(Player p, Location destination)
         {
             Card chosenLand = null;
-            foreach(Card c in p.GetLocation(ValidLocations.DZ).GetContents())
+            foreach(Card c in p.GetLocation(ValidLocations.DZ))
             {
                 if(c.GetType() == typeof(Landscape))
                 {

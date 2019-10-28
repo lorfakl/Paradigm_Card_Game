@@ -189,6 +189,7 @@ using UnityEngine;
                     cardsMoved++;
                 }
             }
+            //Debug.Log("Name: " + Name + " ID: " + Owner.PlayerID);
             return cardsMoved;
         }
 

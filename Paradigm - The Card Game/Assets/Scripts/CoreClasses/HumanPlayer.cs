@@ -12,7 +12,7 @@ public class HumanPlayer : Player, IPlayable
     {
         //Calls constructor defined in Player class
         this.type = "Human";
-        
+        this.turn = new Turn(this);
     }
 
     public new bool UIStatus
@@ -45,7 +45,7 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformCrystal()
     {
-        Debug.Log("SC count: " + this.GetLocation(ValidLocations.SC).Count);
+        //Debug.Log("SC count: " + this.GetLocation(ValidLocations.SC).Count);
         Debug.Log("If its less than three then issa not gonna crystalize which it should be");
         if (this.GetLocation(ValidLocations.SC).Count >= 3)
         {
@@ -77,12 +77,12 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
     {
-        
-        Location lands = this.PlayerDeck.GetLandsAsLocation();
-        Debug.Log("Show me your size: " + lands.Count);
-        Debug.Log("Show me your ID: " + lands.Owner.PlayerID);
+        //Debug.Log("I'd expect this to be AI's ID: " + this.GetLocation(ValidLocations.DZ).Content[0].Owner.PlayerID);
+        Location lands = this.PlayerDeck.GetLandsAsLocation(this.GetLocation(ValidLocations.DZ));
+        //Debug.Log("Show me your size: " + lands.Count);
+        //Debug.Log("Show me your ID: " + lands.Owner.PlayerID);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
-        Debug.Log("Now we wait!");
+        //Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
         while (this.TimeLeftOnTimer > 0)
@@ -99,7 +99,7 @@ public class HumanPlayer : Player, IPlayable
         }
         catch
         {
-            Debug.Log("Choosing for you");
+            //Debug.Log("Choosing for you");
             lands.MoveRandomContent(temp);
             GameObject cd = GameObject.FindWithTag("CardSelectionDisplay");
             cd.GetComponentInChildren<DisplaySelectionCards>().SendSelectionEnd();
@@ -110,8 +110,8 @@ public class HumanPlayer : Player, IPlayable
         GameObject gm = GameObject.FindWithTag("GameManager");
         gm.GetComponent<EventManager>().UiPlayerReturnedLocation = temp;
 
-        Debug.Log("Frpm human " + temp.Owner.PlayerID);
-        Debug.Log("This ID: " + temp.Content[0].Owner.PlayerID);
+        //Debug.Log("Frpm human " + temp.Owner.PlayerID);
+        //Debug.Log("This ID: " + temp.Content[0].Owner.PlayerID);
     }
 
     public override IEnumerator ChooseBarriers(int barrierAmount)
@@ -139,7 +139,7 @@ public class HumanPlayer : Player, IPlayable
                         c = PlayerDeck.SelectRandomContent();
                     }
 
-                    Debug.Log(c.Name);
+                    //Debug.Log(c.Name);
                     displayScript.UpdateSelectedCards(c, true);
                 }
 
@@ -150,6 +150,8 @@ public class HumanPlayer : Player, IPlayable
         {
 
         }
+
+        this.IsPreparedToStart = true;
     } 
 
     public override PlayerInteraction GetInteraction()
@@ -172,7 +174,7 @@ public class HumanPlayer : Player, IPlayable
         foreach (string l in validLocations)
         {
             Location loc = GetLocation(l);
-            Debug.Log(true + " Name: " + loc.Name + " Count: " + loc.Count);
+            //Debug.Log(true + " Name: " + loc.Name + " Count: " + loc.Count);
         }
     }
 }

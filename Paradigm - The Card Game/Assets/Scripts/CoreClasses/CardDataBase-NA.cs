@@ -155,7 +155,7 @@ namespace DataBase
 
                     string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
                     playerDeckContents.Clear(); //removes old saved deck data for when the game doesn't restart so this static class is still in memory
-                    foreach (Card c in d.GetContents())
+                    foreach (Card c in d)
                     {
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
                         //Debug.Log(cmd.CommandText);

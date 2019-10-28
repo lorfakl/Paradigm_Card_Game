@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using UnityEngine;
 using Utilities;
@@ -14,7 +15,7 @@ public struct LocationChanges  //this struct is for containing infomation regard
 
 public enum ContainsCriteria { Name, Type, Reference, ID}
 
-public class Location
+public class Location : IEnumerable<Card>
 {
     private string name;
     private Player owner;
@@ -23,6 +24,9 @@ public class Location
     protected static Dictionary<Location, List<LocationChanges>> changesDict = 
                    new Dictionary<Location, List<LocationChanges>>(); 
     protected List<LocationChanges> changes;
+
+    public delegate void LocationContents(Location l);
+    public event LocationContents locationChangesEvent;
 
     public string Name
     {
@@ -65,8 +69,6 @@ public class Location
     {
         return this.changes;
     }
-
-    public List<Card> GetContents() { return this.contents; }
 
     public List<Card> GetContents(Type t)
     {
@@ -193,6 +195,32 @@ public class Location
         return null;
     }
 
+    public bool Contains(Type type)
+    {
+        foreach(Card c in contents)
+        {
+            if(c.GetType() == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public IEnumerator<Card> GetEnumerator()
+    {
+        foreach(Card c in contents)
+        {
+            yield return c;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
@@ -204,6 +232,8 @@ public class Location
         try
         {
             CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
+            locationChangesEvent?.Invoke(this); //checks if null if not then calls subscribers
+
         }
         catch (Exception)
         {
@@ -242,6 +272,7 @@ public class Location
         try
         {
             CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
+            locationChangesEvent?.Invoke(this); //checks if null if not then calls subscribers
         }
         catch(Exception)
         {

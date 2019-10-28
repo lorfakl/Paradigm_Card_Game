@@ -13,7 +13,7 @@ public class AIPlayer : Player
     {
         //Calls constructor defined in Player class
         this.type = "AI";
-        
+        this.turn = new Turn(this);
     }
 
     public new bool UIStatus
@@ -76,11 +76,11 @@ public class AIPlayer : Player
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
         {
-            List<Card> shardList = sc.GetContents();
+            List<Card> shardList = sc.Content;
             Enum[] validLocations = new Enum[] { ValidLocations.Deck, ValidLocations.Grave, ValidLocations.BZ };
             for (int i = 0; i < 3; i++)
             {
-                shardList = sc.GetContents();
+                shardList = sc.Content;
                 int index = UnityEngine.Random.Range(0, shardList.Count);
                 Card c = shardList[index];
                 Location destination = GetLocation((ValidLocations)validLocations[i]);
@@ -100,9 +100,9 @@ public class AIPlayer : Player
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Card chosenLand = null;
-        Debug.Log("I think its empty: " + this.GetLocation(ValidLocations.DZ).Count);
-        Debug.Log("This ID: " + this.PlayerID + " the location ID: " + GetLocation(ValidLocations.DZ).Owner.PlayerID);
-        foreach (Card c in GetLocation(ValidLocations.DZ).GetContents())
+        //Debug.Log("I think its empty: " + this.GetLocation(ValidLocations.DZ).Count);
+        //Debug.Log("This ID: " + this.PlayerID + " the location ID: " + GetLocation(ValidLocations.DZ).Owner.PlayerID);
+        foreach (Card c in GetLocation(ValidLocations.DZ))
         {
             if (c.GetType() == typeof(Landscape))
             {
@@ -112,11 +112,13 @@ public class AIPlayer : Player
 
         if (chosenLand != null)
         {
-            Debug.Log("AI is a TC card");
+            //Debug.Log("AI is a TC card");
             TCCard = chosenLand;
-            Debug.Log("This ID: " + TCCard.Owner.PlayerID);
+            //Debug.Log("This ID: " + TCCard.Owner.PlayerID);
+            TCCard.Owner = this;
+            //Debug.Log("Post Change This ID: " + TCCard.Owner.PlayerID);
 
-           GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
+            GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
             GameObject gm = GameObject.FindWithTag("GameManager");
             gm.GetComponent<EventManager>().NoUiPlayerReturnedLocation = t;
             Debug.Log("Frpm AI " + t.Owner.PlayerID);
@@ -139,6 +141,7 @@ public class AIPlayer : Player
         }
         PlayerDeck.MoveContent(barriers, GetLocation(ValidLocations.BZ));
         yield return new WaitForSeconds(1);
+        this.IsPreparedToStart = true;
     }
 
     public override void PlayCard()

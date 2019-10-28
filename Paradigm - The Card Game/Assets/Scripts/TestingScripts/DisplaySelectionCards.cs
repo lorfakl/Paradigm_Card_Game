@@ -155,7 +155,7 @@ public class DisplaySelectionCards :MonoBehaviour
         //Debug.Log("Displaying Cards? " + (source != null && destination != null) + "so why: " + source.Name);
         if (source != null && destination != null)
         {                                          
-            foreach(Card c in source.GetContents())
+            foreach(Card c in source)
             {
                 //Debug.Log("Eat my fucking ass");
                 CreateCard(c);

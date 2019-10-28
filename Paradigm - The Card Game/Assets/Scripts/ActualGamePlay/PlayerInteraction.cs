@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 public class PlayerInteraction : MonoBehaviour {
     public GameObject player;
@@ -18,30 +19,6 @@ public class PlayerInteraction : MonoBehaviour {
         get { return p; }
     }
 
-    public IEnumerator GatherPhaseStart()
-    {
-        yield return GatherPhaseAction();
-    }
-
-    public IEnumerator AwakenPhaseStart()
-    {
-        yield return AwakenPhaseAction();
-    }
-
-    public IEnumerator CentralPhaseStart()
-    {
-        yield return CentralPhaseAction();
-    }
-
-    public IEnumerator CrystalPhaseStart()
-    {
-        yield return CrystalPhaseAction();
-    }
-
-    public IEnumerator EndPhaseStart()
-    {
-        yield return EndPhaseAction();
-    }
     // Use this for initialization
     void Awake()
     {
@@ -81,7 +58,11 @@ public class PlayerInteraction : MonoBehaviour {
         }*/
 
         Player testP = (Player)p;
-        print("Card count after all things Type:" + testP.PlayerID + testP.PlayerDeck.Count);
+        print("Card count after all things Type:" + testP.PlayerID + " " + testP.PlayerDeck.Count + " Cards in hand: " + testP.GetLocationCount("Hand"));
+
+        //print("Now other one");
+        //p2.ListLocationSizes();
+        DisplayFirstHand(testP);
     }
 	
 	// Update is called once per frame
@@ -98,32 +79,24 @@ public class PlayerInteraction : MonoBehaviour {
         return true;
     }
 
-    private IEnumerator GatherPhaseAction()
+    private void DisplayFirstHand(Player p)
     {
-        print("Gather Coroutine started?");
-        yield return StartCoroutine(p.PerformGather());
-    }
-
-    private IEnumerator AwakenPhaseAction()
-    {
-        print("Awaken Coroutine started?");
-        yield return StartCoroutine(p.PerformAwaken());
-    }
-    private IEnumerator CentralPhaseAction()
-    {
-        print("Central Coroutine started?");
-        yield return StartCoroutine(p.PerformCentral());
-    }
-
-    private IEnumerator CrystalPhaseAction()
-    {
-        print("Crystal Coroutine started?");
-        yield return StartCoroutine(p.PerformCrystal());
-    }
-
-    private IEnumerator EndPhaseAction()
-    {
-        print("End Coroutine started?");
-        yield return StartCoroutine(p.PerformEnd());
+        p.PlayerDeck.Draw(5);
+        if(p.GetPlayerUIStatus())
+        {
+            GameObject hand = GameObject.FindGameObjectWithTag("playerHand");
+            Vector3 pos = new Vector3(-52f, -25, 0);
+            float offset = 30f;
+            foreach (Card c in p.GetLocation(ValidLocations.Hand))
+            {
+                GameObject go = HelperFunctions.CreateCard(c, false, hand.transform);
+                go.GetComponent<RectTransform>().position = pos;
+                pos.x += offset;
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }

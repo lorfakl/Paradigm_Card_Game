@@ -41,8 +41,13 @@ using UnityEngine;
                 this.AddContent(c);
                 deckFam = c.getFam();  //set the family of the deck to the family of the first card added
                 c.setLocation(this);
+                c.MoveToGameStartLocation();
+                //Debug.Log("Name: " + c.Name + " ID: " + c.Owner.PlayerID);
+                //Debug.Log("Location Name: " + c.getLocation().Name + " ID: " + c.getLocation().Owner.PlayerID);
+
                 return true;
             }
+
             else if (c.getFam().Name != deckFam.Name)
             {
                 //Debug.Log("Cannot add Card, does not Match Deck Family");
@@ -52,6 +57,9 @@ using UnityEngine;
             {
                 this.AddContent(c);
                 c.setLocation(this);
+                c.MoveToGameStartLocation();
+                //Debug.Log("Name: " + c.Name + " ID: " + c.Owner.PlayerID);
+                //Debug.Log("Location Name: " + c.getLocation().Name + " ID: " + c.getLocation().Owner.PlayerID);
                 return true;
             }
         }
@@ -83,16 +91,16 @@ using UnityEngine;
             Majesty c = new Majesty();
             for (int i = 0; i < this.Count; i++)
             {
-                if (this.GetContents()[i] is Majesty)
+                if (this.Content[i] is Majesty)
                 {
-                    c = (Majesty)this.GetContents()[i];
+                    c = (Majesty)this.Content[i];
                 }
             }
             
             //MoveContent(c, c.Owner.GetLocation(ValidLocations.DZ), true);
             if(c.HP == 0)
             {
-                foreach(Card crd in this.Owner.GetLocation(ValidLocations.DZ).GetContents())
+                foreach(Card crd in this.Owner.GetLocation(ValidLocations.DZ))
                 {
                     if(crd is Majesty)
                     {
@@ -109,7 +117,7 @@ using UnityEngine;
         {
             List<Card> landscapesInDeck = new List<Card>();
 
-            foreach (Card c in this.GetContents())
+            foreach (Card c in this)
             {
                 //Debug.Log(c.getName() + " " + c.getType());
                 if (c is Landscape)
@@ -127,9 +135,10 @@ using UnityEngine;
         public Location GetLandsAsLocation()
         {
             Location lands = new Location("Landscapes", this.Owner);
-            foreach (Card c in this.GetContents())
+            Debug.Log("New location ID: " + lands.Owner.PlayerID);
+            foreach (Card c in this)
             {
-                //Debug.Log(c.getName() + " " + c.getType());
+                //Debug.Log(c.getName() + " " + c.Owner.PlayerID);
                 if (c is Landscape)
                 {
                     //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
@@ -139,8 +148,10 @@ using UnityEngine;
 
             if (lands.Count == 0)//check the dormant zone
             {
-                foreach(Card c in Owner.GetLocation(ValidLocations.DZ).GetContents())
+                foreach(Card c in this.Owner.GetLocation(ValidLocations.DZ))
                 {
+                    Debug.Log(c.getName() + " " + c.Owner.PlayerID);
+                    Debug.Log("Is the ID still the same: " + this.Owner.GetLocation(ValidLocations.DZ).Owner.PlayerID);
                     if (c is Landscape)
                     {
                         //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
@@ -152,6 +163,30 @@ using UnityEngine;
             if(this.Owner == lands.Owner)
             {
                 Debug.Log("We Good");
+            }
+
+            return lands;
+        }
+
+        public Location GetLandsAsLocation(Location l)
+        {
+            Location lands = new Location("Landscapes", this.Owner);
+            //Debug.Log("What should be other location ID: " + l.Owner.PlayerID);
+            //Debug.Log("New location ID: " + lands.Owner.PlayerID);
+            if (lands.Count == 0)//check the dormant zone
+            {
+                foreach (Card c in l)
+                {
+                    Debug.Log(c.getName() + " " + c.Owner.PlayerID);
+                    c.Owner = this.Owner;
+                    //Debug.Log("Post Change " + c.getName() + " " + c.Owner.PlayerID);
+                    //Debug.Log("Is the ID still the same: " + l.Owner.PlayerID);
+                    if (c is Landscape)
+                    {
+                        //Debug.Log("It's a Landscape " + c.getName() + " " + c.GetType().ToString());
+                        lands.AddContent(c);
+                    }
+                }
             }
 
             return lands;

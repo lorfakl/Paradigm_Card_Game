@@ -14,20 +14,20 @@ public enum TurnPhase
 
 public class Turn
 {
-    private IPlayable owner;
+    private Player owner;
     private TurnPhase phase;
     private bool isPhaseComplete;
     private bool isActiveTurn;
     private bool isStartDone;
-    private static bool isDictionaryPrepared = false;
-    public delegate void TurnPhaseFunction(GameEventsArgs e);
+    private bool isDictionaryPrepared = false;
+    public delegate void TurnPhaseFunction();
     TurnPhaseFunction turnPhaseFunction;
-    private static Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
+    private Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
     private EventManager eventManager;
     
 
 
-    public Turn(IPlayable p)
+    public Turn(Player p)
     {
         if (!isDictionaryPrepared)
         {
@@ -64,6 +64,12 @@ public class Turn
         get { return this.isActiveTurn; }
     }
 
+    public Player Owner
+    {
+        get { return this.owner; }
+        //set { owner = value; }
+    }
+
     public void StartTurn()
     {
         this.isActiveTurn = true;
@@ -92,16 +98,16 @@ public class Turn
         {
             this.phase = t;
             SetDelegate();
-            GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
-            this.PerformPhaseAction(turnPhaseEvent);
+            //GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
+            this.PerformPhaseAction(/*turnPhaseEvent*/);
             //Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
 
     }
 
-    private void PerformPhaseAction(GameEventsArgs e)
+    private void PerformPhaseAction(/*GameEventsArgs e*/)
     {
-        this.turnPhaseFunction(e);
+        this.turnPhaseFunction();
     }
 
     /// <summary>
@@ -131,7 +137,7 @@ public class Turn
         isDictionaryPrepared = true;
     }
 
-    private void StartGamePhase(GameEventsArgs e)
+    private void StartGamePhase(/*GameEventsArgs e*/)
     {
         Debug.Log("Value of Start Bool:" + isStartDone);
         if (!isStartDone)
@@ -142,7 +148,7 @@ public class Turn
         }
     }
 
-    private void StartGatherPhase(GameEventsArgs e)
+    private void StartGatherPhase(/*GameEventsArgs e*/)
     {
         Debug.Log("Its the beginning of a duel");
         if(owner == null)
@@ -153,27 +159,42 @@ public class Turn
         {
             throw new Exception("the value changed somehow");
         }
+        //Owner.GamePlayHook.GatherPhaseAction();
+        //GameObject.FindGameObjectWithTag(GetTag(owner.GetPlayerUIStatus())).GetComponent<PlayerInteraction>().GatherPhaseAction();
         eventManager.StartCoroutine(owner.PerformGather());
     }
 
-    private void StartAwakenPhase(GameEventsArgs e)
+    private void StartAwakenPhase(/*GameEventsArgs e*/)
     {
-        eventManager.StartCoroutine(owner.PerformAwaken());
+       eventManager.StartCoroutine(owner.PerformAwaken());
     }
 
-    private void StartCentralPhase(GameEventsArgs e)
+    private void StartCentralPhase(/*GameEventsArgs e*/)
     {
         eventManager.StartCoroutine(owner.PerformCentral());
     }
 
-    private void StartCrystalPhase(GameEventsArgs e)
+    private void StartCrystalPhase(/*GameEventsArgs e*/)
     {
+        Debug.Log(Owner.GetPlayerUIStatus());
+        Debug.Log(Owner.PlayerID);
         eventManager.StartCoroutine(owner.PerformCrystal());
     }
 
-    private void StartEndPhase(GameEventsArgs e)
+    private void StartEndPhase(/*GameEventsArgs e*/)
     {
         eventManager.StartCoroutine(owner.PerformEnd());
     }
 
+    private string GetTag(bool status)
+    {
+        if(status)
+        {
+            return "Player";
+        }
+        else
+        {
+            return "AiPlayer";
+        }
+    }
 }

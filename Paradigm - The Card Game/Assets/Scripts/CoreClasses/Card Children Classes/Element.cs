@@ -30,7 +30,10 @@ public class Element: Card
 
     public override void PlayCard()
     {
-        throw new NotImplementedException();
+        if(Owner.GetLocation(ValidLocations.Field).Contains(typeof(Accessor)))
+        {
+            Debug.Log("Waiting for events implementation");
+        }
     }
 
     public override void UseEffect()

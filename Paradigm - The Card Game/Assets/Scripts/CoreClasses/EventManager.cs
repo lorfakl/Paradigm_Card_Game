@@ -44,16 +44,6 @@ public class EventManager : MonoBehaviour
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
     //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
 
-    /// <summary>
-    /// the delegate for updating the UI, sends out a message to the RenderManager's subscriber
-    /// </summary>
-    /// <param name="data">Int array to update the values of the player and enemy card locations</param>
-    /// <param name="uiHand">A list of cards that represent the cards that the player has in their hand</param>
-    /// <param name="uiField">A list of cards that represent the cards that the player has on their field</param>
-    /// <param name="noUiField">A list of cards that represent the cards that the enemy has on their field</param>
-    /// <param name="noUiHand">A list of cards that represent the cards that the enemy has in their hand</param>
-    public delegate void UIUpdateHandler(int[] data, List<Card> uiHand, List<Card> uiField, List<Card> noUiHand, List<Card> noUiField); 
-    public static event UIUpdateHandler UpdateUI; 
 
     private static void OnEventAdd(object sender, GameEventsArgs data)
     {
@@ -61,6 +51,7 @@ public class EventManager : MonoBehaviour
         {
             NotifySubsOfEvent(sender, data);
         }
+        
     }
 
     /// <summary>
@@ -85,13 +76,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    private static void OnPlayerInfoChange(int[] data, List<Card> handCards, List<Card> fieldCards, List<Card> enemyHandCards, List<Card> enemyFieldCards)
-    {
-        if(UpdateUI != null)
-        {
-            UpdateUI(data, handCards, fieldCards, enemyHandCards, enemyFieldCards);
-        }
-    }
+  
 
 
     public Location UiPlayerReturnedLocation
@@ -170,7 +155,9 @@ public class EventManager : MonoBehaviour
 
         p2 = new AIPlayer(12);
         playerPool.Add(p2);
-
+        Debug.Log("The desks are the same: " + p1.PlayerDeck.Equals(p2.PlayerDeck));
+        Debug.Log("P1 Deck ID: " + p1.PlayerDeck.Owner.PlayerID);
+        Debug.Log("P2 Deck ID: " + p2.PlayerDeck.Owner.PlayerID);
         p1.Majesty = p1.PlayerDeck.GetMajesty();
         //p1.Majesty.PrintData();
         p2.Majesty = p2.PlayerDeck.GetMajesty();
@@ -231,10 +218,12 @@ public class EventManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("Not the same we are not the same");
-                        Debug.Log("p1 Card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID + "p2 Card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
+                        //Debug.Log("Not the same we are not the same");
+                        //Debug.Log("UI PLayer location owner ID: " + UiPlayerReturnedLocation.Owner.PlayerID + " here's the card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
+                        //Debug.Log("NOUI PLayer location owner ID: " + NoUiPlayerReturnedLocation.Owner.PlayerID + " here's the card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
+                        //Debug.Log("p1 Card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID + "p2 Card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
                     }
-                    playerPool = HelperFunctions.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
+                    playerPool = HelperFunctions.StartTerritoryChallenge(p1Temp.Content[0], p2Temp.Content[0]);
                     //print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
                     //print("Human  count Should be a slightly less full deck" + gameTime.UIPlayer.PlayerDeck.Count);
                 }
@@ -253,7 +242,7 @@ public class EventManager : MonoBehaviour
                 firtTurnPlayer = playerPool[0];
                 secTurnPlayer = playerPool[1];
 
-                if(firtTurnPlayer.PlayerID == secTurnPlayer.PlayerID)
+                if(firtTurnPlayer.Equals(secTurnPlayer))
                 {
                     throw new Exception("Thery the same, TC eval function is fucked");
                 }
@@ -261,6 +250,10 @@ public class EventManager : MonoBehaviour
                 activeLand = p2.TCCard;
 
             }
+
+            //firtTurnPlayer.PlayerTurn.Owner = 
+            //secTurnPlayer.PlayerTurn
+
         }
 
 
@@ -270,14 +263,34 @@ public class EventManager : MonoBehaviour
 
         if (p1.IsPreparedToStart && p2.IsPreparedToStart)
         {
-            print("P1 HP: " + p1.GetPlayerUIStatus());
-            print("P2 HP: " + p2.GetPlayerUIStatus());
+            //print("P1 HP: " + p1.GetPlayerUIStatus());
+            //print("P2 HP: " + p2.GetPlayerUIStatus());
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
+                for(int i = 0; i < playerPool.Count; i++)
+                {
+                    if (firtTurnPlayer.Equals(secTurnPlayer))
+                    {
+                        throw new Exception("Somehow these are the same");
+                    }
+                    print("Playing the game");
+                    playerPool[i].PlayerTurn.StartTurn();
+                    print("Status: " + playerPool[i].PlayerTurn.Owner.GetPlayerUIStatus());
+                    //print("Are the turn object the same " + )
+                    print("I Value: " + i);
+                    //playerPool[i].PlayerTurn.StartTurn();
+                   // print("Status: " + secTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
+                }
+                /* if (firtTurnPlayer.Equals(secTurnPlayer))
+                {
+                    throw new Exception("Somehow these are the same");
+                }
                 print("Playing the game");
                 firtTurnPlayer.PlayerTurn.StartTurn();
+                print("Status: " + firtTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
                 secTurnPlayer.PlayerTurn.StartTurn();
-                Debug.Log("Is this the AI?: " + p1.PlayerID + " " + p2.PlayerID);
+                print("Status: " + secTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
+                //Debug.Log("Is this the AI?: " + p1.PlayerID + " " + p2.PlayerID);*/
             }
 
         }

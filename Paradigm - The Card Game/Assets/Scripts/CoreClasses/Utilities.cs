@@ -15,6 +15,7 @@ namespace Utilities
     
     public static class HelperFunctions
     {
+        public static List<GameObject> objectsCreated = new List<GameObject>();
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
 
         /// <summary>
@@ -78,6 +79,7 @@ namespace Utilities
             if (p2Pick.Owner.PlayerID == p1Pick.Owner.PlayerID)
             {
                 Debug.Log(" They equal: " + p2Pick.Owner.Equals(p1Pick.Owner));
+                Debug.Log(" The Cards equal: " + p2Pick.Equals(p1Pick));
                 Debug.Log(" P2 ID: " + p2Pick.Owner.PlayerID + " P! ID: " + p1Pick.Owner.PlayerID);
                 throw new Exception("Somehow these are the same");
             }
