@@ -27,29 +27,68 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformAwaken()
     {
-        Debug.Log("Awaken phase");//throw new System.NotImplementedException();
-        yield return new WaitForSeconds(1);
+        Debug.Log("Starting Human");
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Awaken);
+
+        HelperFunctions.SelectCards(GetLocation(ValidLocations.DZ), GetLocation(ValidLocations.PZ), 1);
+
+        while (this.TimeLeftOnTimer > 0)
+        {
+            yield return new WaitForSeconds(1);
+            Debug.Log("Time left on Awaken timer: " + this.TimeLeftOnTimer);
+            this.TimeLeftOnTimer--;
+        }
+
+        this.TimeLeftOnTimer = timerTime;
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
     public override IEnumerator PerformGather()
     {
-        Debug.Log("Gather phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("Human Gather phase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        //Debug.Log("Human Gather phase");//throw new System.NotImplementedException();
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Gather);
+
+        PlayerDeck.Draw();//GameAction Candidate
+
+        
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("Human Gather phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCentral()
     {
-        Debug.Log("Central phase");//throw new System.NotImplementedException();
-        yield return new WaitForSeconds(1);
+        Debug.Log("Human Central phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("Human Central phase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Central);
+        while (this.TimeLeftOnTimer > 0)
+        {
+            yield return new WaitForSeconds(1);
+            Debug.Log("Time left on Central timer: " + this.TimeLeftOnTimer);
+            this.TimeLeftOnTimer--;
+        }
+
+        this.TimeLeftOnTimer = timerTime;
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("Human Central phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
     public override IEnumerator PerformCrystal()
     {
         //Debug.Log("SC count: " + this.GetLocation(ValidLocations.SC).Count);
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("Human Cystalize phase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
         Debug.Log("If its less than three then issa not gonna crystalize which it should be");
         if (this.GetLocation(ValidLocations.SC).Count >= 3)
         {
             Debug.Log("Human just started crystallized");
+            HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Crystallize);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 1);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Grave), 1);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Deck), 1);
@@ -62,11 +101,20 @@ public class HumanPlayer : Player, IPlayable
 
             this.TimeLeftOnTimer = timerTime;
         }
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("Human Cystalize phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
     public override IEnumerator PerformEnd()
     {
+
         Debug.Log("End phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.End);
+        
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
@@ -85,7 +133,8 @@ public class HumanPlayer : Player, IPlayable
         //Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
-        while (this.TimeLeftOnTimer > 0)
+        
+        while (this.TimeLeftOnTimer > 0) //would turn this into a function but Iterators can use refs ins or outs as parameters, everytime C#!
         {
             yield return new WaitForSeconds(1);
             Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);

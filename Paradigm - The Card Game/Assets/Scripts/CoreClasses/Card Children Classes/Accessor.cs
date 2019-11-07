@@ -30,6 +30,7 @@ public class Accessor: Card
         Family fam = new Family(k);
         this.setFam(fam);
         bonds = new List<Card>();
+        Decorations.Add(new CombatDecoration());
             
     }
 

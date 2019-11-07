@@ -158,6 +158,18 @@ namespace Utilities
 
         }
 
+        public static System.Collections.IEnumerator CallAfterTimer(int timeOnTimer, Action action)
+        {
+            while (timeOnTimer > 0)
+            {
+                yield return new WaitForSeconds(1);
+                Debug.Log("Time left on Turnphase completion timer: " + timeOnTimer);
+                timeOnTimer--;
+            }
+
+            action();
+        }
+
         public static MonoBehaviour AccessMonoBehaviour()
         {
             GameObject monoAccess = GameObject.FindWithTag("MonobehaviourAccessor");
@@ -181,7 +193,7 @@ namespace Utilities
         }
 
         /// <summary>
-        /// Raise a new event that is not related to a specific card but instead its a core game event like a turn phase transition or dimension twist
+        /// Raise a new event that is not related to a specific card but instead its a core game event like a dimension twist
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="owner"></param>
@@ -189,6 +201,19 @@ namespace Utilities
         public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
+            EventManager.PublishEvent(sender, newEvent);
+            return newEvent;
+        }
+
+        /// <summary>
+        /// Raise a new event that is exclusivly for Turn phases
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="owner"></param>
+        /// <param name="target"></param>
+        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, TurnPhase phase)
+        {
+            GameEventsArgs newEvent = new GameEventsArgs(owner, phase);
             EventManager.PublishEvent(sender, newEvent);
             return newEvent;
         }

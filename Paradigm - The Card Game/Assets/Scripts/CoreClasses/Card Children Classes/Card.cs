@@ -13,6 +13,7 @@ using UnityEngine;
         private int id;
         private List<Ability> abilities = new List<Ability>();
         private List<Trait> traits = new List<Trait>();
+        private List<CardDecoration> decorations = new List<CardDecoration>();
         private Family fam;
         private Player owner;
         private bool isShard;
@@ -85,7 +86,11 @@ using UnityEngine;
         {
             get { return this.isValid; }
         }
-
+        
+        public List<CardDecoration> Decorations
+        {
+            get { return decorations; }
+        }
         //Getters
         public string getName() { return name; }
         public List<Ability> getAbilities() { return abilities; }

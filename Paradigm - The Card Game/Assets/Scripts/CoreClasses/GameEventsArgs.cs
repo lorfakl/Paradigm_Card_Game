@@ -27,6 +27,7 @@ public class GameEventsArgs : EventArgs
     private List<LocationChanges> boardMovements;
     private MoveAction moveAction;
     private NonMoveAction notMoveAction;
+    private TurnPhase phase;
     private Player playerTarget;
     private List<Card> cardTargets;
     private Card targetCard;
@@ -75,7 +76,7 @@ public class GameEventsArgs : EventArgs
     }
 
     /// <summary>
-    /// This constructor is for game events that aren't sources from a card, like turn phase changes
+    /// This constructor is for game events that aren't sources from a card
     /// </summary>
     /// <param name="owner"></param>
     /// <param name="target"></param>
@@ -87,6 +88,23 @@ public class GameEventsArgs : EventArgs
         this.boardMovements = null;
         this.playerTarget = target;
         this.notMoveAction = nonMoveAction;
+        this.moveAction = MoveAction.None;
+        this.turn = owner.PlayerTurn;
+        this.cardTargets = null;
+
+    }
+
+    /// <summary>
+    /// This constructor is exclusivily for turn phases
+    /// </summary>
+    /// <param name="owner"></param>
+    /// <param name="phase"></param>
+    public GameEventsArgs(Player owner, TurnPhase phase)
+    {
+        this.owner = owner;
+        this.cardSource = null;
+        this.boardMovements = null;
+        this.phase = phase;
         this.moveAction = MoveAction.None;
         this.turn = owner.PlayerTurn;
         this.cardTargets = null;

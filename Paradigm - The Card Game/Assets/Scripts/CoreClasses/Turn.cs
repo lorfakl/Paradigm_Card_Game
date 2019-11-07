@@ -16,10 +16,11 @@ public class Turn
 {
     private Player owner;
     private TurnPhase phase;
-    private bool isPhaseComplete;
-    private bool isActiveTurn;
+    private bool isPhaseActive;
+    //private bool isActiveTurn;
     private bool isStartDone;
     private bool isDictionaryPrepared = false;
+    public static bool isActiveTurn;
     public delegate void TurnPhaseFunction();
     TurnPhaseFunction turnPhaseFunction;
     private Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
@@ -36,7 +37,7 @@ public class Turn
 
         this.owner = p;
         this.phase = TurnPhase.Start;
-        this.isPhaseComplete = false;
+        this.isPhaseActive = false;
         this.isStartDone = false;
 
         if (owner == null)
@@ -54,14 +55,15 @@ public class Turn
         set { phase = value; }
     }
 
-    public bool IsPhaseComplete
+    public bool IsPhaseActive
     {
-        get { return this.isPhaseComplete; }
+        get { return this.isPhaseActive; }
+        set { this.isPhaseActive = value; }
     }
 
     public bool ActiveTurn
     {
-        get { return this.isActiveTurn; }
+        get { return isActiveTurn; }
     }
 
     public Player Owner
@@ -72,7 +74,7 @@ public class Turn
 
     public void StartTurn()
     {
-        this.isActiveTurn = true;
+        isActiveTurn = true;
         this.phase = TurnPhase.Gather;
         
         if(eventManager == null)
@@ -89,7 +91,7 @@ public class Turn
     public void EndTurn()
     {
         this.phase = TurnPhase.End;
-        this.isActiveTurn = false;
+        isActiveTurn = false;
     }
 
     private void MoveToNextPhase()
@@ -100,7 +102,6 @@ public class Turn
             SetDelegate();
             //GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
             this.PerformPhaseAction(/*turnPhaseEvent*/);
-            //Debug.Log(owner.GetType() + "'s turn phase: " + phase);
         }
 
     }
@@ -139,13 +140,7 @@ public class Turn
 
     private void StartGamePhase(/*GameEventsArgs e*/)
     {
-        Debug.Log("Value of Start Bool:" + isStartDone);
-        if (!isStartDone)
-        {
-            //HANDLED BY PLAYERINTERACTION this.owner.PlayerDeck.Draw(5);
-            Debug.Log("5 Cards shouldve been added to the hand");
-            this.isStartDone = true;
-        }
+        
     }
 
     private void StartGatherPhase(/*GameEventsArgs e*/)
@@ -159,31 +154,58 @@ public class Turn
         {
             throw new Exception("the value changed somehow");
         }
-        //Owner.GamePlayHook.GatherPhaseAction();
-        //GameObject.FindGameObjectWithTag(GetTag(owner.GetPlayerUIStatus())).GetComponent<PlayerInteraction>().GatherPhaseAction();
-        eventManager.StartCoroutine(owner.PerformGather());
+
+        if (!isPhaseActive)
+        {
+            eventManager.StartCoroutine(owner.PerformGather());
+        }
     }
 
     private void StartAwakenPhase(/*GameEventsArgs e*/)
     {
-       eventManager.StartCoroutine(owner.PerformAwaken());
+        if(!isPhaseActive)
+        {
+            eventManager.StartCoroutine(owner.PerformAwaken());
+        }
     }
 
     private void StartCentralPhase(/*GameEventsArgs e*/)
     {
-        eventManager.StartCoroutine(owner.PerformCentral());
+        if (!isPhaseActive)
+        {
+            eventManager.StartCoroutine(owner.PerformCentral());
+        }
+        else
+        {
+            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartCentralPhase));
+        }
     }
 
     private void StartCrystalPhase(/*GameEventsArgs e*/)
     {
-        Debug.Log(Owner.GetPlayerUIStatus());
-        Debug.Log(Owner.PlayerID);
-        eventManager.StartCoroutine(owner.PerformCrystal());
+        //Debug.Log(Owner.GetPlayerUIStatus());
+        //Debug.Log(Owner.PlayerID);
+        if (!isPhaseActive)
+        {
+            eventManager.StartCoroutine(owner.PerformCrystal());
+        }
+        else
+        {
+            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartCrystalPhase));
+        }
     }
 
     private void StartEndPhase(/*GameEventsArgs e*/)
     {
-        eventManager.StartCoroutine(owner.PerformEnd());
+        if (!isPhaseActive)
+        {
+            eventManager.StartCoroutine(owner.PerformEnd());
+            isActiveTurn = false;
+        }
+        else
+        {
+            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartEndPhase));
+        }
     }
 
     private string GetTag(bool status)

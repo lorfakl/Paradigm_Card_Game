@@ -7,7 +7,7 @@ using Utilities;
 using AI;
 using DataBase;
 
-public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, DZ, Field, Deck}
+public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, DZ, Field, Deck, PZ}
 
 [RequireComponent(typeof(PlayerInteraction))]
 public abstract class Player:IPlayable
@@ -17,7 +17,7 @@ public abstract class Player:IPlayable
     
         
     private Dictionary<string, Location> cardLocations = new Dictionary<string, Location>();
-    protected static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "DZ", "Field", "Deck" };
+    protected static string[] validLocations = { "Hand", "Grave", "LockZ", "BZ", "LandZ", "SC", "DZ", "Field", "Deck", "PZ" };
     private Deck playerDeck;
     private int playerID;
  

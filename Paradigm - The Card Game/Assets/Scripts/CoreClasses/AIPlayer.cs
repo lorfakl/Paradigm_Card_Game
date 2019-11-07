@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 public class AIPlayer : Player
 {
@@ -30,18 +31,36 @@ public class AIPlayer : Player
     public override IEnumerator PerformGather()
     {
         Debug.Log("AI Gather phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Gather);
+
+        
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformAwaken()
     {
         Debug.Log("AI Awaken phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Awaken);
+
+
+        
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCentral()
     {
         Debug.Log("AI Central Phase");
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Central);
         List<Card> hand = GetLocation(ValidLocations.Hand).GetContents(typeof(Accessor));
         if (hand != null) //there are accessors in the AI's hand
         {
@@ -67,12 +86,18 @@ public class AIPlayer : Player
             //skip turn?
         }
 
+        //yield return new WaitForSeconds(1);
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformCrystal()
     {
         Debug.Log("AI Crystal Phase");
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Crystallize);
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
         {
@@ -88,12 +113,23 @@ public class AIPlayer : Player
             }
         }
 
+        //yield return new WaitForSeconds(1);
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformEnd()
     {
         Debug.Log("AI End phase");//throw new System.NotImplementedException();
+        PlayerTurn.IsPhaseActive = true;
+        Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
+        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.End);
+
+
+        //yield return new WaitForSeconds(1);
+        PlayerTurn.IsPhaseActive = false;
+        Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
 

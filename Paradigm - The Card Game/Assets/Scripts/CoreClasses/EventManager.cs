@@ -267,7 +267,17 @@ public class EventManager : MonoBehaviour
             //print("P2 HP: " + p2.GetPlayerUIStatus());
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
-                for(int i = 0; i < playerPool.Count; i++)
+                if(!Turn.isActiveTurn)
+                {
+                    GrabPlayer().PlayerTurn.StartTurn();
+                    //activeIndex++;
+                }
+                else
+                {
+                    Debug.Log("A turn is active please wait");
+                }
+
+                /*for (int i = 0; i < playerPool.Count; i++)
                 {
                     if (firtTurnPlayer.Equals(secTurnPlayer))
                     {
@@ -275,9 +285,9 @@ public class EventManager : MonoBehaviour
                     }
                     print("Playing the game");
                     playerPool[i].PlayerTurn.StartTurn();
-                    print("Status: " + playerPool[i].PlayerTurn.Owner.GetPlayerUIStatus());
+                    //print("Status: " + playerPool[i].PlayerTurn.Owner.GetPlayerUIStatus());
                     //print("Are the turn object the same " + )
-                    print("I Value: " + i);
+                    //print("I Value: " + i);
                     //playerPool[i].PlayerTurn.StartTurn();
                    // print("Status: " + secTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
                 }
