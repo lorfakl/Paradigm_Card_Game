@@ -20,7 +20,7 @@ public abstract class CardDecoration
 
     public static CardDecoration CheckForDecoration(Card card, Decorations d)
     {
-        foreach(CardDecoration decor in card.Decorations)
+        foreach(CardDecoration decor in card.GetDecorations())
         {
             if(decor.Type == d)
             {

@@ -13,7 +13,7 @@ using UnityEngine;
         private int id;
         private List<Ability> abilities = new List<Ability>();
         private List<Trait> traits = new List<Trait>();
-        private List<CardDecoration> decorations = new List<CardDecoration>();
+        private Dictionary<Decorations, CardDecoration> decorations = new Dictionary<Decorations, CardDecoration>();
         private Family fam;
         private Player owner;
         private bool isShard;
@@ -87,10 +87,17 @@ using UnityEngine;
             get { return this.isValid; }
         }
         
-        public List<CardDecoration> Decorations
+        public List<CardDecoration> GetDecorations()
         {
-            get { return decorations; }
+            List<CardDecoration> cardDecorations = new List<CardDecoration>();
+            foreach(KeyValuePair<Decorations, CardDecoration> entry in decorations)
+            {
+                cardDecorations.Add(entry.Value);
+            }
+
+            return cardDecorations;
         }
+
         //Getters
         public string getName() { return name; }
         public List<Ability> getAbilities() { return abilities; }
@@ -115,6 +122,19 @@ using UnityEngine;
         public void setPlayStatus(bool b) { inPlay = b; }
         public void setDestoyedStatus(bool s) { isDestroyed = s; }
 
+        public void AddDecoration(CardDecoration cd, Decorations d)
+        {
+            try
+            {
+                decorations.Add(d, cd);
+            }
+            catch(Exception ex)
+            {
+                Debug.Log(ex);
+            }
+        }
+        
+    
         public void PrintData()
         {
             string mess = this.Name + "/n" + GetAbilityText() + "/n";

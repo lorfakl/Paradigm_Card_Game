@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using Utilities;
+using HelperFunctions;
 using AI;
 using DataBase;
 
@@ -127,6 +127,7 @@ public abstract class Player:IPlayable
         get { return uiStatus; }
     }
 
+
     public void LoadDeckFromDataBase()
     {
         playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
@@ -231,6 +232,7 @@ public abstract class Player:IPlayable
     public abstract bool GetPlayerUIStatus();
 
     public abstract void ListLocationSizes();
-    
+    public abstract IEnumerator ChooseAttackersAndTargets();
+    public abstract IEnumerator ChooseBlockers(List<ActionInfo> apCombatTicket);
 }
 

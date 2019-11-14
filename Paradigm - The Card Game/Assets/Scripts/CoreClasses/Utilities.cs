@@ -9,14 +9,33 @@ using System.Collections.Generic;
 /// <summary>
 /// The utilities class is for storing the general purpose commonly used functions and data structures 
 /// </summary>
-namespace Utilities
+namespace HelperFunctions
 {
-    
-    
-    public static class HelperFunctions
+    public enum MoveAction
+    {
+        Break, Build, Collect, Crystallize, Delete, Despawn, Draw, Lock, Rest, Return, Search, Spawn, Unlock, None
+    }
+
+    public enum NonMoveAction
+    {
+        Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
+    }
+
+    public enum CustomEventType
+    {
+        Gameplay, VisualEffect, UIUpdate
+    }
+
+    public static class Utilities
     {
         public static List<GameObject> objectsCreated = new List<GameObject>();
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+        private static int waitTimerTime;
+
+        static Utilities()
+        {
+            Turn.endWaitEvent += EndWaitTimer;
+        }
 
         /// <summary>
         /// TODO ADD A FILTER TO CHOOSE WHICH CARDS ARE DISPLAYED(most work to be 
@@ -160,14 +179,23 @@ namespace Utilities
 
         public static System.Collections.IEnumerator CallAfterTimer(int timeOnTimer, Action action)
         {
-            while (timeOnTimer > 0)
+            waitTimerTime = timeOnTimer;
+            while (waitTimerTime > 0)
             {
                 yield return new WaitForSeconds(1);
-                Debug.Log("Time left on Turnphase completion timer: " + timeOnTimer);
-                timeOnTimer--;
+                Debug.Log("Time left on Turnphase completion timer: " + waitTimerTime);
+                waitTimerTime--;
             }
 
-            action();
+            waitTimerTime = 0;
+            action(); //this is the turnphase that is waiting
+            
+        }
+
+        private static void EndWaitTimer()
+        {
+            Debug.Log("Turn phase over!");
+            waitTimerTime = 1;
         }
 
         public static MonoBehaviour AccessMonoBehaviour()
@@ -281,28 +309,19 @@ namespace Utilities
             }
         }
     }
-
-
-    public static class Dictionaries
+    
+    public struct ActionInfo
     {
-        //this static class will be responsible for mmapping card names to their abilities and traits
-        //which map to the functions that actually do the things for abilities and traits
-        private static bool arePrepared = false;
-        
-        
-        public static bool Prepared
+        public Card actor;
+        public Card acted;
+        public NonMoveAction act;
+
+        public void Print()
         {
-            get { return arePrepared; }
+            string msg = "Card " + actor.Name + " " + act.ToString() + "s Card " + acted.Name;
+            Debug.Log(msg);
         }
-
-        public static void PrepareAllDictionaries()
-        {
-
-
-            arePrepared = true;
-
-        }
-
-        
     }
+
+    
 }

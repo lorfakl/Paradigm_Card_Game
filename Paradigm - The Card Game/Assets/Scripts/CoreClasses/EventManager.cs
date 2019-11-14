@@ -7,13 +7,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DataBase;
-using Utilities;
+using HelperFunctions;
 
 public class EventManager : MonoBehaviour
 {
     public GameObject player1;
     public GameObject player2;
     public GameObject rendererManager;
+    public GameObject combatManager;
     //public GameObject eventProcessor;
     public Text deckCount;
     public Text graveCount;
@@ -223,7 +224,7 @@ public class EventManager : MonoBehaviour
                         //Debug.Log("NOUI PLayer location owner ID: " + NoUiPlayerReturnedLocation.Owner.PlayerID + " here's the card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
                         //Debug.Log("p1 Card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID + "p2 Card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
                     }
-                    playerPool = HelperFunctions.StartTerritoryChallenge(p1Temp.Content[0], p2Temp.Content[0]);
+                    playerPool = Utilities.StartTerritoryChallenge(p1Temp.Content[0], p2Temp.Content[0]);
                     //print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
                     //print("Human  count Should be a slightly less full deck" + gameTime.UIPlayer.PlayerDeck.Count);
                 }
@@ -235,7 +236,7 @@ public class EventManager : MonoBehaviour
                     List<Card> p2Lands = p2.PlayerDeck.GetLandscapesInDeck();
                     int i = UnityEngine.Random.Range(0, p1Lands.Count);
                     int j = UnityEngine.Random.Range(0, p2Lands.Count);
-                    HelperFunctions.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
+                    Utilities.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
 
                 }
                 setUp = true;
@@ -275,32 +276,19 @@ public class EventManager : MonoBehaviour
                 else
                 {
                     Debug.Log("A turn is active please wait");
+                    if(Input.GetKeyDown(KeyCode.A) && (Turn.CurrentPlayerTurn == UIPlayer)) //maybe this should be in PlayerInteraction?
+                    {
+                        GameObject cm = Instantiate(combatManager);
+                        cm.SendMessage("InitializePlayers", UIPlayer);
+                        
+                    }
+                    else
+                    {
+                        print("You cant attack outside your turn");
+                    }
                 }
 
-                /*for (int i = 0; i < playerPool.Count; i++)
-                {
-                    if (firtTurnPlayer.Equals(secTurnPlayer))
-                    {
-                        throw new Exception("Somehow these are the same");
-                    }
-                    print("Playing the game");
-                    playerPool[i].PlayerTurn.StartTurn();
-                    //print("Status: " + playerPool[i].PlayerTurn.Owner.GetPlayerUIStatus());
-                    //print("Are the turn object the same " + )
-                    //print("I Value: " + i);
-                    //playerPool[i].PlayerTurn.StartTurn();
-                   // print("Status: " + secTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
-                }
-                /* if (firtTurnPlayer.Equals(secTurnPlayer))
-                {
-                    throw new Exception("Somehow these are the same");
-                }
-                print("Playing the game");
-                firtTurnPlayer.PlayerTurn.StartTurn();
-                print("Status: " + firtTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
-                secTurnPlayer.PlayerTurn.StartTurn();
-                print("Status: " + secTurnPlayer.PlayerTurn.Owner.GetPlayerUIStatus());
-                //Debug.Log("Is this the AI?: " + p1.PlayerID + " " + p2.PlayerID);*/
+                
             }
 
         }

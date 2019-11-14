@@ -5,7 +5,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities;
+using HelperFunctions;
 
 public enum TurnPhase
 {
@@ -14,14 +14,18 @@ public enum TurnPhase
 
 public class Turn
 {
+    public static Player CurrentPlayerTurn;
+    public static bool isActiveTurn;
+    public delegate void TurnPhaseFunction();
+    public delegate void EndWaitEvent();
+    public static event EndWaitEvent endWaitEvent;
     private Player owner;
     private TurnPhase phase;
     private bool isPhaseActive;
     //private bool isActiveTurn;
     private bool isStartDone;
     private bool isDictionaryPrepared = false;
-    public static bool isActiveTurn;
-    public delegate void TurnPhaseFunction();
+    
     TurnPhaseFunction turnPhaseFunction;
     private Dictionary<TurnPhase, TurnPhaseFunction> phaseDict = new Dictionary<TurnPhase, TurnPhaseFunction>();
     private EventManager eventManager;
@@ -72,9 +76,16 @@ public class Turn
         //set { owner = value; }
     }
 
+    public void UnlockTurnphases()
+    {
+        IsPhaseActive = false;
+        endWaitEvent();
+    }
+
     public void StartTurn()
     {
         isActiveTurn = true;
+        CurrentPlayerTurn = this.Owner;
         this.phase = TurnPhase.Gather;
         
         if(eventManager == null)
@@ -100,7 +111,7 @@ public class Turn
         {
             this.phase = t;
             SetDelegate();
-            //GameEventsArgs turnPhaseEvent = Utilities.HelperFunctions.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
+            GameEventsArgs turnPhaseEvent = Utilities.RaiseNewEvent(this, (Player)this.owner, (Player)this.owner, NonMoveAction.TurnPhase);
             this.PerformPhaseAction(/*turnPhaseEvent*/);
         }
 
@@ -177,7 +188,7 @@ public class Turn
         }
         else
         {
-            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartCentralPhase));
+            eventManager.StartCoroutine(Utilities.CallAfterTimer(46, StartCentralPhase));
         }
     }
 
@@ -191,7 +202,7 @@ public class Turn
         }
         else
         {
-            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartCrystalPhase));
+            eventManager.StartCoroutine(Utilities.CallAfterTimer(46, StartCrystalPhase));
         }
     }
 
@@ -204,7 +215,7 @@ public class Turn
         }
         else
         {
-            eventManager.StartCoroutine(HelperFunctions.CallAfterTimer(46, StartEndPhase));
+            eventManager.StartCoroutine(Utilities.CallAfterTimer(46, StartEndPhase));
         }
     }
 

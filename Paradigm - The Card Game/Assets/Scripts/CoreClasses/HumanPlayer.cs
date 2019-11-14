@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using HelperFunctions;
 
 public class HumanPlayer : Player, IPlayable
 {
@@ -30,9 +30,9 @@ public class HumanPlayer : Player, IPlayable
         Debug.Log("Starting Human");
         PlayerTurn.IsPhaseActive = true;
         Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
-        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Awaken);
+        Utilities.RaiseNewEvent(this, this, TurnPhase.Awaken);
 
-        HelperFunctions.SelectCards(GetLocation(ValidLocations.DZ), GetLocation(ValidLocations.PZ), 1);
+        Utilities.SelectCards(GetLocation(ValidLocations.DZ), GetLocation(ValidLocations.PZ), 1);
 
         while (this.TimeLeftOnTimer > 0)
         {
@@ -42,7 +42,7 @@ public class HumanPlayer : Player, IPlayable
         }
 
         this.TimeLeftOnTimer = timerTime;
-        PlayerTurn.IsPhaseActive = false;
+        PlayerTurn.UnlockTurnphases();
         Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
@@ -51,12 +51,12 @@ public class HumanPlayer : Player, IPlayable
         PlayerTurn.IsPhaseActive = true;
         Debug.Log("Human Gather phase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
         //Debug.Log("Human Gather phase");//throw new System.NotImplementedException();
-        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Gather);
+        Utilities.RaiseNewEvent(this, this, TurnPhase.Gather);
 
         PlayerDeck.Draw();//GameAction Candidate
 
         
-        PlayerTurn.IsPhaseActive = false;
+        PlayerTurn.UnlockTurnphases();
         Debug.Log("Human Gather phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
@@ -66,7 +66,7 @@ public class HumanPlayer : Player, IPlayable
         Debug.Log("Human Central phase");//throw new System.NotImplementedException();
         PlayerTurn.IsPhaseActive = true;
         Debug.Log("Human Central phase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
-        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Central);
+        Utilities.RaiseNewEvent(this, this, TurnPhase.Central);
         while (this.TimeLeftOnTimer > 0)
         {
             yield return new WaitForSeconds(1);
@@ -75,7 +75,7 @@ public class HumanPlayer : Player, IPlayable
         }
 
         this.TimeLeftOnTimer = timerTime;
-        PlayerTurn.IsPhaseActive = false;
+        PlayerTurn.UnlockTurnphases();
         Debug.Log("Human Central phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
@@ -88,10 +88,10 @@ public class HumanPlayer : Player, IPlayable
         if (this.GetLocation(ValidLocations.SC).Count >= 3)
         {
             Debug.Log("Human just started crystallized");
-            HelperFunctions.RaiseNewEvent(this, this, TurnPhase.Crystallize);
-            HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 1);
-            HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Grave), 1);
-            HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Deck), 1);
+            Utilities.RaiseNewEvent(this, this, TurnPhase.Crystallize);
+            Utilities.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 1);
+            Utilities.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Grave), 1);
+            Utilities.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Deck), 1);
             while (this.TimeLeftOnTimer > 0)
             {
                 yield return new WaitForSeconds(1);
@@ -101,7 +101,7 @@ public class HumanPlayer : Player, IPlayable
 
             this.TimeLeftOnTimer = timerTime;
         }
-        PlayerTurn.IsPhaseActive = false;
+        PlayerTurn.UnlockTurnphases();
         Debug.Log("Human Cystalize phase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
     }
 
@@ -111,9 +111,9 @@ public class HumanPlayer : Player, IPlayable
         Debug.Log("End phase");//throw new System.NotImplementedException();
         PlayerTurn.IsPhaseActive = true;
         Debug.Log("TurnPhase is now Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are locked");
-        HelperFunctions.RaiseNewEvent(this, this, TurnPhase.End);
+        Utilities.RaiseNewEvent(this, this, TurnPhase.End);
         
-        PlayerTurn.IsPhaseActive = false;
+        PlayerTurn.UnlockTurnphases();
         Debug.Log("TurnPhase is no longer Active: " + PlayerTurn.IsPhaseActive + " All other turnphases are unlocked");
         yield return new WaitForSeconds(1);
     }
@@ -129,7 +129,7 @@ public class HumanPlayer : Player, IPlayable
         Location lands = this.PlayerDeck.GetLandsAsLocation(this.GetLocation(ValidLocations.DZ));
         //Debug.Log("Show me your size: " + lands.Count);
         //Debug.Log("Show me your ID: " + lands.Owner.PlayerID);
-        GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
+        GameObject cardDisplay = Utilities.SelectCards(lands, temp, 1);
         //Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
@@ -165,7 +165,7 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator ChooseBarriers(int barrierAmount)
     {
-        GameObject cardDisplay = HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), barrierAmount);
+        GameObject cardDisplay = Utilities.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), barrierAmount);
 
         while (this.TimeLeftOnTimer > 0)
         {
@@ -225,5 +225,15 @@ public class HumanPlayer : Player, IPlayable
             Location loc = GetLocation(l);
             //Debug.Log(true + " Name: " + loc.Name + " Count: " + loc.Count);
         }
+    }
+
+    public override IEnumerator ChooseAttackersAndTargets()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override IEnumerator ChooseBlockers(List<ActionInfo> apCombatTicket)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using HelperFunctions;
 
 
 public class Accessor: Card
@@ -30,7 +31,7 @@ public class Accessor: Card
         Family fam = new Family(k);
         this.setFam(fam);
         bonds = new List<Card>();
-        Decorations.Add(new CombatDecoration());
+        AddDecoration(new CombatDecoration(), Decorations.Combat);
             
     }
 
@@ -63,6 +64,13 @@ public class Accessor: Card
     public int GetPower() { return power; }
     public int GetHp() { return hp; }
     public bool GetElementStatus() { return elemental; }
+
+    public int DecreaseHealth(int damage)
+    {
+        this.HP -= damage;
+        Utilities.RaiseNewEvent(this, this, NonMoveAction.Damage, this);
+        return HP;
+    }
 
     public override void PlayCard()
     {

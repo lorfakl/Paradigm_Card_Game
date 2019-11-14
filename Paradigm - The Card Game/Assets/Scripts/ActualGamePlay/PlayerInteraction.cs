@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using HelperFunctions;
 
 public class PlayerInteraction : MonoBehaviour {
     public GameObject player;
@@ -89,7 +89,7 @@ public class PlayerInteraction : MonoBehaviour {
             float offset = 30f;
             foreach (Card c in p.GetLocation(ValidLocations.Hand))
             {
-                GameObject go = HelperFunctions.CreateCard(c, false, hand.transform);
+                GameObject go = Utilities.CreateCard(c, false, hand.transform);
                 go.GetComponent<RectTransform>().position = pos;
                 pos.x += offset;
             }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using Utilities;
+using HelperFunctions;
 /// <summary>
 /// THIS CLASS IS ON HOLD RIGHT NOW IT COULD BE A GOOD IDEA IN THE FUTURE BUT NOT RIGHT NOW
 /// YOU CAN DO A SWITCH INSIDE A SWITCH SO THATS COOL

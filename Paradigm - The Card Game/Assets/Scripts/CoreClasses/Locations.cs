@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using UnityEngine;
-using Utilities;
+using HelperFunctions;
 
 public struct LocationChanges  //this struct is for containing infomation regarding a location change in one package
 {
@@ -261,7 +261,7 @@ public class Location : IEnumerable<Card>
                 //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
                                                                 //+ destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
-                Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+                Utilities.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
         }
         
@@ -298,7 +298,7 @@ public class Location : IEnumerable<Card>
             //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
                                                             //+ destination.owner.PlayerID + "'s " + destination.Name);
             changesDict[this] = changes;
-            Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+            Utilities.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
         }
 
     }

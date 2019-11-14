@@ -3,21 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using HelperFunctions;
 
-public enum MoveAction
-{
-    Break, Build, Collect, Crystallize, Delete, Despawn, Draw, Lock, Rest, Return, Search, Spawn, Unlock, None
-}
 
-public enum NonMoveAction
-{
-    Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
-}
-
-public enum CustomEventType
-{
-    Gameplay, VisualEffect, UIUpdate
-}
 
 public class GameEventsArgs : EventArgs
 {

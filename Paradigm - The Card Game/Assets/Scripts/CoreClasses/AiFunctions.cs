@@ -8,7 +8,7 @@ namespace AI
 {
     /// <summary>
     /// Contains the functions for the AI to make decisions. Right now issa dumb. But later its gonna upgrade thing of 
-    /// using some GOP
+    /// using some GOP(Goal Oriented Programming)
     /// </summary>
     public static class AiFunctions
     {
