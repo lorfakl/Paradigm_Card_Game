@@ -14,6 +14,10 @@ public class GameEventsManager : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     public GameObject rendererManager;
+<<<<<<< Updated upstream:Paradigm - The Card Game/Assets/Scripts/CoreClasses/GameEventsManager.cs
+=======
+    
+>>>>>>> Stashed changes:Paradigm - The Card Game/Assets/Scripts/CoreClasses/EventManager.cs
     //public GameObject eventProcessor;
     public Text deckCount;
     public Text graveCount;
@@ -262,10 +266,19 @@ public class GameEventsManager : MonoBehaviour
         {
             if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
             {
+<<<<<<< Updated upstream:Paradigm - The Card Game/Assets/Scripts/CoreClasses/GameEventsManager.cs
                 print("Playing the game");
                 p1.PlayerTurn.StartTurn();
                 p2.PlayerTurn.StartTurn();
                 //Debug.Log("Is this the AI?: " + p1.IsAI);
+=======
+                if(!Turn.isActiveTurn)
+                {
+                    GrabPlayer().PlayerTurn.StartTurn();
+                    //activeIndex++;
+                }
+                
+>>>>>>> Stashed changes:Paradigm - The Card Game/Assets/Scripts/CoreClasses/EventManager.cs
             }
 
         }

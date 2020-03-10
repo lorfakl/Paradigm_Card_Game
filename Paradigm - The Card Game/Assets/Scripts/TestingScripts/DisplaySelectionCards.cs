@@ -192,7 +192,9 @@ public class DisplaySelectionCards :MonoBehaviour
     private void StopSelecting()
     {
         isDoneSelecting = true;
-        SendSelectionEnd();
+        MatchTurnManager.Instance.StopTheTimer();
+        Debug.Log("Marking a Select Cards Command Complete");
+        Command.CommandExecutionComplete();
     }
 
 }

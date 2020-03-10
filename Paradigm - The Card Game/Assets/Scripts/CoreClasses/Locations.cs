@@ -61,6 +61,11 @@ public class Location
         changesDict.Add(this, this.changes);
     }
 
+    public static Location CreateTempLocation(Player p)
+    {
+        return new Location("temp", p);
+    }
+
     public List<LocationChanges> GetChangesOnLocation()
     {
         return this.changes;
@@ -201,6 +206,34 @@ public class Location
         return false;
     }
 
+<<<<<<< Updated upstream
+=======
+    public bool ContainsValidContent()
+    {
+        if(contents.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public IEnumerator<Card> GetEnumerator()
+    {
+        foreach(Card c in contents)
+        {
+            yield return c;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+>>>>>>> Stashed changes
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
