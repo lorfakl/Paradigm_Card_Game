@@ -14,7 +14,7 @@ public struct LocationChanges  //this struct is for containing infomation regard
 
 public enum ContainsCriteria { Name, Type, Reference, ID}
 
-public class Location
+public class Location: IEnumerable
 {
     private string name;
     private Player owner;
@@ -206,8 +206,7 @@ public class Location
         return false;
     }
 
-<<<<<<< Updated upstream
-=======
+
     public bool ContainsValidContent()
     {
         if(contents.Count > 0)
@@ -233,7 +232,7 @@ public class Location
         return GetEnumerator();
     }
 
->>>>>>> Stashed changes
+
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
