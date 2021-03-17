@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using HelperFunctions;
 using System;
 
-public class CombatManager : MonoBehaviour, IGameAction
+public class CombatManager : MonoBehaviour
 {
-    //public GameObject uiObject;
+    /*//public GameObject uiObject;
     private EventManager evntMngr;
     private Player ap;
     private Player vp;
@@ -155,5 +154,5 @@ public class CombatManager : MonoBehaviour, IGameAction
 
         print("The job is done");
         Destroy(gameObject); 
-    }
+    }*/
 }

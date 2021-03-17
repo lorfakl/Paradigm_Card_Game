@@ -18,6 +18,11 @@ public class AIPlayer : Player
         this.type = "AI";
     }
 
+    public AIPlayer(Guid id) : base(id)
+    {
+        this.type = "AI";
+    }
+
     public int AttackChance
     {
         get { return aiAttackChance; }

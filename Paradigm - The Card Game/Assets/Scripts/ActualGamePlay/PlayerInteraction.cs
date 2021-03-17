@@ -45,36 +45,10 @@ public class PlayerInteraction : MonoBehaviour {
     // Use this for initialization
     void Awake()
     {
-        if(gm == null)
-        {
-            gm = GameObject.FindWithTag("GameManager");
-        }
-
-        p = gm.GetComponent<GameEventsManager>().GrabPlayer();
+        
         
     }
     
-
-	IEnumerator Start ()
-    {
-        Location temp = new Location("temp", (Player)p);
-        //p.LoadDeckFromDataBase();
-        yield return StartCoroutine(p.ChooseTerritoryChallengeCard(temp));
-        print("Temp Size: " + temp.Count);
-        yield return StartCoroutine(p.ChooseBarriers(12));
-        
-        if(p.GetPlayerUIStatus())//need to find a better way of doing this, doesnt work with networked play
-        {
-            gm.GetComponent<GameEventsManager>().NoUiPlayerReturnedLocation = temp;
-            gm.GetComponent<GameEventsManager>().NonUIPlayer.IsPreparedToStart = true;
-        }
-        else
-        {
-            gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
-            gm.GetComponent<GameEventsManager>().UIPlayer.IsPreparedToStart = true;
-        }
-
-    }
 	
 	// Update is called once per frame
 	void Update ()

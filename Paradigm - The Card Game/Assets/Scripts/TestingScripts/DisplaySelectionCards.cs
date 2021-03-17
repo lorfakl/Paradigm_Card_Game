@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 
 public class DisplaySelectionCards :MonoBehaviour
@@ -11,7 +12,10 @@ public class DisplaySelectionCards :MonoBehaviour
     //It should get the cards from somewhere, Likely a location object
     //It should display those cards, allow the player to select them and send the selected cards back to the sender
     public GameObject cardPrefab;
+    public Camera uiCamera;
+
     private GameObject display;
+    private GameObject mainCamera;
     private Transform parent;
     private Transform canvas;
     private Vector3 position = new Vector3();
@@ -102,9 +106,6 @@ public class DisplaySelectionCards :MonoBehaviour
 
     public bool SendSelectionEnd()
     {
-        PlayerInteraction playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerInteraction>();
-        Player p = (Player)playerScript.CurrentPlayer;
-        p.TimeLeftOnTimer = 0;
         isDoneSelecting = true;
         return true;
     }
@@ -114,12 +115,33 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
+        GameMaster.UiCamera.SetActive(true);
+
+
     }
 
     private void Start()
     {
-        //print("Start!");
+        print("Start!");
+        
         canvas = gameObject.transform.parent.parent;
+        Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
+        canvasComp.renderMode = RenderMode.ScreenSpaceCamera;
+        uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        uiCamera.gameObject.tag = "MainCamera";
+        if(uiCamera != null)
+        {
+            canvasComp.worldCamera = uiCamera;
+            uiCamera.gameObject.SetActive(true);
+            mainCamera.SetActive(false);
+            HelperFunctions.Print("UI Camera found");
+        }
+        else
+        {
+            HelperFunctions.Error("UI Camera is set to null add in inspector");
+        }
+        
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
         DisplayCards();
         
@@ -144,6 +166,8 @@ public class DisplaySelectionCards :MonoBehaviour
             source.MoveContent(selectedCards, destination);
             print(destination.Count);
             //IsDoneChoosing(this, destination);
+            mainCamera.SetActive(true);
+            uiCamera.gameObject.SetActive(false);
             Destroy(canvas.gameObject);
         }
     }
@@ -192,9 +216,8 @@ public class DisplaySelectionCards :MonoBehaviour
     private void StopSelecting()
     {
         isDoneSelecting = true;
-        MatchTurnManager.Instance.StopTheTimer();
-        Debug.Log("Marking a Select Cards Command Complete");
-        Command.CommandExecutionComplete();
+        destination.Owner.TimeLeftOnTimer = 0;
+        Debug.Log("Selecting Cards complete");
     }
 
 }

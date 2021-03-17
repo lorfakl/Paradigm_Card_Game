@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Utilities;
 
 public class CardScript : MonoBehaviour {
 
@@ -32,7 +33,7 @@ public class CardScript : MonoBehaviour {
     {
         if (cardData == null) //this should never be true, if it is ya done goofed kid
         {
-            throw new Exception("The Card's null dumbass!(CardScript Start)");
+            HelperFunctions.Error("The Card's null dumbass!(CardScript Start)");
         }
 
         if(isSetModeCalled == false)

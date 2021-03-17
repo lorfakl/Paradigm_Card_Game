@@ -53,6 +53,24 @@ public abstract class Player:IPlayable
         this.isPreparedToStart = false;    
     }
 
+    public Player(Guid id)
+    {
+        this.playerID = UnityEngine.Random.Range(0, 256);
+
+        this.ID = id.ToString();
+
+        foreach (string s in validLocations)
+        {
+            this.cardLocations.Add(s, new Location(s, this));
+        }
+        this.playerDeck = new Deck("Deck", this);
+        Debug.Log("Player GUID contructor created deck");
+        this.cardLocations["Deck"] = this.playerDeck;
+        this.majesty = playerDeck.GetMajesty();
+
+        this.isPreparedToStart = false;
+    }
+
     public Deck PlayerDeck
     {
         get { return playerDeck; }
@@ -69,6 +87,8 @@ public abstract class Player:IPlayable
     {
         get { return playerID; }
     }
+
+    public string ID { get; protected set; }
 
     public string PlayerName
     {

@@ -172,6 +172,16 @@ namespace Utilities
                 }
             }
         }
+
+        public static void Error(string msg)
+        {
+            throw new Exception(msg);
+        }
+
+        public static void Print(string msg)
+        {
+            Debug.Log(msg);
+        }
     }
 
 

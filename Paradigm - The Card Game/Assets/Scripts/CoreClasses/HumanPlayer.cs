@@ -14,7 +14,10 @@ public class HumanPlayer : Player, IPlayable
         this.type = "Human";
     }
 
-    
+    public HumanPlayer(Guid id) : base(id)
+    {
+        this.type = "Human";
+    }
 
     public int OriginalTimerTime
     {
@@ -114,9 +117,6 @@ public class HumanPlayer : Player, IPlayable
             this.TimeLeftOnTimer = timerTime;
 
         }
-
-        GameObject gm = GameObject.FindWithTag("GameManager");
-        gm.GetComponent<GameEventsManager>().UiPlayerReturnedLocation = temp;
     }
 
     public override IEnumerator ChooseBarriers(int barrierAmount)
@@ -130,31 +130,39 @@ public class HumanPlayer : Player, IPlayable
             this.TimeLeftOnTimer--;
         }
         this.TimeLeftOnTimer = timerTime;
+        if (this.GetLocation(ValidLocations.BZ).Count != barrierAmount)
+        {//check the destination to see if we need to add cards automatically
+            Debug.Log("Major issue here not enough cards in BarrierZone there are current only: " + this.GetLocation(ValidLocations.BZ).Count);
 
-        try //when the timer is up and the human hasnt selected the barrierAmount barriers do it for them
-        {
-            DisplaySelectionCards displayScript = cardDisplay.GetComponentInChildren<DisplaySelectionCards>();
-            if (displayScript.CardsSelected < barrierAmount)
+            try //when the timer is up and the human hasnt selected the barrierAmount barriers do it for them
             {
-                for (int i = displayScript.CardsSelected; i < barrierAmount; i++)
+                DisplaySelectionCards displayScript = cardDisplay.GetComponentInChildren<DisplaySelectionCards>();
+                if (displayScript.CardsSelected < barrierAmount)
                 {
-                    Card c = PlayerDeck.SelectRandomContent();
-                    while (displayScript.SelectedCards.Contains(c))
+                    for (int i = displayScript.CardsSelected; i < barrierAmount; i++)
                     {
-                        c = PlayerDeck.SelectRandomContent();
+                        Card c = PlayerDeck.SelectRandomContent();
+                        while (displayScript.SelectedCards.Contains(c))
+                        {
+                            c = PlayerDeck.SelectRandomContent();
+                        }
+
+                        Debug.Log(c.Name);
+                        displayScript.UpdateSelectedCards(c, true);
                     }
 
-                    Debug.Log(c.Name);
-                    displayScript.UpdateSelectedCards(c, true);
+                    displayScript.SendSelectionEnd();
+                    TimeLeftOnTimer = 0;
                 }
-
-                displayScript.SendSelectionEnd();
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+                Debug.Log(ex.StackTrace);
+                Debug.Log(ex.ToString());
             }
         }
-        catch (Exception)
-        {
 
-        }
     }
 
     public override PlayerInteraction GetInteraction()

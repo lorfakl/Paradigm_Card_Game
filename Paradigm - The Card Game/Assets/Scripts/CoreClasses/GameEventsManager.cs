@@ -22,6 +22,9 @@ public class GameEventsManager : MonoBehaviour
     public Text nonUIHandCount;
     public Text nonUIBarrierCount;
 
+    public Player PlayerOne { get; private set; }
+    public Player PlayerTwo { get; private set; }
+
     private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
     private static List<Card> tcBuffer = new List<Card>();
@@ -266,11 +269,7 @@ public class GameEventsManager : MonoBehaviour
                 p1.PlayerTurn.StartTurn();
                 p2.PlayerTurn.StartTurn();
                 //Debug.Log("Is this the AI?: " + p1.IsAI);
-                if(!Turn.isActiveTurn)
-                {
-                    GrabPlayer().PlayerTurn.StartTurn();
-                    //activeIndex++;
-                }
+                
                 
 
             }
