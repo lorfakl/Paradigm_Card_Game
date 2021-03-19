@@ -121,9 +121,7 @@ public class DisplaySelectionCards :MonoBehaviour
     }
 
     private void Start()
-    {
-        print("Start!");
-        
+    {      
         canvas = gameObject.transform.parent.parent;
         Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
         canvasComp.renderMode = RenderMode.ScreenSpaceCamera;
@@ -135,7 +133,6 @@ public class DisplaySelectionCards :MonoBehaviour
             canvasComp.worldCamera = uiCamera;
             uiCamera.gameObject.SetActive(true);
             mainCamera.SetActive(false);
-            HelperFunctions.Print("UI Camera found");
         }
         else
         {
@@ -151,20 +148,20 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         //print("Total Cards to Select: " + numToMove);
         //print("Cards Selected: " + selectedCards.Count);
-        print("Number of Cards left to select: " + leftToMove);
+        //print("Number of Cards left to select: " + leftToMove);
 
         if (isDoneSelecting)
         {
             if (source.Owner.PlayerID == destination.Owner.PlayerID)
             {
-                print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
+                //print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
             }
             else
             {
                 print("theres a fickin problem");
             }
             source.MoveContent(selectedCards, destination);
-            print(destination.Count);
+            //print(destination.Count);
             //IsDoneChoosing(this, destination);
             mainCamera.SetActive(true);
             uiCamera.gameObject.SetActive(false);

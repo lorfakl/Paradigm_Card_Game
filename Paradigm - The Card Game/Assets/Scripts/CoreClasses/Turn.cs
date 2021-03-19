@@ -151,26 +151,26 @@ public class Turn
     private void StartAwakenPhase(GameEventsArgs e)
     {
         Debug.Log("Awaken Phase");
-        playerAction.AwakenPhaseStart();
+        //playerAction.AwakenPhaseStart();
     }
 
     private void StartCentralPhase(GameEventsArgs e)
     {
         Debug.Log("Central Phase");         
-        playerAction.CentralPhaseStart();  
+        //playerAction.CentralPhaseStart();  
     }
 
     private void StartCrystalPhase(GameEventsArgs e)
     {
         
         Debug.Log("Crystal Phase");
-        playerAction.CrystalPhaseStart();
+        //playerAction.CrystalPhaseStart();
     }
 
     private void StartEndPhase(GameEventsArgs e)
     {
         Debug.Log("End Phase");          
-        playerAction.EndPhaseStart();
+        //playerAction.EndPhaseStart();
     }
 
 }

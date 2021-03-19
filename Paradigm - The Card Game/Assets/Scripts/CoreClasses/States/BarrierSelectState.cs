@@ -34,12 +34,8 @@ public class BarrierSelectState : State, IState
 
     async public Task Operation()
     {
-        Debug.Log("Start Player 1 Operation");
         await this.Player1.ChooseBarriers(GlobalGameConfiguration.barriers);
-        Debug.Log("Awaiting? Player 1 Operation");
-        Debug.Log("Start Player 2 Operation");
         await this.Player2.ChooseBarriers(GlobalGameConfiguration.barriers);
-        Debug.Log("Awaiting? Player 2 Operation");
     }
 
     

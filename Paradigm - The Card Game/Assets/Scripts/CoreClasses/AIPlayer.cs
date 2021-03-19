@@ -31,11 +31,12 @@ public class AIPlayer : Player
     public override IEnumerator PerformAwaken()
     {
         Debug.Log("Wanna do more UI work before implementation");
-        throw new System.NotImplementedException();
+        yield return new WaitForSeconds(2);
     }
 
     public override IEnumerator PerformCentral()
     {
+        Debug.Log("AI Central");
         do
         {
             Location hand = GetLocation(ValidLocations.Hand);
@@ -67,16 +68,29 @@ public class AIPlayer : Player
                     targetCards = hand.GetContents(typeof(Mechanism));
                 }
 
-                int index = GetRandomVal(targetCards.Count);
-                Card choice = targetCards[index];
-                PlayCard(choice);
+                
+                try
+                {
+                    int index = GetRandomVal(targetCards.Count);
+                    Card choice = targetCards[index];
+                    PlayCard(choice);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log(ex.Message);
+                    Debug.Log(ex.StackTrace);
+                    Debug.Log(ex.ToString());
+                }
+
+                
                 centralActions--;
             }
 
             if (GetChanceSuccess(aiAttackChance))
             {
                 Debug.Log("AI Attack");
-                PerformAttack();
+                //PerformAttack();
+                centralActions--;
             }
         } while (centralActions > 0);
 
@@ -107,17 +121,27 @@ public class AIPlayer : Player
 
     public override IEnumerator PerformGather()
     {
-        HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
-        Debug.Log("AI Draw a Card!");
-        if (PlayerDeck.Count > 0)
+        try
         {
-            PlayerDeck.Draw();
+            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+            Debug.Log("AI Draw a Card!");
+            if (PlayerDeck.Count > 0)
+            {
+                PlayerDeck.Draw();
+            }
+            else
+            {
+                HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+            Debug.Log(ex.Message);
+            Debug.Log(ex.StackTrace);
+            Debug.Log(ex.ToString());
         }
         yield return new WaitForSeconds(1);
+        
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
@@ -164,7 +188,8 @@ public class AIPlayer : Player
 
     public override IEnumerator PerformEnd()
     {
-        throw new NotImplementedException();
+        Debug.Log("AI EndPhase");
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformAttack()

@@ -11,7 +11,7 @@ public class PlayerInteraction : MonoBehaviour {
     private Coroutine coroutine;
     public delegate bool NotifyDoneChoosing();
     public event NotifyDoneChoosing IsDoneChoosing; 
-
+    /*
 
     public IPlayable CurrentPlayer
     {
@@ -91,5 +91,5 @@ public class PlayerInteraction : MonoBehaviour {
     {
         print("End Coroutine started?");
         yield return StartCoroutine(p.PerformEnd());
-    }
+    }*/
 }

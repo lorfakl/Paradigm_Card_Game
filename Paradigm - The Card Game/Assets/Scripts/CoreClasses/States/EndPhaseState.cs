@@ -3,30 +3,42 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EndPhaseState : IState
+public class EndPhaseState : State, IState
 {
+    public EndPhaseState(Player p)
+    {
+        Owner = p;
+    }
+
+    public EndPhaseState()
+    {
+
+    }
     bool IState.IsUniqueToPlayer()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("IsUniqueToPlayer inside EndPhaseState");
+        return true;
     }
 
     void IState.OnEntry()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("This is something inside EndPhaseState");
     }
 
     void IState.OnExit()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("This is something inside EndPhaseState");
     }
 
-    Task IState.Operation()
+    public async Task Operation()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Operation inside EndPhaseState");
+        await Owner.PerformEnd();
+
     }
 
     void IState.SetOwner(Player p)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("This is something inside EndPhaseState");
     }
 }

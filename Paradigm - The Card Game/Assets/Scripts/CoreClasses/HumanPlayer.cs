@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 public class HumanPlayer : Player, IPlayable
@@ -26,37 +27,51 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformGather()
     {
-        HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
         Debug.Log("Human Draw a Card!");
-        if(PlayerDeck.Count > 0)
-        {
-            PlayerDeck.Draw();
+        try {
+            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+            Debug.Log("Human Draw a Card!");
+            if (PlayerDeck.Count > 0)
+            {
+                PlayerDeck.Draw();
+            }
+            else
+            {
+                HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+            }
+            
         }
-        else
+        catch(Exception ex)
         {
-            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+            Debug.Log(ex.Message);
+            Debug.Log(ex.StackTrace);
+            Debug.Log(ex.ToString());
         }
         yield return new WaitForSeconds(1);
+
     }
 
     public override IEnumerator PerformAwaken()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Awaken my LOVE!");
+        yield return null;
     }
 
     public override IEnumerator PerformCentral()
     {
-        if(centralActions > 0)
+        Debug.Log("CENTRAL");
+        if (centralActions > 0)
         {
             Location hand = GetLocation(ValidLocations.Hand);
-            SetCardScript(false); //Disable the CardScript
+            //SetCardScript(false); //Disable the CardScript
             
             while(centralActions > 0)
             {
                 Debug.Log("Not sure what to put in this while loop honestly");
+                centralActions--;
             }
 
-            SetCardScript(true); //enable it back
+            //SetCardScript(true); //enable it back
         }
 
         yield return new WaitForSeconds(1);
@@ -93,13 +108,16 @@ public class HumanPlayer : Player, IPlayable
         Location lands = this.PlayerDeck.GetLandsAsLocation();
         //Debug.Log("Show me your size: " + lands.Count);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
+        GameObject timer = GameObject.FindGameObjectWithTag("timer");
+        Text timerText = timer.GetComponent<Text>();
         //Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
         while (this.TimeLeftOnTimer > 0)
         {
             yield return new WaitForSeconds(1);
-            Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
+            timerText.text = "00:" + this.TimeLeftOnTimer;
+            //Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
             this.TimeLeftOnTimer--;
         }
 
@@ -122,11 +140,15 @@ public class HumanPlayer : Player, IPlayable
     public override IEnumerator ChooseBarriers(int barrierAmount)
     {
         GameObject cardDisplay = HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), barrierAmount);
+        GameObject timer = GameObject.FindGameObjectWithTag("timer");
+        Text timerText = timer.GetComponent<Text>();
 
         while (this.TimeLeftOnTimer > 0)
         {
             yield return new WaitForSeconds(1);
-            Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
+            timerText.text = "00:" + this.TimeLeftOnTimer;
+            //Debug.Log("WHATS GOING ON");
+            //Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
             this.TimeLeftOnTimer--;
         }
         this.TimeLeftOnTimer = timerTime;
@@ -170,6 +192,7 @@ public class HumanPlayer : Player, IPlayable
         return gamePlayHook;
     }
 
+
     public override bool GetPlayerUIStatus()
     {
         return true;
@@ -177,7 +200,8 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformEnd()
     {
-        throw new NotImplementedException();
+        Debug.Log("Human EndPhase");
+        yield return new WaitForSeconds(1);
     }
 
     public override IEnumerator PerformAttack()

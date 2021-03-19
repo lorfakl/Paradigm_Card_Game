@@ -40,12 +40,12 @@ public class TerritoryChallengeState : State, IState
     public async Task Operation()
     {
         
-        Debug.Log("Start Player 1 Operation");
+        //Debug.Log("Start Player 1 Operation");
         await this.Player1.ChooseTerritoryChallengeCard(player1Temp);
-        Debug.Log("Awaiting? Player 1 Operation");
-        Debug.Log("Start Player 2 Operation");
+        //Debug.Log("Awaiting? Player 1 Operation");
+        //Debug.Log("Start Player 2 Operation");
         await this.Player2.ChooseTerritoryChallengeCard(player2Temp);
-        Debug.Log("Awaiting? Player 2 Operation");
+        //Debug.Log("Awaiting? Player 2 Operation");
     }
 
     public void SetOwner(Player p)

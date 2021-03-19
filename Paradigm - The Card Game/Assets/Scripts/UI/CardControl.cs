@@ -29,21 +29,17 @@ public class CardControl : MonoBehaviour
     }
 
     private void OnMouseEnter()
-    {
-        print("Mouse is over");
-        
+    {       
         Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, scaleFactor);
         transform.DOScale(targetValueDoScale, 0.5f);
         transform.DOMove(transform.position + new Vector3(0.0f, 3f, 0.0f), 0.5f);
-        print("Target Scale" + targetValueDoScale);
     }
 
     private void OnMouseExit()
     {
-        print("Mouse is gone");
         Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, Vector3.one);
         transform.DOScale(defaultScale, 0.5f);
         transform.DOMove(defaultPosition, 0.5f);
-        print("Target Return? Scale" + targetValueDoScale);
+        
     }
 }
