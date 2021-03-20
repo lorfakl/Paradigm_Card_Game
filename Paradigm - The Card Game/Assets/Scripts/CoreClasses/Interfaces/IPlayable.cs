@@ -4,7 +4,6 @@ using UnityEngine;
 
 public interface IPlayable
 {
-    PlayerInteraction GetInteraction();
     bool GetPlayerUIStatus();
 
     IEnumerator ChooseTerritoryChallengeCard(Location t);

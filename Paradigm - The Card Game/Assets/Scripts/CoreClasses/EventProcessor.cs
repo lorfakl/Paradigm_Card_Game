@@ -29,7 +29,7 @@ public class EventProcessor: MonoBehaviour
     private Dictionary<String, Func<ParameterBundle, bool>> functionDictionary = new Dictionary<string, Func<ParameterBundle, bool>>();
     private bool areDictsPrepared;
 
-    private void Awake()
+    /*private void Awake()
     {
         GameEventsManager.NotifySubsOfEvent += ProcessEvent;
         if(functionDictionary.Count < 1)
@@ -68,6 +68,6 @@ public class EventProcessor: MonoBehaviour
     private static void DrawEvent(GameEventsArgs e)
     {
 
-    }
+    }*/
 }
 

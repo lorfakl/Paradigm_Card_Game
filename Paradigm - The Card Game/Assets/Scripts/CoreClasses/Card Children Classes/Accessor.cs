@@ -33,6 +33,11 @@ public class Accessor: Card
             
     }
 
+    public Accessor(Card c):base(c)
+    {
+
+    }
+
     public int Power
     {
         get { return this.power; }

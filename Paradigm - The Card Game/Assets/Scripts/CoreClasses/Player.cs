@@ -29,7 +29,6 @@ public abstract class Player: IPlayable
     private Location returnedLocation;
     public static readonly int timerTime = 45;
     protected int timeLeftOnTimer = timerTime;
-    protected PlayerInteraction gamePlayHook;
     protected int centralActions = 3;
 
     public Player(GameTimeManager mgmt, int addTo = 0)
@@ -39,8 +38,6 @@ public abstract class Player: IPlayable
         {
             this.playerID = this.playerID + UnityEngine.Random.Range(510, 2048);
         }
-
-        this.turn = new Turn(this, mgmt);
 
         foreach (string s in validLocations)
         {
@@ -61,7 +58,8 @@ public abstract class Player: IPlayable
 
         foreach (string s in validLocations)
         {
-            this.cardLocations.Add(s, new Location(s, this));
+            Location l = new Location(s, this);
+            this.cardLocations.Add(s, l);
         }
         this.playerDeck = new Deck("Deck", this);
         Debug.Log("Player GUID contructor created deck");
@@ -76,6 +74,30 @@ public abstract class Player: IPlayable
         get { return playerDeck; }
         set { playerDeck = value; }
     }
+
+    public Location Hand
+    {
+        get { return GetLocation(ValidLocations.Hand); }
+    }
+
+    public Location Grave
+    {
+        get { return GetLocation(ValidLocations.Grave); }
+    }
+    public Location ShardCollection
+    {
+        get { return GetLocation(ValidLocations.SC); }
+    }
+    public Location BZ
+    {
+        get { return GetLocation(ValidLocations.BZ); }
+    }
+
+    public Location Field
+    {
+        get { return GetLocation(ValidLocations.Field); }
+    }
+  
 
     public Majesty Majesty
     {
@@ -130,12 +152,6 @@ public abstract class Player: IPlayable
         set { this.timeLeftOnTimer = value; }
     }
 
-    public PlayerInteraction GamePlayHook
-    {
-        get { return gamePlayHook; }
-        set { gamePlayHook = value; }
-    }
-
     public void LoadDeckFromDataBase()
     {
         playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
@@ -159,8 +175,7 @@ public abstract class Player: IPlayable
 
         if(!validVal)
         {
-            Debug.Log("Invalid Argument!");
-            return null;
+            throw new Exception("Invalid Location Argument!: " + l);
         }
 
         return cardLocations[l];
@@ -218,7 +233,6 @@ public abstract class Player: IPlayable
         c.PlayCard();
     }
 
-    public abstract PlayerInteraction GetInteraction();
     public abstract IEnumerator ChooseTerritoryChallengeCard(Location t);
     public abstract IEnumerator ChooseBarriers(int barrierCount);
     public abstract IEnumerator PerformGather();

@@ -37,7 +37,7 @@ namespace Builder
                 return false;
             }
         }
-
+        /*
         public static bool ThisOwnerTurnEnd(GameEventsArgs e, Card a, string m = "")
         {
             if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.End)
@@ -143,7 +143,7 @@ namespace Builder
             return false;
         }
 
-        /*
+        
         public static bool (GameEventsArgs e, Card c, string m = "")
         public static bool (GameEventsArgs e, Card c, string m = "")
         public static bool (GameEventsArgs e, Card c, string m = "")

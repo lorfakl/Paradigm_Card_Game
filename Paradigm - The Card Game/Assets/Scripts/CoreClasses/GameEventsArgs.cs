@@ -21,16 +21,16 @@ public enum EventType
 
 public class GameEventsArgs : EventArgs
 {
-    private Player owner;
-    private Card cardSource;
-    private Turn turn;
-    private List<LocationChanges> boardMovements;
-    private MoveAction moveAction;
-    private NonMoveAction notMoveAction;
-    private Player playerTarget;
-    private List<Card> cardTargets;
-    private Card targetCard;
-    private EventType type;
+    protected Player owner;
+    protected Card cardSource;
+    protected Turn turn;
+    protected List<LocationChanges> boardMovements;
+    protected MoveAction moveAction;
+    protected NonMoveAction notMoveAction;
+    protected Player playerTarget;
+    protected List<Card> cardTargets;
+    protected Card targetCard;
+    protected EventType type;
 
     public GameEventsArgs() 
     {
@@ -58,6 +58,29 @@ public class GameEventsArgs : EventArgs
     public GameEventsArgs(List<LocationChanges> boardMovements, MoveAction moveAction)
     {
         this.boardMovements = boardMovements;
+        this.cardSource = null;
+        this.owner = boardMovements[0].destination.Owner;
+        this.moveAction = moveAction;
+        this.notMoveAction = NonMoveAction.None;
+        this.turn = this.owner.PlayerTurn;
+        List<Card> cardsMoved = new List<Card>();
+        foreach (LocationChanges l in boardMovements)
+        {
+            cardsMoved.Add(l.c);
+        }
+        this.cardTargets = cardsMoved;
+        this.playerTarget = cardsMoved[0].getOwner();
+
+        Debug.Log("Event Data Created!");
+    }
+
+    /// <summary>
+    /// This game event constructor is for movement based actions specifically a 
+    /// </summary>
+    /// <param name="boardMovements"></param>
+    /// <param name="moveAction"></param>
+    public GameEventsArgs(MoveAction moveAction)
+    {
         this.cardSource = null;
         this.owner = boardMovements[0].destination.Owner;
         this.moveAction = moveAction;
@@ -113,6 +136,13 @@ public class GameEventsArgs : EventArgs
         Debug.Log("Event Data Created!");
     }
 
+    public void Print()
+    {
+        string data = "CardSource: " + cardSource.Name + "\n MoveAction: " + moveAction.ToString()
+            + "\n Non-Move Action: " + notMoveAction.ToString() + "\n Owner: " + cardSource.Owner.Type;
+        Utilities.HelperFunctions.Print(data);
+    }
+
     public List<Card> CardTargets
     {
         get { return cardTargets; }
@@ -138,11 +168,6 @@ public class GameEventsArgs : EventArgs
         get { return owner; }
     }
 
-    public TurnPhase EventOwnerTurn
-    {
-        get { return turn.Phase; }
-    }
-
     public List<LocationChanges> GameBoardMovements
     {
         get { return boardMovements; }
@@ -158,5 +183,11 @@ public class GameEventsArgs : EventArgs
         get { return notMoveAction; }
     }
 
+    public bool IsUIEvent
+    {
+        get;
+        protected set;
+
+    }
 
 }

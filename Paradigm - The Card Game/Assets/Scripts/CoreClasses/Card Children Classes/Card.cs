@@ -57,11 +57,13 @@ using UnityEngine;
         public List<Ability> Abilities
         {
             get { return this.abilities; }
+            private set { this.abilities = value; }
         }
 
         public List<Trait> Traits
         {
             get { return this.traits; }
+            private set { this.traits = value; }
         }
 
         public bool Shard
@@ -86,7 +88,17 @@ using UnityEngine;
         {
             get { return this.isValid; }
         }
-        
+
+        public Card() { }
+
+        public Card(Card c)
+        {
+            this.Name = c.Name;
+            this.Abilities = c.Abilities;
+            this.Traits = c.Traits;
+            this.fam = c.fam;
+        }
+
         /// <summary>
         /// Provides a link between the Card class instance and the physical GameObject using it's data
         /// </summary>
@@ -109,12 +121,12 @@ using UnityEngine;
     
 
         //Setters
-        public void setName(string n) { name = n; }
-        public void addAbility(Ability a) { abilities.Add(a); }
-        public void addTrait(Trait t) { traits.Add(t); }
+        protected void setName(string n) { name = n; }
+        private void addAbility(Ability a) { abilities.Add(a); }
+        private void addTrait(Trait t) { traits.Add(t); }
         public void setShard(bool sh) { isShard = sh; }
         public void setOwner(Player p) { owner = p; }
-        public void setFam(Family f) { fam = f; }
+        protected void setFam(Family f) { fam = f; }
         public void setLocation(Location l) { currentLocation = l; }
         public void setBarrierStatus(bool b) { isBarrier = b; }
         public void setPlayStatus(bool b) { inPlay = b; }
@@ -130,7 +142,7 @@ using UnityEngine;
             foreach (string tr in SplitTrait(text)) { this.addTrait(new Trait(tr, this.name)); }
         }
         
-        public void SetAbilities(string a, string a2, string a3)
+        protected void SetAbilities(string a, string a2, string a3)
         {
             string[] abs = { a, a2, a3 };
             for (int i = 0; i < 3; i++)

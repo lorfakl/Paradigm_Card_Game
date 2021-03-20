@@ -92,6 +92,23 @@ public class Location: IEnumerable
         return cardsOfTypet;
     }
 
+    public static int ConvertFromLocation(Location l)
+    {
+        ValidLocations validLocation;
+        foreach(string name in Enum.GetNames(typeof(ValidLocations)))
+        {
+            if(name == l.Name)
+            {
+                if(Enum.TryParse<ValidLocations>(name, out validLocation))
+                {
+                    HelperFunctions.Print("Is the location enum actually Valid?: " + validLocation);
+                    return (int)validLocation;
+                }
+            }
+        }
+
+        return -1;
+    }
     public void MoveContent(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
         ProcessListLocationChanges(l, destination);
@@ -307,7 +324,20 @@ public class Location: IEnumerable
             //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
                                                             //+ destination.owner.PlayerID + "'s " + destination.Name);
             changesDict[this] = changes;
-            Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+            MoveAction ma = GetMoveAction(this, destination);
+            Utilities.HelperFunctions.RaiseNewEvent(this, changes, ma);
+            int returnSorcIndex = ConvertFromLocation(this);
+            int returnDestIndex = ConvertFromLocation(destination);
+
+            if(returnDestIndex > -1 && returnSorcIndex > -1)
+            {
+                HelperFunctions.RaiseNewUIEvent(this, (ValidLocations)returnSorcIndex, (ValidLocations)returnDestIndex, ma, c);
+            }
+            else
+            {
+                HelperFunctions.Print("This is a non normal location move. Maybe territory challenge. Skip the UI event");
+            }
+            
         }
 
     }

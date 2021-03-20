@@ -47,9 +47,20 @@ public class AIPlayer : Player
                 if (hand.Contains(typeof(Accessor)))
                 {
                     List<Card> accessors = hand.GetContents(typeof(Accessor));
+                    HelperFunctions.Print("AI hand count: " + hand.Count);
                     int index = GetRandomVal(accessors.Count);
-                    Card choice = accessors[index];
-                    PlayCard(choice);
+                    try
+                    {
+                        Card choice = accessors[index];
+                        PlayCard(choice);
+                    }
+                    catch(Exception e)
+                    {
+                        HelperFunctions.Print("This is that weird Index error I bet");
+                        HelperFunctions.Print(e.Message);
+                        HelperFunctions.Print(e.StackTrace);
+                    }
+                    
                     centralActions--;
                 }
             }
@@ -173,13 +184,12 @@ public class AIPlayer : Player
             barriers.Add(c);
         }
         PlayerDeck.MoveContent(barriers, GetLocation(ValidLocations.BZ));
+
+        PlayerDeck.Draw(5);
         yield return 5;
     }
 
-    public override PlayerInteraction GetInteraction()
-    {
-        return gamePlayHook;
-    }
+ 
 
     public override bool GetPlayerUIStatus()
     {

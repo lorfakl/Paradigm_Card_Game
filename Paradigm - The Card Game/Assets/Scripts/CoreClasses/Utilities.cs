@@ -12,7 +12,6 @@ using System.Collections.Generic;
 namespace Utilities
 {
     
-    
     public static class HelperFunctions
     {
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
@@ -128,6 +127,14 @@ namespace Utilities
             GameEventsManager.PublishEvent(sender, newEvent);
         }
 
+        public static void RaiseNewUIEvent(object sender, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card c)
+        {
+
+            UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
+            GameEventsManager.PublishEvent(sender, uiEvent);
+        }
+
+        
         /// <summary>
         /// This functions is to both read and write from the Database. If you read from a Table, the function returns a Dictionary with keys 0 - Records returned
         /// If you write to a Table well, thats not implemented yet.

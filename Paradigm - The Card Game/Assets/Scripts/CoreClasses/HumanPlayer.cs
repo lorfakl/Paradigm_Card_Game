@@ -185,13 +185,9 @@ public class HumanPlayer : Player, IPlayable
             }
         }
 
-    }
+        PlayerDeck.Draw(5);
 
-    public override PlayerInteraction GetInteraction()
-    {
-        return gamePlayHook;
     }
-
 
     public override bool GetPlayerUIStatus()
     {

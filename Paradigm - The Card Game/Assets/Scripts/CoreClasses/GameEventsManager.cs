@@ -22,25 +22,10 @@ public class GameEventsManager : MonoBehaviour
     public Text nonUIHandCount;
     public Text nonUIBarrierCount;
 
-    public Player PlayerOne { get; private set; }
-    public Player PlayerTwo { get; private set; }
 
     private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
-    private static List<Card> tcBuffer = new List<Card>();
-    private static Card activeLand;
-    private static int numOfTurns = 0;
-    private GameTimeManager gameTime = null;
-    private Location uiPlayerReturnedLocation = null;
-    private Location noUiPlayerReturnedLocation = null;
-    private bool setUp = false;
-    private List<Player> playerPool = new List<Player>();
-    private int playerIndex = 0;
-    private int[] initalData;
-    private Player p1;
-    private Player p2;
-    private Majesty p1Majesty;
-    private Majesty p2Majesty;
+    
     
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
@@ -60,10 +45,7 @@ public class GameEventsManager : MonoBehaviour
 
     private static void OnEventAdd(object sender, GameEventsArgs data)
     {
-        if (NotifySubsOfEvent != null) //if there are subcribers
-        {
-            NotifySubsOfEvent(sender, data);
-        }
+        NotifySubsOfEvent?.Invoke(sender, data);
     }
 
     /// <summary>
@@ -96,69 +78,6 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-
-    public Location UiPlayerReturnedLocation
-    {
-        get { return uiPlayerReturnedLocation; }
-        set { uiPlayerReturnedLocation = value; }
-    }
-
-    public Location NoUiPlayerReturnedLocation
-    {
-        get { return noUiPlayerReturnedLocation; }
-        set { noUiPlayerReturnedLocation = value; }
-    }
-
-    public Player UIPlayer
-    {
-        get { return gameTime.UIPlayer; }
-    }
-
-    public Player NonUIPlayer
-    {
-        get { return gameTime.NoUIPlayer; }
-    }
-
-    public Queue<GameEventsArgs> GetQueue
-    {
-        get { return eventQueue; }
-    }
-
-
-    public static void AddTCLand(Card l)
-    {
-        tcBuffer.Add(l);
-        Debug.Log("Player:" + l.getOwner().PlayerID + " selected " + l.getName() + " for Territory Challenge");
-    }
-
-    public Player GrabPlayer()
-    {
-        
-        if(playerIndex == 2)
-        {
-            playerIndex = 0;
-        }
-        //print("prolly no players " + playerPool.Count);
-        Player playReturned = playerPool[playerIndex];
-        playerIndex++;
-        return playReturned;
-    }
-
-    public PlayerInteraction GetPlayerInteraction(bool ai)
-    {
-        GameObject g = null;
-        if (ai)
-        {
-            g = GameObject.FindWithTag("AiPlayer");
-        }
-        else
-        {
-           g = GameObject.FindWithTag("Player");
-        }
-
-        return g.GetComponent<PlayerInteraction>();
-
-    }
     /// <summary>
     /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
     /// Thats why it extends Monobehaviour and has Awake, Update, and Start functions
@@ -167,114 +86,18 @@ public class GameEventsManager : MonoBehaviour
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
-        gameTime = new GameTimeManager();
-        p1 = gameTime.UIPlayer;
-        playerPool.Add(p1);
-
-        p2 = gameTime.NoUIPlayer;
-        playerPool.Add(p2);
-        print("Litterally just added the shit" + playerPool.Count);
-        CardDataBase.MakePlayerDeck(p1);
-        print("Made player deck?");
-        CardDataBase.MakePlayerDeck(p2);
-
-        p1.Majesty = p1.PlayerDeck.GetMajesty();
-        p2.Majesty = p2.PlayerDeck.GetMajesty();
-        print("Should be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        print("Human player ID:" + gameTime.UIPlayer.PlayerID);
-        print("AI player ID:" + gameTime.NoUIPlayer.PlayerID);
-        p1.PlayerDeck.GameStartSetup();
-        p2.PlayerDeck.GameStartSetup();
-
-        if ( p1 == null || p2 == null)
-        {
-            Debug.Log("Player in EventManager is Null as fuck!");
-        }
-
-        GameObject player1Obj = Instantiate(player1);
-        GameObject player2Obj = Instantiate(player2);
-        p1.GamePlayHook = player1Obj.GetComponent<PlayerInteraction>();
-        p2.GamePlayHook = player2Obj.GetComponent<PlayerInteraction>();
+       
     }
 
     void Start()
     {
-        GameObject rm = Instantiate(rendererManager);
-        rm.SendMessage("SetPlayers", playerPool);
-        print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-        int[] initalInfo = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation(ValidLocations.Grave).Count, UIPlayer.GetLocation(ValidLocations.Hand).Count, UIPlayer.GetLocation(ValidLocations.BZ).Count };
-        initalData = initalInfo;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        //CheckPlayerInfo();
-        if (!setUp)
-        {
-            Location p1Temp = UiPlayerReturnedLocation;
-
-            Location p2Temp = NoUiPlayerReturnedLocation;
-            if (p1Temp == null || p2Temp == null)
-            {
-                print("Someone hasnt selected a TC card yet");
-                if (p1Temp == null)
-                {
-                    print("Human hasnt chosen");
-                }
-                else
-                {
-                    print("Ai hasnt chosen");
-                }
-
-            }
-            else
-            {
-                try
-                {
-                    playerPool = gameTime.StartTerritoryChallenge(p1Temp.GetContents()[0], p2Temp.GetContents()[0]);
-                    print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-                }
-                catch (ArgumentOutOfRangeException e)
-                {
-                    print("One of the locations was null");
-                    print(e.Message);
-                    List<Card> p1Lands = p1.PlayerDeck.GetLandscapesInDeck();
-                    List<Card> p2Lands = p2.PlayerDeck.GetLandscapesInDeck();
-                    int i = UnityEngine.Random.Range(0, p1Lands.Count);
-                    int j = UnityEngine.Random.Range(0, p2Lands.Count);
-                    gameTime.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
-
-                }
-                setUp = true;
-                p1 = GrabPlayer();
-                p2 = GrabPlayer();
-                activeLand = p2.TCCard;
-
-            }
-        }
-
-
-        //print("Events enqueued: " + eventQueue.Count);
-
-        print("Is anybody out there!?!");
-
-        if (p1.IsPreparedToStart && p2.IsPreparedToStart)
-        {
-            if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
-            {
-
-                print("Playing the game");
-                p1.PlayerTurn.StartTurn();
-                p2.PlayerTurn.StartTurn();
-                //Debug.Log("Is this the AI?: " + p1.IsAI);
-                
-                
-
-            }
-
-        }
     }
 
    /// <summary>
