@@ -75,7 +75,8 @@ public class GameEventsArgs : EventArgs
     }
 
     /// <summary>
-    /// This game event constructor is for movement based actions specifically a 
+    /// This game event constructor is for movement based actions specifically those initiated by the Game
+    /// and not the Player 
     /// </summary>
     /// <param name="boardMovements"></param>
     /// <param name="moveAction"></param>

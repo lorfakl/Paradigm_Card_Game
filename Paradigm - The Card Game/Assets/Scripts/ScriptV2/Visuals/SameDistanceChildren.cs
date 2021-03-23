@@ -6,7 +6,7 @@ using System.Collections;
 public class SameDistanceChildren : MonoBehaviour {
 
     public Transform[] Children;
-
+    public float xOffset;
 	// Use this for initialization
 	void Awake () 
     {
@@ -18,7 +18,7 @@ public class SameDistanceChildren : MonoBehaviour {
         float YDist = (lastElementPos.y - firstElementPos.y)/(float)(Children.Length - 1);
         float ZDist = (lastElementPos.z - firstElementPos.z)/(float)(Children.Length - 1);
 
-        Vector3 Dist = new Vector3(XDist, YDist, ZDist);
+        Vector3 Dist = new Vector3(XDist + xOffset, YDist, ZDist);
 
         for (int i = 1; i < Children.Length; i++)
         {

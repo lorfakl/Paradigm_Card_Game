@@ -37,6 +37,8 @@ namespace Utilities
             return display;
         }
 
+       
+
         /// <summary>
         /// This function Instantiates a Card prefab for you
         /// </summary>
@@ -51,12 +53,13 @@ namespace Utilities
             if (cardPrefab == null)
             {
                 cardObject = GameObject.Instantiate(Resources.Load("Card", typeof(GameObject)), parent) as GameObject;
-                Debug.Log("Instantiated prefab");
+                Debug.Log("Instantiated from Resources.Load");
             }
             else
             {
                 cardObject = GameObject.Instantiate(cardPrefab, parent) as GameObject;
             }
+           
             cardObject.SendMessage("SetMode", inDisplayMode);
             cardObject.GetComponent<CardScript>().SetCard(c);
             Transform cardName = cardObject.transform.FindDeepChild("cardName");
@@ -73,6 +76,13 @@ namespace Utilities
             return cardObject;
         }
 
+        public static void ScaleCard(GameObject c, Vector3 scale)
+        {
+            RectTransform rectTrans = c.GetComponent<RectTransform>();
+            
+
+            rectTrans.localScale = scale;
+        }
 
         public static MonoBehaviour AccessMonoBehaviour()
         {

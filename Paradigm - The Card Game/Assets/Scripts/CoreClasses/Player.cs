@@ -7,6 +7,7 @@ using Utilities;
 using AI;
 
 public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
+
 public abstract class Player: IPlayable
 {
 

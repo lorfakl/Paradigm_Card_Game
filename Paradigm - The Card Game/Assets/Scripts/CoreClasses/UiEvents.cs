@@ -26,6 +26,7 @@ public class UiEvents : GameEventsArgs
         Destination = destination;
         IsUIEvent = true;
         this.cardSource = c;
+        this.owner = c.Owner;
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
         this.type = EventType.UIUpdate;
@@ -43,7 +44,7 @@ public class UiEvents : GameEventsArgs
     /// <param name="go"></param>
     /// <param name="changes"></param>
     /// <param name="moveAction"></param>
-    public UiEvents(ValidLocations source, ValidLocations destination, GameObject go, MoveAction moveAction) : base(moveAction)
+    public UiEvents(ValidLocations source, ValidLocations destination, GameObject go, MoveAction moveAction, Card c) : base(moveAction)
     {
         Source = source;
         Destination = destination;
@@ -52,7 +53,7 @@ public class UiEvents : GameEventsArgs
         Source = source;
         Destination = destination;
         IsUIEvent = true;
-        this.cardSource = null;
+        this.cardSource = c;
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
         this.type = EventType.UIUpdate;
