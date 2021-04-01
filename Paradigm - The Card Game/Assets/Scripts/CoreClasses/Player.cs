@@ -8,6 +8,8 @@ using AI;
 
 public enum ValidLocations { Hand, Grave, LockZ, BZ, LandZ, SC, PZ, DZ, Field, Deck}
 
+public enum PlayerType { Human, AI, MainHuman}
+
 public abstract class Player: IPlayable
 {
 
@@ -24,7 +26,7 @@ public abstract class Player: IPlayable
     private List<Landscape> lands;
     private Turn turn;
 
-    protected string type;
+    protected PlayerType type;
     
     private bool isPreparedToStart;
     private Location returnedLocation;
@@ -113,7 +115,7 @@ public abstract class Player: IPlayable
 
     public string ID { get; protected set; }
 
-    public string PlayerName
+    public PlayerType PlayerName
     {
         get { return type; }
     }
@@ -130,7 +132,7 @@ public abstract class Player: IPlayable
         set { this.returnedLocation = value; }
     }
         
-    public string Type
+    public PlayerType Type
     {
         get { return this.type; }
     }

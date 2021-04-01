@@ -68,16 +68,6 @@ public class Accessor: Card
     public int GetHp() { return hp; }
     public bool GetElementStatus() { return elemental; }
 
-    public override void PlayCard()
-    {
-        currentLocation.MoveContent(this, this.Owner.GetLocation(ValidLocations.Field));
-    }
-
-    public override void UseEffect()
-    {
-        throw new NotImplementedException();
-    }
-
     protected void Attack()
     {
 

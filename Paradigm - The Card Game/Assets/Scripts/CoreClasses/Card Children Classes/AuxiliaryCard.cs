@@ -26,15 +26,5 @@ public class AuxiliaryCard: Card
         Family fam = new Family(k);
         this.setFam(fam);
     }
-
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void UseEffect()
-    {
-
-    }
 }
 

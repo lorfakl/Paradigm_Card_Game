@@ -30,14 +30,7 @@ using UnityEngine;
         this.SetValidity(true);
     }
 
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
 
-    public override void UseEffect()
-    {
-
-    }
+ 
 }
 

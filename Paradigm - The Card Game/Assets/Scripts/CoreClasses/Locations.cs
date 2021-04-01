@@ -236,6 +236,22 @@ public class Location: IEnumerable
         }
     }
 
+    /// <summary>
+    /// Fisher yates shuffle algorithm using System Random so its not related to any other randoms
+    /// </summary>
+    public void Shuffle()
+    {
+        System.Random rand = new System.Random();
+        for(int i = 0; i < contents.Count; i++)
+        {
+            int j = rand.Next(0, contents.Count);
+            Card temp = contents[j];
+            contents[j] = contents[i];
+            contents[i] = temp;
+
+        }
+    }
+
     public IEnumerator<Card> GetEnumerator()
     {
         foreach(Card c in contents)

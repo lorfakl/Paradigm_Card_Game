@@ -6,11 +6,17 @@ using UnityEngine;
 public class UIScriptableObject : ScriptableObject
 {
     [SerializeField] private GameObject UIPlayerEntryPoint;
-    public Transform UiEntryPoint { get { return UIPlayerEntryPoint.transform; } }
+    public GameObject UiEntryPoint { get { return UIPlayerEntryPoint; } }
 
     [SerializeField] private GameObject NonUIPlayerEntryPoint;
     public Transform NonUiEntryPoint { get { return NonUIPlayerEntryPoint.transform; } }
-    // Start is called before the first frame update
+
+    [SerializeField] private Vector3 cardScale;
+    public Vector3 Scale { get { return cardScale; } }
+
+    [SerializeField] private float moveSpeed;
+    public float MoveSpeed { get { return moveSpeed; } }
+
 
 
 

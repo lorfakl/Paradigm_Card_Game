@@ -11,12 +11,25 @@ public enum MoveAction
 
 public enum NonMoveAction
 {
-    Attack, Battle, Block, Damage, Forge, Heal, Activate, Respond, TurnPhase, DimensionTwist, None, GameEnd
+    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, TurnPhase, DimensionTwist, None, GameEnd
 }
 
 public enum EventType
 {
-    Gameplay, VisualEffect, UIUpdate
+    Gameplay, LegalCheck, UIUpdate
+}
+
+public struct GameAction
+{
+    MoveAction MoveAction { get; set; }
+    NonMoveAction NonMoveAction { get; set; }
+    public GameAction(MoveAction ma, NonMoveAction nma)
+    {
+        MoveAction = ma;
+        NonMoveAction = nma;
+    }
+
+    
 }
 
 public class GameEventsArgs : EventArgs
@@ -48,6 +61,7 @@ public class GameEventsArgs : EventArgs
         this.turn = this.owner.PlayerTurn;
 
         Debug.Log("Event Data Created!");
+
     }
 
     /// <summary>

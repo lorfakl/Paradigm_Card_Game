@@ -1,11 +1,15 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using UnityEngine;
 using Utilities;
 
 public class CardScript : MonoBehaviour {
 
     public Sprite cardSelected;
+    public Vector3 scaleFactor = new Vector3(2, 2, 2);
+    
 
+    private Vector3 defaultScale, defaultPosition;
     private Sprite defaultCard;
     private bool selected;
     private DisplaySelectionCards displayScript;
@@ -13,11 +17,17 @@ public class CardScript : MonoBehaviour {
     private Card cardData;
     private static int numToSelect;
     private bool displayMode;
+    private bool hasScrolled;
     private bool isSetModeCalled;
+
+
+    public Card Card { get{ return cardData; } }
     /*Dont know if there will be more than 2 modes
     private string mode;
     private string [] modes = {"display", }
     */
+
+    #region Unity Callbacks
 
     private void Awake()
     {
@@ -45,6 +55,12 @@ public class CardScript : MonoBehaviour {
         {
             displayScript = gameObject.transform.parent.GetComponent<DisplaySelectionCards>();
         }
+
+        
+        
+        defaultScale = transform.localScale;
+        print("What is the local scale: " + transform.localScale);
+        
     }
 	
 	// Update is called once per frame
@@ -60,19 +76,77 @@ public class CardScript : MonoBehaviour {
             {
                 if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
                 {
+                    print("You hit a card with a click");
                     if (displayMode) //if the script is in displayMode, for selection from the overlay
                     {
+                        print("Is display mode enabled: " + displayMode);
                         selected = !selected; //invert selection bool
                         ChangeSprite(selected); //update the selection status sprite
                     }
                     else
                     {
                         this.cardData.PlayCard();
+                        print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
                     }
                 }
             }
         }
+        
     }
+
+    private void OnDestroy()
+    {
+        print("Its been destroyed");
+    }
+
+    private void OnMouseOver()
+    {
+        if (!displayMode && !hasScrolled)
+        {
+            if (Input.mouseScrollDelta.y > 0)
+            {
+                print("Mouse Scroll Data: " + Input.mouseScrollDelta.y);
+                defaultPosition = transform.position;
+                print("Mouse is in");
+                Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, scaleFactor);
+                transform.DOScale(targetValueDoScale, 0.25f);
+                transform.DOMove(transform.position + new Vector3(0.0f, 3f, 0.0f), 0.25f);
+                hasScrolled = true;
+            }
+        }
+    }
+
+
+    private void OnMouseEnter()
+    {
+        if(!displayMode)
+        {
+            /*defaultPosition = transform.position;
+            print("Mouse is in");
+            Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, scaleFactor);
+            transform.DOScale(targetValueDoScale, 0.25f);
+            transform.DOMove(transform.position + new Vector3(0.0f, 3f, 0.0f), 0.25f);*/
+
+        }
+
+
+    }
+
+    private void OnMouseExit()
+    {
+        if (!displayMode && hasScrolled)
+        {
+            hasScrolled = false;
+            print("Mouse is out");
+            Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, Vector3.one);
+            transform.DOScale(defaultScale, 0.25f);
+            transform.DOMove(defaultPosition, 0.25f);
+        }
+        
+
+    }
+
+    #endregion
 
     private void ChangeSprite(bool s)
     {
@@ -95,6 +169,11 @@ public class CardScript : MonoBehaviour {
         }
     }
 
+    public void Print()
+    {
+        print(this.cardData);
+    }
+
     public void SetCard(Card c)
     {
         if (c == null)
@@ -107,10 +186,7 @@ public class CardScript : MonoBehaviour {
             //print(c.Name);
         }
     }
-    private void OnDestroy()
-    {
-        print("Its been destroyed");
-    }
+    
 
     private void SetMode(bool mode)
     {

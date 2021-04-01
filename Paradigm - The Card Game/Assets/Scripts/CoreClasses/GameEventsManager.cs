@@ -53,7 +53,7 @@ public class GameEventsManager : MonoBehaviour
     /// Which will lead into adding things to the stack and doing timer things 
     /// </summary>
     /// <param name="e"></param>
-    public static void PublishEvent(object s, GameEventsArgs e)
+    private static void PublishEvent(object s, GameEventsArgs e)
     {
         eventQueue.Enqueue(e);
         OnEventAdd(s, e);
@@ -67,6 +67,16 @@ public class GameEventsManager : MonoBehaviour
             //throw new Exception("Game over somebody ran outta cards");
             
 
+        }
+    }
+
+    public static void CheckLegality(object s, GameEventsArgs e)
+    {
+        bool isLegal = true;
+        HelperFunctions.Print("For now everything is legal");
+        if(isLegal)
+        {
+            PublishEvent(s, e);
         }
     }
 

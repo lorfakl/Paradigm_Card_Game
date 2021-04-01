@@ -336,7 +336,7 @@ namespace DataBase
                 {
                     playerDeck.AddCard(c);
                 }
-
+                
                 return;
             }
 

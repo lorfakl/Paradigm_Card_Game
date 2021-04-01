@@ -134,11 +134,11 @@ using UnityEngine;
         public void GameStartSetup()
         {
             int count = 0;
-            foreach (Card c in this.contents)
+            foreach (Card c in this.contents.ToArray())
             {
                 count = count + c.MoveToGameStartLocation();
             }
-            if (Owner.Type == "AI")
+            if (Owner.Type == PlayerType.AI)
             {
                 Debug.Log("AI Moved " + count + " cards");
             }

@@ -11,9 +11,9 @@ public class Ability
 { 
     private string text;
 
-    private Action action;
     private bool isPatient;
     private bool isLimited;
+    private bool isConditionSatisfied;
 
     private bool canActivate;
     private Player playerOwner;

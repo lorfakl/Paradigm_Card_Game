@@ -12,12 +12,12 @@ public class HumanPlayer : Player, IPlayable
     public HumanPlayer(GameTimeManager mgmt, int id) :base(mgmt, id)
     {
         //Calls constructor defined in Player class
-        this.type = "Human";
+        this.type = PlayerType.Human;
     }
 
     public HumanPlayer(Guid id) : base(id)
     {
-        this.type = "Human";
+        this.type = PlayerType.Human;
     }
 
     public int OriginalTimerTime

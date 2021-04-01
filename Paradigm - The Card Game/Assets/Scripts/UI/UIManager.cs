@@ -14,43 +14,105 @@ public enum UITarget
     Grave
 }
 
+public enum ListToUpdate
+{
+    Field,
+    Hand
+}
+
+[RequireComponent(typeof(UIScriptableObject))]
+
 public class UIManager : MonoBehaviour
 {
+    #region Public Inspector Fields
     public GameObject handspace;
-    public GameObject[] cardSlots;
+    public GameObject fieldspace;
+    public GameObject otherHandspace;
+    public GameObject otherFieldspace;
     public GameObject cardPrefab;
+
     public UIScriptableObject drawUIEffects;
-    public float CardDrawMoveSpeed = 1;
-    public Vector3 CardScale;
+    public UIScriptableObject spawnUIEffects;
 
+    public GameObject playerInfoGroup;
+    public GameObject otherInfoGroup;
+    #endregion
 
-    public Vector2 postionOffset;
+    #region Private Fields
+    [SerializeField]
+    private static List<GameObject> fieldCards = new List<GameObject>();
 
-    //private Dictionary<MoveAction, Action<string>> MoveActionFunctionDict = new Dictionary<MoveAction, Action<string>>();
-    private int nextCardSlot;
+    [SerializeField]
+    private static List<GameObject> handCards = new List<GameObject>();
+
+    [SerializeField]
+    private static List<GameObject> otherFieldCards = new List<GameObject>();
+
+    [SerializeField]
+    private static List<GameObject> otherHandCards = new List<GameObject>();
+
+    private Dictionary<MoveAction, ICommand> UICommandsDict = new Dictionary<MoveAction, ICommand>();
+    #endregion
+
+    #region Properties
+    public static List<GameObject> HandCards
+    {
+        get { return handCards; }
+    }
+
+    public static List<GameObject> FieldCards
+    {
+        get { return fieldCards; }
+    }
+
+    public static List<GameObject> OtherHandCards
+    {
+        get { return otherHandCards; }
+    }
+
+    public static List<GameObject> OtherFieldCards
+    {
+        get { return otherFieldCards; }
+    }
+
+    #endregion
+
+    #region Unity Callbacks
     private void Awake()
     {
-        /*MoveActionFunctionDict.Add(MoveAction.Break, "Doing Break UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Build, "Doing Build UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Collect, "Doing Collect UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Crystallize, "Doing Crystallize UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Delete, "Doing Delete UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Despawn, "Doing Despawn UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Draw, "Doing Draw UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Lock, "Doing Lock UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Rest, "Doing Rest UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Return, "Doing Return UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Search, "Doing Search UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Spawn, "Doing Spawn UI Action");
-        MoveActionFunctionDict.Add(MoveAction.Unlock, "Doing Unlock UI Action");*/
-        
+        /*
+         NON MOVE ACTIONS THAT HAVE UI INVOLVED(all of them)
+            Attack - A turn player designates 1 of their accessors and one of their opponent's accessors or barriers for battle.
+            Battle - An accessor inflicts damage to another accessor after attacking, or breaks the barrier.. This includes calculation.
+            Block - After a turn player designates attack targets, the defending player changes the accessor on their field that will battle.
+            Damage - Reducing an accessor's HP.    
+            Forge - The creation of a bond between an Accessor and Bond Mechanism.
+            Heal - Increasing an accessor's HP.
+            Initiate - When the ability of a card is used.
+            React - Spawning or initiating immediately after an opponent spawns or initiates.
+            Resolve - When cards spawn or initiate while on the stack.Block - After a turn player designates attack targets, the defending player changes the accessor on their field that will battle.    
+            Twist Dimensions - When a landscape switches to a different one by phase or ability
+            
+         */
+        //UICommandsDict.Add(MoveAction.Break, "Doing Break UI Action");
+        //UICommandsDict.Add(MoveAction.Build, "Doing Build UI Action");
+        //UICommandsDict.Add(MoveAction.Collect, "Doing Collect UI Action");
+        //UICommandsDict.Add(MoveAction.Crystallize, "Doing Crystallize UI Action");
+        //UICommandsDict.Add(MoveAction.Delete, "Doing Delete UI Action");
+        //UICommandsDict.Add(MoveAction.Despawn, "Doing Despawn UI Action");
+        //UICommandsDict.Add(MoveAction.Lock, "Doing Lock UI Action");
+        //UICommandsDict.Add(MoveAction.Rest, "Doing Rest UI Action");
+        //UICommandsDict.Add(MoveAction.Return, "Doing Return UI Action");
+        //UICommandsDict.Add(MoveAction.Search, "Doing Search UI Action");
+        UICommandsDict.Add(MoveAction.Spawn, new SpawnCommand(spawnUIEffects));
+        //UICommandsDict.Add(MoveAction.Unlock, "Doing Unlock UI Action");
+        UICommandsDict.Add(MoveAction.Draw, new DrawCommand(drawUIEffects));
+
 
     }
     void Start()
     {
         GameEventsManager.NotifySubsOfEvent += CheckForUIEvent;
-        nextCardSlot = cardSlots.Length - 1;
-        postionOffset = new Vector2(0, 0);
 
         if(drawUIEffects == null)
         {
@@ -62,10 +124,6 @@ public class UIManager : MonoBehaviour
             HelperFunctions.Error("Handscapce is null");
         }
 
-        if (cardSlots == null)
-        {
-            HelperFunctions.Error("Card Slots is null");
-        }
 
         if (cardPrefab == null)
         {
@@ -78,6 +136,7 @@ public class UIManager : MonoBehaviour
     {
         
     }
+    #endregion
 
     private void CheckForUIEvent(object sender, GameEventsArgs e)
     {
@@ -87,52 +146,24 @@ public class UIManager : MonoBehaviour
             print("UI Event Data: ");
             e.Print();
             UiEvents ue = (UiEvents)e;
-
-            ShowCardMovement(ue);
-           
+            /*if(ue.MoveActionEvent == MoveAction.Draw)
+            {
+                ShowCardMovement(ue);
+            }/**/
+            try
+            {
+                StartCoroutine(UICommandsDict[ue.MoveActionEvent].Execute(ue));
+            }
+            catch(Exception ex)
+            {
+                print(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException + "\n" + ex.Source);
+            }
         }
         
     }
 
-    private void ShowCardMovement(UiEvents e)
-    {
-        //if(nextCardSlot  0)
-        HelperFunctions.Print("Is this getting called?");
-        Player owner = e.EventOwner;
-        Transform startPoint;
-        if (owner.Type == "AI")
-        {
-            Debug.LogWarning("Please fix the Card bug, this if statement is just while that bug exists");
-            Debug.LogWarning("Grabbing UI Player start point instead of NonUI");
-            startPoint = drawUIEffects.UiEntryPoint;   
-        }
-        //cardSlots[nextCardSlot];
-        HelperFunctions.Print("Current CardSlot index: " + nextCardSlot);
-        GameObject cardObject = HelperFunctions.CreateCard(e.EventOriginCard, false, cardSlots[nextCardSlot].transform, cardPrefab);
-        
-
-        if (CardScale == null)
-        {
-            HelperFunctions.ScaleCard(cardObject, new Vector3(30, 30, 0));
-        }
-        else
-        {
-            HelperFunctions.ScaleCard(cardObject, CardScale);
-        }
-        nextCardSlot--;
-        //cardSlots[nextCardSlot].transform.position.x 
-        Vector3 newpostion = cardSlots[nextCardSlot].transform.position;
-        newpostion.x -= 1.746666f;
-        cardObject.transform.DOMove(newpostion, 1.5f);
-    }
-
-    private void PositionHand(GameObject c)
-    {
-        
-        
-
-        
-        
-        
-    }
 }
+
+
+
+

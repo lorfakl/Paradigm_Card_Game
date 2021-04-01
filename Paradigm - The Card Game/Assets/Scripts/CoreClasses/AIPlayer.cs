@@ -15,12 +15,12 @@ public class AIPlayer : Player
     public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
     {
         //Calls constructor defined in Player class
-        this.type = "AI";
+        this.type = PlayerType.AI;
     }
 
     public AIPlayer(Guid id) : base(id)
     {
-        this.type = "AI";
+        this.type = PlayerType.AI;
     }
 
     public int AttackChance

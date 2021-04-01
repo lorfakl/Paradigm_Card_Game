@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Utilities;
 
-
- public abstract class Card
+public abstract class Card
 {
         //TODO TRAITS NEED TO BE THOUGHT OUT
         private string name;
@@ -208,9 +208,16 @@ using UnityEngine;
             return cardsMoved;
         }
 
-        public abstract void PlayCard();
-        
-        public abstract void UseEffect(); //To be defined MUCH later
+        public void PlayCard()
+        {
+            HelperFunctions.RaiseNewUIEvent(this, ValidLocations.Hand, ValidLocations.Field, MoveAction.Spawn, (Card)this);
+        }
+
+        public void UseEffect()
+        {
+            HelperFunctions.RaiseNewEvent(this, new GameAction(MoveAction.None,NonMoveAction.Initiate), EventType.LegalCheck, this);
+        }
+    //To be defined MUCH later
         
 }
 

@@ -60,7 +60,6 @@ public class GameMaster : MonoBehaviour
         {
             GameObject player1Obj = Instantiate(player1);
             GameObject player2Obj = Instantiate(player2);
-
         }
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
+using TransportLayer;
 
 
 /// <summary>
@@ -103,7 +104,7 @@ namespace Utilities
                                 NonMoveAction notMoveAction, List<Card> cardTargets)
         {
             GameEventsArgs newEvent = new GameEventsArgs(boardChanges, source, moveAction, notMoveAction, cardTargets);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventIngestion.EventIntake(sender, newEvent);
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace Utilities
         public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventIngestion.EventIntake(sender, newEvent);
             return newEvent;
         }
 
@@ -128,20 +129,32 @@ namespace Utilities
         public static void RaiseNewEvent(object sender, List<LocationChanges> boardChanges, MoveAction moveAction)
         {
             GameEventsArgs newEvent = new GameEventsArgs(boardChanges, moveAction);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventIngestion.EventIntake(sender, newEvent);
+        }
+
+        /// <summary>
+        /// Raise an event to specifically check if the action is legal
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="nonMoveAction"></param>
+        /// <param name="eventType"></param>
+        /// <param name="source"></param>
+        public static void RaiseNewEvent(object sender, GameAction action, EventType eventType, Card source)
+        {
+            Print("Needs to go to Transport Layer then LegalityCheck In GameManager");
         }
 
         public static void RaiseNewEvent(object sender, Card cardSource, NonMoveAction notMoveAction, Card cardTarget)
         {
             GameEventsArgs newEvent = new GameEventsArgs(cardSource, notMoveAction, cardTarget);
-            GameEventsManager.PublishEvent(sender, newEvent);
+            EventIngestion.EventIntake(sender, newEvent);
         }
 
         public static void RaiseNewUIEvent(object sender, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card c)
         {
 
             UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
-            GameEventsManager.PublishEvent(sender, uiEvent);
+            EventIngestion.EventIntake(sender, uiEvent);
         }
 
         
