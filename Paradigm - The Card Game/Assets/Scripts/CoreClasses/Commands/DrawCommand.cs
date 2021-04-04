@@ -7,7 +7,7 @@ using DG.Tweening;
 public class DrawCommand : ICommand
 {
     UIScriptableObject drawUIEffects;
-    private List<GameObject> cardsCreated;
+    private System.Collections.ObjectModel.ObservableCollection<GameObject> cardsCreated;
     private GameObject handspace;
 
 
@@ -41,7 +41,7 @@ public class DrawCommand : ICommand
 
         float xMove = -.16f * 18;
         //if(nextCardSlot  0)
-        HelperFunctions.Print("Cards created: " + cardsCreated.Count);
+        //HelperFunctions.Print("Cards created: " + cardsCreated.Count);
         Player owner = e.EventOwner;
         GameObject startPoint = drawUIEffects.UiEntryPoint;
         if (owner.Type == PlayerType.AI)
@@ -58,8 +58,8 @@ public class DrawCommand : ICommand
             {
                 c.GetComponent<CardScript>().Print();
                 LeftMovingTween = c.transform.DOMoveX(c.transform.position.x + xMove, 0.1f);
-                HelperFunctions.Print("Moving to: " + c.transform.position.x + xMove);
-                HelperFunctions.Print("Should move " + cardsCreated.Count + " to the left");
+                //HelperFunctions.Print("Moving to: " + c.transform.position.x + xMove);
+                //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the left");
             }
         }
 
@@ -70,10 +70,10 @@ public class DrawCommand : ICommand
 
         if (cardsCreated.Count > 2)
         {
-            HelperFunctions.Print("I dont know whats happening");
+            //HelperFunctions.Print("I dont know whats happening");
             cardObject.transform.DOMoveX(cardObject.transform.position.x - ((xMove / 2) * (cardsCreated.Count - 2)), 0.1f);
         }
-        HelperFunctions.Print("What is xMove: " + xMove);
+        //HelperFunctions.Print("What is xMove: " + xMove);
 
 
 
@@ -112,7 +112,7 @@ public class DrawCommand : ICommand
             {
                 c.GetComponent<CardScript>().Print();
                 c.transform.DOMoveX(c.transform.position.x - (xMove / 2f), drawUIEffects.MoveSpeed);
-                HelperFunctions.Print("Should move " + cardsCreated.Count + " to the right");
+                //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the right");
             }
         }
     }

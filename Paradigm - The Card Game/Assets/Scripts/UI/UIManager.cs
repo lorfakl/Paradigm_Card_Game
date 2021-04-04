@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
 using DG.Tweening;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 public enum UITarget
 {
@@ -40,41 +42,48 @@ public class UIManager : MonoBehaviour
 
     #region Private Fields
     [SerializeField]
-    private static List<GameObject> fieldCards = new List<GameObject>();
+    private static ObservableCollection<GameObject> fieldCards = new ObservableCollection<GameObject>();
 
     [SerializeField]
-    private static List<GameObject> handCards = new List<GameObject>();
+    private static ObservableCollection<GameObject> handCards = new ObservableCollection<GameObject>();
 
     [SerializeField]
-    private static List<GameObject> otherFieldCards = new List<GameObject>();
+    private static ObservableCollection<GameObject> otherFieldCards = new ObservableCollection<GameObject>();
 
     [SerializeField]
-    private static List<GameObject> otherHandCards = new List<GameObject>();
+    private static ObservableCollection<GameObject> otherHandCards = new ObservableCollection<GameObject>();
+
+    [SerializeField]
+    private static float tweenSpeed = .1f;
 
     private Dictionary<MoveAction, ICommand> UICommandsDict = new Dictionary<MoveAction, ICommand>();
     #endregion
 
     #region Properties
-    public static List<GameObject> HandCards
+    public static ObservableCollection<GameObject> HandCards
     {
         get { return handCards; }
     }
 
-    public static List<GameObject> FieldCards
+    public static ObservableCollection<GameObject> FieldCards
     {
         get { return fieldCards; }
     }
 
-    public static List<GameObject> OtherHandCards
+    public static ObservableCollection<GameObject> OtherHandCards
     {
         get { return otherHandCards; }
     }
 
-    public static List<GameObject> OtherFieldCards
+    public static ObservableCollection<GameObject> OtherFieldCards
     {
         get { return otherFieldCards; }
     }
 
+    public static float CardWidth
+    {
+        get { return 2.88f; }
+    }
     #endregion
 
     #region Unity Callbacks
@@ -108,7 +117,8 @@ public class UIManager : MonoBehaviour
         //UICommandsDict.Add(MoveAction.Unlock, "Doing Unlock UI Action");
         UICommandsDict.Add(MoveAction.Draw, new DrawCommand(drawUIEffects));
 
-
+        fieldCards.CollectionChanged += HandleFieldItemChange;
+        handCards.CollectionChanged += HandleHandItemChange;
     }
     void Start()
     {
@@ -134,9 +144,77 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        print("Cards on field: " + fieldCards.Count);
     }
     #endregion
+
+
+    private void HandleFieldItemChange(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        print("was this called?");
+        float xMove = -3.07f * (fieldCards.Count - 1);
+
+        
+        switch(e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                if(fieldCards.Count == 1)
+                {
+                    fieldCards[fieldCards.Count - 1].transform.DOMoveX(-CardWidth / 2, .1f);
+                }
+                fieldCards[fieldCards.Count - 1].transform.DOMoveX(xMove-CardWidth/2, .1f);
+                break;
+
+            case NotifyCollectionChangedAction.Remove:
+                break;
+        }
+    }
+
+    private void HandleHandItemChange(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch(e.Action)
+        {
+            case NotifyCollectionChangedAction.Remove:
+                int removedIndex = e.OldStartingIndex;
+                for(int i = 0; i < handCards.Count; i++)
+                {
+                    Vector3 position;
+                    if(i < removedIndex)
+                    {
+                        position = handCards[i].transform.localPosition;
+                        handCards[i].transform.DOMoveX(position.x + CardWidth / 2, tweenSpeed);
+                    }
+                    else
+                    {
+                        position = handCards[i].transform.localPosition;
+                        handCards[i].transform.DOMoveX(position.x - CardWidth / 2, tweenSpeed);
+                    }
+                }
+                break;
+
+            case NotifyCollectionChangedAction.Add:
+                break;
+        }
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            print("Removed from hand: " + handCards.Count + " cards left in the hand");
+            print("Size of OldItems: " + e.OldItems.Count + " Previous Index of removed item" + e.OldStartingIndex);
+        }
+        float xMove = -3.07f * (fieldCards.Count - 1);
+
+        
+        /*if (fieldCards.Count > 1)
+        {
+            print("Inside Obserable Collection Event Hanfler");
+            for(int i = )
+            foreach (GameObject c in fieldCards)
+            {
+                c.GetComponent<CardScript>().Print();
+                c.transform.DOMoveX(c.transform.position.x - (xMove / 2f), drawUIEffects.MoveSpeed);
+                HelperFunctions.Print("UI Manager Resize " + fieldCards.Count + " to the right");
+            }
+        }*/
+    }
 
     private void CheckForUIEvent(object sender, GameEventsArgs e)
     {
@@ -157,6 +235,7 @@ public class UIManager : MonoBehaviour
             catch(Exception ex)
             {
                 print(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException + "\n" + ex.Source);
+                print("Move action found: " + ue.MoveActionEvent);
             }
         }
         

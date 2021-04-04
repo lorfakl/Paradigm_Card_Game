@@ -59,7 +59,7 @@ public class CardScript : MonoBehaviour {
         
         
         defaultScale = transform.localScale;
-        print("What is the local scale: " + transform.localScale);
+        //print("What is the local scale: " + transform.localScale);
         
     }
 	
@@ -76,10 +76,10 @@ public class CardScript : MonoBehaviour {
             {
                 if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
                 {
-                    print("You hit a card with a click");
+                    //print("You hit a card with a click");
                     if (displayMode) //if the script is in displayMode, for selection from the overlay
                     {
-                        print("Is display mode enabled: " + displayMode);
+                        //print("Is display mode enabled: " + displayMode);
                         selected = !selected; //invert selection bool
                         ChangeSprite(selected); //update the selection status sprite
                     }

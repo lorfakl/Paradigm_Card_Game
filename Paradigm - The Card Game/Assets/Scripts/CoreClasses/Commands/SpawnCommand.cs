@@ -15,7 +15,8 @@ public class SpawnCommand : ICommand
     private UIScriptableObject spawnUIEffects;
     private GameObject handSpace;
     private GameObject fieldSpace;
-    private List<GameObject> drawnCards;
+    private System.Collections.ObjectModel.ObservableCollection<GameObject> drawnCards;
+    private System.Collections.ObjectModel.ObservableCollection<GameObject> spawnCards;
 
 
     public SpawnCommand(UIScriptableObject uIScriptableObject)
@@ -25,7 +26,7 @@ public class SpawnCommand : ICommand
 
     public IEnumerator Execute(GameEventsArgs g)
     {
-        HelperFunctions.Print("Spawn Command Execurte function");
+        //HelperFunctions.Print("Spawn Command Execurte function");
         Show((UiEvents)g);
         yield return TweenWaitTime();
         
@@ -38,6 +39,7 @@ public class SpawnCommand : ICommand
             handSpace = GameObject.FindGameObjectWithTag("enemyHand");
             fieldSpace = GameObject.FindGameObjectWithTag("enemyField");
             drawnCards = UIManager.OtherHandCards;
+            spawnCards = UIManager.OtherFieldCards;
         }
         else
         {
@@ -45,19 +47,25 @@ public class SpawnCommand : ICommand
             handSpace = GameObject.FindGameObjectWithTag("playerHand");
             fieldSpace = GameObject.FindGameObjectWithTag("playerField");
             drawnCards = UIManager.HandCards;
+            spawnCards = UIManager.FieldCards;
         }
 
         HelperFunctions.Print(ue.EventOriginCard.Name);
         GameObject c = ue.EventOriginCard.GameObj;
         if(drawnCards.Remove(c))
         {
-            c.transform.DOMove(fieldSpace.transform.position, spawnUIEffects.MoveSpeed);
             c.transform.SetParent(fieldSpace.transform);
+            Vector3 offsetFromOrigin = fieldSpace.transform.position;
+            offsetFromOrigin.x -= UIManager.CardWidth / 2;
+            c.transform.DOMove(offsetFromOrigin, spawnUIEffects.MoveSpeed);
+            spawnCards.Add(c);
         }
         else
         {
             HelperFunctions.Error("Card GO not removed you should find our why");
         }
+
+        
         
     }
 
