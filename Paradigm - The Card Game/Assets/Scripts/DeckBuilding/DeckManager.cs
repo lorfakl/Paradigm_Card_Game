@@ -19,8 +19,9 @@ public class DeckManager : MonoBehaviour {
             CardDataBase.GetDataBaseData();
         }
 
-        foreach (Card c in CardDataBase.SavedDeckContents)
+        foreach (int id in CardDataBase.SavedDeckContents)
         {
+            Card c = CardDataBase.CreateCardInstance(id);
             if(c == null)
             {
                 print("This is null my guy");

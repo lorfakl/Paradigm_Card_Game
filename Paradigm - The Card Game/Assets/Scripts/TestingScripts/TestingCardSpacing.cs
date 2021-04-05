@@ -14,16 +14,26 @@ public class TestingCardSpacing : MonoBehaviour
     public UIManager UIManager;
 
     public static Player PlayerOne { get; private set; }
+    public static Player Player2{ get; private set; }
 
     //private Vector3 midPoint;
     // Start is called before the first frame update
     void Start()
     {
         PlayerOne = new HumanPlayer(Guid.NewGuid());
+        Player2 = new AIPlayer(Guid.NewGuid());
         UIManager = gameObject.GetComponent<UIManager>();
 
         CardDataBase.MakePlayerDeck(PlayerOne);
+        CardDataBase.MakePlayerDeck(Player2);
+
+        if(Player2.PlayerDeck.GetMajesty() == PlayerOne.PlayerDeck.GetMajesty())
+        {
+            throw new Exception("It didnt take apparently");
+        }
+
         PlayerOne.PlayerDeck.GameStartSetup();
+        Player2.PlayerDeck.GameStartSetup();
         //PlayerOne.PlayerDeck.Shuffle();
         drawButton.onClick.AddListener(StupidButton);
         //arrangeButton.onClick.AddListener(UIManager.Rearrange);

@@ -12,7 +12,7 @@ public class DisplaySelectionCards :MonoBehaviour
     //It should get the cards from somewhere, Likely a location object
     //It should display those cards, allow the player to select them and send the selected cards back to the sender
     public GameObject cardPrefab;
-    public Camera uiCamera;
+    //public Camera uiCamera;
 
     private GameObject display;
     private GameObject mainCamera;
@@ -115,7 +115,7 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
-        GameMaster.UiCamera.SetActive(true);
+        //GameMaster.UiCamera.SetActive(true);
 
 
     }
@@ -124,11 +124,11 @@ public class DisplaySelectionCards :MonoBehaviour
     {      
         canvas = gameObject.transform.parent.parent;
         Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
-        canvasComp.renderMode = RenderMode.ScreenSpaceCamera;
-        uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
+        canvasComp.renderMode = RenderMode.WorldSpace;
+        //uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        uiCamera.gameObject.tag = "MainCamera";
-        if(uiCamera != null)
+        //uiCamera.gameObject.tag = "MainCamera";
+        /*if(uiCamera != null)
         {
             canvasComp.worldCamera = uiCamera;
             uiCamera.gameObject.SetActive(true);
@@ -137,7 +137,7 @@ public class DisplaySelectionCards :MonoBehaviour
         else
         {
             HelperFunctions.Error("UI Camera is set to null add in inspector");
-        }
+        }*/
         
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
         DisplayCards();
@@ -163,8 +163,8 @@ public class DisplaySelectionCards :MonoBehaviour
             source.MoveContent(selectedCards, destination);
             //print(destination.Count);
             //IsDoneChoosing(this, destination);
-            mainCamera.SetActive(true);
-            uiCamera.gameObject.SetActive(false);
+            //mainCamera.SetActive(true);
+            //uiCamera.gameObject.SetActive(false);
             Destroy(canvas.gameObject);
         }
     }

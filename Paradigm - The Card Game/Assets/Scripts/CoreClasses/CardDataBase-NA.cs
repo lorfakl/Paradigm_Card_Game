@@ -13,13 +13,16 @@ namespace DataBase
 {
     class CardDataBase
     {
+        private static List<int> allCardIDs = new List<int>();
         private static List<Card> allCards = new List<Card>();
         private static Dictionary<string, CardConstrInfo> typeDict = new Dictionary<string, CardConstrInfo>();
+        private static Dictionary<int, (Type type, System.Object[] arguments)> cardDict = new Dictionary<int, (Type type, System.Object[] arguments)>(); 
         private static string dbConnString = "URI=file:" + Application.dataPath + "/CardDataBase.db";
         private enum SearchMod { nameToggle, typeToggle, famToggle }
         private static bool isDataLoaded = false;
-        private static List<Card> playerDeckContents = new List<Card>();
+        private static List<int> playerDeckContents = new List<int>();
         private static bool isPlayerDeckLoaded = false;
+        private static bool isCardDictLoaded = false;
 
         private struct CardConstrInfo
         {
@@ -95,21 +98,12 @@ namespace DataBase
 
                                 System.Object[] ob = recordData.ToArray();
 
-                                Card c = (Card)Activator.CreateInstance(cardType, ob);
-
-                                c.ID = Int32.Parse(reader[0].ToString());
-                                c.ClassType = reader[1].ToString();
-                                allCards.Add(c);
-
-                                foreach (Ability a in c.getAbilities())
-                                {
-                                    a.LinkToCard(c.getName());
-                                }
-
-                                foreach (Trait t in c.getTraits())
-                                {
-                                    t.LinkToCard(c.getName());
-                                }
+                                int iD = Int32.Parse(reader[0].ToString());
+                        
+                                cardDict.Add(iD, (cardType, ob));
+                                allCardIDs.Add(iD);
+                                
+                                
                             }
                             else
                             {
@@ -121,13 +115,39 @@ namespace DataBase
 
                 dbconn.Close();
                 isDataLoaded = true;
+                isCardDictLoaded = true;
 
-                if(IsPlayerDeckSaved())
-                {
-                    LoadPlayerDeck();
-                }
+                
             }
         }
+
+        public static Card CreateCardInstance(int id)
+        {
+            if (!isCardDictLoaded)
+            {
+                GetDataBaseData();
+            }
+
+            var (type, arguments) = cardDict[id];
+            Card c = (Card)Activator.CreateInstance(type, arguments);
+
+            c.ID = id;
+            c.ClassType = c.GetType().ToString();
+
+
+            foreach (Ability a in c.getAbilities())
+            {
+                a.LinkToCard(c.getName());
+            }
+
+            foreach (Trait t in c.getTraits())
+            {
+                t.LinkToCard(c.getName());
+            }
+
+            return c;
+        }
+        
 
         public static void SavePlayerDeck(Deck d)
         {
@@ -160,7 +180,7 @@ namespace DataBase
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
                         //Debug.Log(cmd.CommandText);
                         cmd.ExecuteNonQuery();
-                        playerDeckContents.Add(c);
+                        playerDeckContents.Add(c.ID);
                     }
                     //cmd.CommandText = query; //put sql command text in the command object
 
@@ -168,7 +188,7 @@ namespace DataBase
             }
         }
 
-        public static List<Card> LoadPlayerDeck()
+        public static List<int> LoadPlayerDeck()
         {
             if (!isPlayerDeckLoaded)
             {
@@ -184,7 +204,7 @@ namespace DataBase
                         {
                             while (reader.Read())
                             {
-                                playerDeckContents.Add(GetCard(reader[1].ToString()));
+                                playerDeckContents.Add(Int32.Parse(reader[0].ToString()));
                             }
 
                             isPlayerDeckLoaded = true;
@@ -227,7 +247,7 @@ namespace DataBase
             get { return isDataLoaded; }
         }
 
-        public static List<Card> SavedDeckContents
+        public static List<int> SavedDeckContents
         {
             get { return playerDeckContents; }
         }
@@ -325,6 +345,11 @@ namespace DataBase
         {
             Deck playerDeck = p.PlayerDeck;
 
+            if (playerDeck == null)
+            {
+                throw new Exception("You passed in a null deck to MakePlayerDeck");
+            }
+
             if (!isDataLoaded)
             {
                 GetDataBaseData();
@@ -332,23 +357,22 @@ namespace DataBase
 
             if (IsPlayerDeckSaved())
             {
-                foreach (Card c in LoadPlayerDeck())
+                foreach (int id in LoadPlayerDeck())
                 {
-                    playerDeck.AddCard(c);
+                    playerDeck.AddCard(CreateCardInstance(id));
                 }
                 
                 return;
             }
 
-            if (playerDeck == null)
-            {
-                Debug.Log("Null as fuck!");
-                return;
-            }
+            
 
-            foreach (Card c in allCards)
+            foreach (int id in allCardIDs)
             {
-                if(playerDeck.AddCard(c))
+                Debug.Log("Card ID: " + id);
+                Card c = CreateCardInstance(id);
+                Debug.Log("Card Instance NAme: " + c.Name);
+                if (playerDeck.AddCard(c)) 
                 {
                     c.setOwner(p);
                     Debug.Log("Card Add Success");

@@ -155,11 +155,6 @@ public abstract class Player: IPlayable
         set { this.timeLeftOnTimer = value; }
     }
 
-    public void LoadDeckFromDataBase()
-    {
-        playerDeck.MoveContent(DataBase.CardDataBase.LoadPlayerDeck(), playerDeck);
-    }
-
     public Location GetLocation(ValidLocations l)
     {
         return GetLocation(l.ToString());
