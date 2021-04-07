@@ -31,12 +31,14 @@ public class AIPlayer : Player
     public override IEnumerator PerformAwaken()
     {
         Debug.Log("Wanna do more UI work before implementation");
-        yield return new WaitForSeconds(2);
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Awaken));
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator PerformCentral()
     {
         Debug.Log("AI Central");
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Central));
         do
         {
             Location hand = GetLocation(ValidLocations.Hand);
@@ -111,7 +113,7 @@ public class AIPlayer : Player
     public override IEnumerator PerformCrystal()
     {
         Debug.Log("AI Crystallize");
-
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Crystallization));
         Location sc = GetLocation(ValidLocations.SC);
         if (sc.Count >= 3)
         {
@@ -134,7 +136,7 @@ public class AIPlayer : Player
     {
         try
         {
-            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+            HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Gather));
             Debug.Log("AI Draw a Card!");
             if (PlayerDeck.Count > 0)
             {
@@ -142,7 +144,7 @@ public class AIPlayer : Player
             }
             else
             {
-                HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+                HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.GameEnd, TurnPhase.Gather));
             }
         }
         catch (Exception ex)
@@ -151,24 +153,17 @@ public class AIPlayer : Player
             Debug.Log(ex.StackTrace);
             Debug.Log(ex.ToString());
         }
-        yield return new WaitForSeconds(1);
-        
+        yield return new WaitForSeconds(3);
+
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
-        Card chosenLand = null;
-        int index = UnityEngine.Random.Range(0, 2);
-        foreach (Card c in GetLocation(ValidLocations.DZ).GetContents())
-        {
-            if (c.GetType() == typeof(Landscape))
-            {
-                chosenLand = c;
-            }
-        }
+        Location lands = this.PlayerDeck.GetLandsAsLocation();
+        Card chosenLand = lands.SelectRandomContent();
         TCCard = chosenLand;
         GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);
-        yield return 5;
+        yield return null;
     }
 
     public override IEnumerator ChooseBarriers(int barrierCount)
@@ -186,7 +181,7 @@ public class AIPlayer : Player
         PlayerDeck.MoveContent(barriers, GetLocation(ValidLocations.BZ));
 
         PlayerDeck.Draw(5);
-        yield return 5;
+        yield return null;
     }
 
  
@@ -199,7 +194,8 @@ public class AIPlayer : Player
     public override IEnumerator PerformEnd()
     {
         Debug.Log("AI EndPhase");
-        yield return new WaitForSeconds(1);
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.End));
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator PerformAttack()

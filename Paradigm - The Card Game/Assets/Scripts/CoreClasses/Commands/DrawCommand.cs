@@ -8,21 +8,22 @@ public class DrawCommand : ICommand
 {
     UIScriptableObject drawUIEffects;
     private System.Collections.ObjectModel.ObservableCollection<GameObject> cardsCreated;
-    private GameObject handspace;
+    private GameObject mainHandspace;
+    private GameObject otherHandSpace;
 
 
     public DrawCommand(UIScriptableObject uIScriptableObject)
     {
         drawUIEffects = uIScriptableObject;
-        handspace = GameObject.FindGameObjectWithTag("playerHand");
-   
+        mainHandspace = GameObject.FindGameObjectWithTag("playerHand");
+        otherHandSpace = GameObject.FindGameObjectWithTag("enemyHand");
+
     }
 
     public IEnumerator Execute(GameEventsArgs g)
     {
-        if(g.EventOwner.Type == PlayerType.Human)
+        if(g.EventOwner.Type == PlayerType.MainHuman)
         {
-            Debug.LogWarning("This Player type should be change MainHuman");
             cardsCreated = UIManager.HandCards;
         }
         else
@@ -38,16 +39,17 @@ public class DrawCommand : ICommand
 
     private void ShowDraw(UiEvents e)
     {
-
-        float xMove = -.16f * 18;
-        //if(nextCardSlot  0)
-        //HelperFunctions.Print("Cards created: " + cardsCreated.Count);
         Player owner = e.EventOwner;
         GameObject startPoint = drawUIEffects.UiEntryPoint;
-        if (owner.Type == PlayerType.AI)
+
+        GameObject handspace;
+        if (owner.Type == PlayerType.MainHuman)
         {
-            Debug.LogWarning("Please fix the Card bug, this if statement is just while that bug exists");
-            Debug.LogWarning("Grabbing UI Player start point instead of NonUI");
+            handspace = mainHandspace;
+        }
+        else
+        {
+            handspace = otherHandSpace;
         }
 
         Tween LeftMovingTween = null;
@@ -57,8 +59,8 @@ public class DrawCommand : ICommand
             foreach (GameObject c in cardsCreated)
             {
                 c.GetComponent<CardScript>().Print();
-                LeftMovingTween = c.transform.DOMoveX(c.transform.position.x + xMove, 0.1f);
-                //HelperFunctions.Print("Moving to: " + c.transform.position.x + xMove);
+                LeftMovingTween = c.transform.DOMoveX(c.transform.position.x + UIManager.CardWidth, 0.1f);
+                //HelperFunctions.Print("Moving to: " + c.transform.position.x + UIManager.CardWidth);
                 //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the left");
             }
         }
@@ -71,15 +73,9 @@ public class DrawCommand : ICommand
         if (cardsCreated.Count > 2)
         {
             //HelperFunctions.Print("I dont know whats happening");
-            cardObject.transform.DOMoveX(cardObject.transform.position.x - ((xMove / 2) * (cardsCreated.Count - 2)), 0.1f);
+            cardObject.transform.DOMoveX(cardObject.transform.position.x - ((UIManager.CardWidth / 2) * (cardsCreated.Count - 2)), 0.1f);
         }
-        //HelperFunctions.Print("What is xMove: " + xMove);
-
-
-
-
-
-
+        //HelperFunctions.Print("What is UIManager.CardWidth: " + UIManager.CardWidth);
         //cardObject.transform.DOMove(newPosition, 1.5f);
         //cardObject.transform.parent = handspace.transform;
 
@@ -104,14 +100,13 @@ public class DrawCommand : ICommand
 
     public void Rearrange()
     {
-        float xMove = -.16f * 18;
-
+        
         if (cardsCreated.Count != 1)
         {
             foreach (GameObject c in cardsCreated)
             {
                 c.GetComponent<CardScript>().Print();
-                c.transform.DOMoveX(c.transform.position.x - (xMove / 2f), drawUIEffects.MoveSpeed);
+                c.transform.DOMoveX(c.transform.position.x - (UIManager.CardWidth / 2f), drawUIEffects.MoveSpeed);
                 //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the right");
             }
         }

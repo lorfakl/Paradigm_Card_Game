@@ -32,7 +32,7 @@ namespace Utilities
             GameObject display = GameObject.Instantiate(Resources.Load("DisplayOverlay")) as GameObject;
             if(source.Owner.PlayerID == destination.Owner.PlayerID)
             {
-                Debug.Log("We started good");
+                Debug.Log("DSC Instantiation Success");
             }
             display.GetComponentInChildren<DisplaySelectionCards>().SetCardPath(source, destination, numToSelect);
             return display;
@@ -113,10 +113,12 @@ namespace Utilities
         /// <param name="sender"></param>
         /// <param name="owner"></param>
         /// <param name="target"></param>
-        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, NonMoveAction nonMoveAction)
+        public static GameEventsArgs RaiseNewEvent(object sender, Player owner, Player target, GameAction action)
         {
-            GameEventsArgs newEvent = new GameEventsArgs(owner, target, nonMoveAction);
+            GameEventsArgs newEvent = new GameEventsArgs(owner, target, action);
+            UiEvents uiEvents = new UiEvents(owner, target, action);
             EventIngestion.EventIntake(sender, newEvent);
+            EventIngestion.EventIntake(sender, uiEvents);
             return newEvent;
         }
 
@@ -211,6 +213,14 @@ namespace Utilities
         public static void Print(string msg)
         {
             Debug.Log(msg);
+        }
+
+        public static void CatchException(Exception e)
+        {
+            Debug.LogWarning(e.Source);
+            Debug.LogWarning(e.Message);
+            Debug.LogWarning(e.StackTrace);
+            Debug.LogWarning(e.InnerException);
         }
     }
 

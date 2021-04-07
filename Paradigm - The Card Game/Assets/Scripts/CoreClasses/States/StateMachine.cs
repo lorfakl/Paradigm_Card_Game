@@ -44,18 +44,19 @@ public class StateMachine
 
     }
 
-    public async Task ProcessStates()
+    public IEnumerator ProcessStates()
     {
         GameMaster.IsTurnActive = true;
         do
         {
-            Debug.Log("There's an error some where");
+            //Debug.Log("There's an error some where");
             CurrentState.OnEntry();
             Debug.Log("State Entry no error");
             Task operation = CurrentState.Operation();
             Debug.Log("Operation started");
-            await operation;
-            
+            //await operation;
+
+            yield return new WaitUntil(() => operation.IsCompleted);
             if(operation.IsCompleted)
             {
                 Debug.Log("Operation ENDED OnExit start");
@@ -71,6 +72,7 @@ public class StateMachine
             }
         }
         while (CurrentState != EndState);
+        Debug.Log("I dont think we ever get to the end");
         ProcessingCompleteCallback();
     }
     

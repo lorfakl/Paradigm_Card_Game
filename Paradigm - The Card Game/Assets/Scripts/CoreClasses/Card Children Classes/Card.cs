@@ -181,6 +181,10 @@ public abstract class Card
         public static ShapeTrait GetShape(Card c)
         {
             //Debug.Log(c.name + " is a " + c.GetType().ToString());
+            if(c == null)
+            {
+                throw new Exception("This card is null");
+            }
             if (c.GetType() == typeof(Landscape))
             {
                 Landscape land = (Landscape)c;
@@ -195,7 +199,7 @@ public abstract class Card
         public int MoveToGameStartLocation()
         {
             int cardsMoved = 0;
-            string[] typesMoved = { "Phantom", "Source", "Philosopher", "Majesty", "Landscape" };
+            string[] typesMoved = {"Source", "Philosopher", "Majesty"};
             for(int i = 0; i<typesMoved.Length; i++)
             {
                 if(this.GetType().ToString() == typesMoved[i])

@@ -32,9 +32,11 @@ public class UIManager : MonoBehaviour
     public GameObject otherHandspace;
     public GameObject otherFieldspace;
     public GameObject cardPrefab;
+    public GameObject turnphaseTextPrefab;
 
     public UIScriptableObject drawUIEffects;
     public UIScriptableObject spawnUIEffects;
+    public UIScriptableObject turnphaseUIEffects;
 
     public GameObject playerInfoGroup;
     public GameObject otherInfoGroup;
@@ -116,9 +118,13 @@ public class UIManager : MonoBehaviour
         UICommandsDict.Add(MoveAction.Spawn, new SpawnCommand(spawnUIEffects));
         //UICommandsDict.Add(MoveAction.Unlock, "Doing Unlock UI Action");
         UICommandsDict.Add(MoveAction.Draw, new DrawCommand(drawUIEffects));
+        UICommandsDict.Add(MoveAction.None, new TurnPhaseCommand(turnphaseUIEffects, turnphaseTextPrefab));
 
         fieldCards.CollectionChanged += HandleFieldItemChange;
         handCards.CollectionChanged += HandleHandItemChange;
+        otherFieldCards.CollectionChanged += HandleFieldItemChange;
+        otherHandCards.CollectionChanged += HandleHandItemChange;
+
     }
     void Start()
     {
@@ -144,25 +150,27 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("Cards on field: " + fieldCards.Count);
+        //print("Cards on field: " + fieldCards.Count);
     }
     #endregion
 
 
     private void HandleFieldItemChange(object sender, NotifyCollectionChangedEventArgs e)
     {
+        ObservableCollection<GameObject> originCollection;
+        originCollection = (ObservableCollection<GameObject>)sender;
         print("was this called?");
-        float xMove = -3.07f * (fieldCards.Count - 1);
+        float xMove = -3.07f * (originCollection.Count - 1);
 
         
         switch(e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                if(fieldCards.Count == 1)
+                if(originCollection.Count == 1)
                 {
-                    fieldCards[fieldCards.Count - 1].transform.DOMoveX(-CardWidth / 2, .1f);
+                    originCollection[originCollection.Count - 1].transform.DOMoveX(-CardWidth / 2, .1f);
                 }
-                fieldCards[fieldCards.Count - 1].transform.DOMoveX(xMove-CardWidth/2, .1f);
+                originCollection[originCollection.Count - 1].transform.DOMoveX(xMove-CardWidth/2, .1f);
                 break;
 
             case NotifyCollectionChangedAction.Remove:
@@ -172,22 +180,35 @@ public class UIManager : MonoBehaviour
 
     private void HandleHandItemChange(object sender, NotifyCollectionChangedEventArgs e)
     {
-        switch(e.Action)
+        ObservableCollection<GameObject> originCollection;
+        originCollection = (ObservableCollection<GameObject>)sender;
+
+        try
+        {
+            print(originCollection[0].GetComponent<CardScript>().Card.Owner.Type);
+
+        }
+        catch(Exception ex)
+        {
+            HelperFunctions.CatchException(ex);
+        }
+
+        switch (e.Action)
         {
             case NotifyCollectionChangedAction.Remove:
                 int removedIndex = e.OldStartingIndex;
-                for(int i = 0; i < handCards.Count; i++)
+                for(int i = 0; i < originCollection.Count; i++)
                 {
                     Vector3 position;
                     if(i < removedIndex)
                     {
-                        position = handCards[i].transform.localPosition;
-                        handCards[i].transform.DOMoveX(position.x + CardWidth / 2, tweenSpeed);
+                        position = originCollection[i].transform.localPosition;
+                        originCollection[i].transform.DOMoveX(position.x - CardWidth / 2, tweenSpeed);
                     }
                     else
                     {
-                        position = handCards[i].transform.localPosition;
-                        handCards[i].transform.DOMoveX(position.x - CardWidth / 2, tweenSpeed);
+                        position = originCollection[i].transform.localPosition;
+                        originCollection[i].transform.DOMoveX(position.x + CardWidth / 2, tweenSpeed);
                     }
                 }
                 break;
@@ -195,25 +216,6 @@ public class UIManager : MonoBehaviour
             case NotifyCollectionChangedAction.Add:
                 break;
         }
-        if (e.Action == NotifyCollectionChangedAction.Remove)
-        {
-            print("Removed from hand: " + handCards.Count + " cards left in the hand");
-            print("Size of OldItems: " + e.OldItems.Count + " Previous Index of removed item" + e.OldStartingIndex);
-        }
-        float xMove = -3.07f * (fieldCards.Count - 1);
-
-        
-        /*if (fieldCards.Count > 1)
-        {
-            print("Inside Obserable Collection Event Hanfler");
-            for(int i = )
-            foreach (GameObject c in fieldCards)
-            {
-                c.GetComponent<CardScript>().Print();
-                c.transform.DOMoveX(c.transform.position.x - (xMove / 2f), drawUIEffects.MoveSpeed);
-                HelperFunctions.Print("UI Manager Resize " + fieldCards.Count + " to the right");
-            }
-        }*/
     }
 
     private void CheckForUIEvent(object sender, GameEventsArgs e)
@@ -223,11 +225,13 @@ public class UIManager : MonoBehaviour
             print("UI manager Caught a UI event");
             print("UI Event Data: ");
             e.Print();
-            UiEvents ue = (UiEvents)e;
-            /*if(ue.MoveActionEvent == MoveAction.Draw)
+            if (e.ActionEvent == NonMoveAction.Turn)
             {
-                ShowCardMovement(ue);
-            }/**/
+                print(e.EventOwner.Type + " is starting their " + e.TurnPhase + " phase");
+            }
+
+            UiEvents ue = (UiEvents)e;
+            
             try
             {
                 StartCoroutine(UICommandsDict[ue.MoveActionEvent].Execute(ue));

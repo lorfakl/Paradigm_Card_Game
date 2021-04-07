@@ -57,6 +57,6 @@ public class TestingCardSpacing : MonoBehaviour
             throw new Exception("this is wrong");
         }
         StartCoroutine(PlayerOne.PerformGather());
-        print(PlayerOne.PlayerDeck.Count);
+        //print(PlayerOne.PlayerDeck.Count);
     }
 }

@@ -24,7 +24,7 @@ public abstract class Player: IPlayable
     private Majesty majesty;
     protected Landscape tcCard;
     private List<Landscape> lands;
-    private Turn turn;
+
 
     protected PlayerType type;
     
@@ -118,12 +118,6 @@ public abstract class Player: IPlayable
     public PlayerType PlayerName
     {
         get { return type; }
-    }
-
-    public Turn PlayerTurn
-    {
-        get { return this.turn; }
-        set { this.turn = value; }
     }
 
     public Location ReturnedLocation

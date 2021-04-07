@@ -171,15 +171,28 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void DisplayCards()
     {
+        //print("Do we ever call DisplayCards?");
         if (source != null && destination != null)
-        {                                          
-            foreach(Card c in source.GetContents())
-            {
-                CreateCard(c);
+        {
+            try
+            { 
+                foreach (Card c in source?.GetContents())
+                {
+                    print("Is Display Card called?");
+                    CreateCard(c);
+                }
             }
+            catch(Exception e)
+            {
+                print(e.Message);
+                print(e.StackTrace);
+                print(e.InnerException);
+            }
+            
         }
         else
         {
+            print("Is this error here occurring?");
             throw new Exception("The Source and/or Destination Location is null, did you forget to call " +
                                                                                     "DisplaySelectionCards.SetCardPath?");
         }
@@ -187,6 +200,7 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void CreateCard(Card c)
     {
+        print("Are we entering CreateCard?");
         //cardPrefab.GetComponent<CardScript>().SetCard(c);
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
         cardObject.SendMessage("SetMode", true);
@@ -198,6 +212,7 @@ public class DisplaySelectionCards :MonoBehaviour
         content.GetComponent<Text>().text = c.GetAbilityText();
         if (c == null)
         {
+            print("Is this card null dumbass?");
             throw new Exception("The Card's null dumbass!(CreateCard)");
         }
         position = cardObject.transform.position;

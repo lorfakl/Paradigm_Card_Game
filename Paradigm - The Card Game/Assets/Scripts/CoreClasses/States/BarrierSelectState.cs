@@ -24,12 +24,12 @@ public class BarrierSelectState : State, IState
 
     public void OnEntry()
     {
-        Debug.Log("Tell thje transport layer avout this");
+        Debug.Log("Tell the transport layer we have entered the barrier select state");
     }
 
     public void OnExit()
     {
-        Debug.Log("Tell the transport layer avout this");
+        Debug.Log("Tell the transport layer  we have exited the barrier select state");
     }
 
     async public Task Operation()

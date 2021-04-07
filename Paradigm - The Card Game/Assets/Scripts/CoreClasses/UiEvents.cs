@@ -7,6 +7,7 @@ public class UiEvents : GameEventsArgs
     public ValidLocations Source { get; private set; }
     public ValidLocations Destination { get; private set; }
     public GameObject ObjectToMove { get; private set; }
+ 
 
 
     /// <summary>
@@ -59,6 +60,11 @@ public class UiEvents : GameEventsArgs
         this.type = EventType.UIUpdate;
         Utilities.HelperFunctions.Print("UI Event Data Related to moving a new GameObject was Created!");
 
+    }
+
+    public UiEvents(Player owner, Player target, GameAction gameAction) : base(owner, target, gameAction)
+    {
+        IsUIEvent = true;
     }
 
     public new void Print()

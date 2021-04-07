@@ -71,7 +71,8 @@ public class Location: IEnumerable
         return this.changes;
     }
 
-    public List<Card> GetContents() { return this.contents; }
+    public List<Card> GetContents() {
+        Debug.Log("What is happening?");  return this.contents; }
 
     public List<Card> GetContents(Type t)
     {

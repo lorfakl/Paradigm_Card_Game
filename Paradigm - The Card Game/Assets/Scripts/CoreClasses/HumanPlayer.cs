@@ -17,7 +17,7 @@ public class HumanPlayer : Player, IPlayable
 
     public HumanPlayer(Guid id) : base(id)
     {
-        this.type = PlayerType.Human;
+        this.type = PlayerType.MainHuman;
     }
 
     public int OriginalTimerTime
@@ -27,9 +27,8 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformGather()
     {
-        Debug.Log("Human Draw a Card!");
         try {
-            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
+            HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Gather));
             Debug.Log("Human Draw a Card!");
             if (PlayerDeck.Count > 0)
             {
@@ -37,7 +36,7 @@ public class HumanPlayer : Player, IPlayable
             }
             else
             {
-                HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.GameEnd);
+                HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.GameEnd, TurnPhase.Gather));
             }
             
         }
@@ -47,19 +46,20 @@ public class HumanPlayer : Player, IPlayable
             Debug.Log(ex.StackTrace);
             Debug.Log(ex.ToString());
         }
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(3);
 
     }
 
     public override IEnumerator PerformAwaken()
     {
-        Debug.Log("Awaken my LOVE!");
-        yield return null;
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Awaken));
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator PerformCentral()
     {
         Debug.Log("CENTRAL");
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Central));
         if (centralActions > 0)
         {
             Location hand = GetLocation(ValidLocations.Hand);
@@ -74,23 +74,23 @@ public class HumanPlayer : Player, IPlayable
             //SetCardScript(true); //enable it back
         }
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator PerformCrystal()
     {
         Debug.Log("SC count: " + this.GetLocation(ValidLocations.SC).Count);
         Debug.Log("If its less than three then issa not gonna crystalize which it should be");
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Crystallization));
         if (this.GetLocation(ValidLocations.SC).Count >= 3)
         {
-            HelperFunctions.RaiseNewEvent(this, this, this, NonMoveAction.TurnPhase);
             Debug.Log("Human just started crystallized");
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.BZ), 1);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Grave), 1);
             HelperFunctions.SelectCards(this.PlayerDeck, this.GetLocation(ValidLocations.Deck), 1);
             while (this.TimeLeftOnTimer > 0)
             {
-                yield return new WaitForSeconds(1);
+                
                 Debug.Log("Time left on timer: " + this.TimeLeftOnTimer);
                 this.TimeLeftOnTimer--;
             }
@@ -101,16 +101,17 @@ public class HumanPlayer : Player, IPlayable
         {
             Debug.Log("Less than three bro, no crystalize");
         }
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
     {
         Location lands = this.PlayerDeck.GetLandsAsLocation();
-        //Debug.Log("Show me your size: " + lands.Count);
+        Debug.Log("Show me your size: " + lands.Count);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
         GameObject timer = GameObject.FindGameObjectWithTag("timer");
         Text timerText = timer.GetComponent<Text>();
-        //Debug.Log("Now we wait!");
+        Debug.Log("Now we wait!");
         cardDisplay = GameObject.FindWithTag("CardSelectionDisplay");
 
         while (this.TimeLeftOnTimer > 0)
@@ -196,8 +197,8 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformEnd()
     {
-        Debug.Log("Human EndPhase");
-        yield return new WaitForSeconds(1);
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.End));
+        yield return new WaitForSeconds(3);
     }
 
     public override IEnumerator PerformAttack()

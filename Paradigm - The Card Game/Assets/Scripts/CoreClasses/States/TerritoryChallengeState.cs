@@ -31,6 +31,16 @@ public class TerritoryChallengeState : State, IState
 
     public void OnExit()
     {
+        if(player1Temp == null || player2Temp == null)
+        {
+            throw new System.Exception("One of the temp locations is null my guess is AI");
+        }
+
+        HelperFunctions.Print("Player 2 Temp Size: " + player2Temp.Count);
+        HelperFunctions.Print("Player 2 Temp Data: " + player2Temp.SelectContent());
+        HelperFunctions.Print("Player 2 Type: " + player2Temp.Owner.Type);
+        HelperFunctions.Print("Player 1 Temp Size: " + player1Temp.Count);
+        HelperFunctions.Print("Player 1 Temp Data: " + player1Temp.SelectContent());
         List<IPlayable> playerTurnOrder = StartTerritoryChallenge(player1Temp.SelectContent(), 
                                                                   player2Temp.SelectContent());
         GameMaster.SetTurnOrder(playerTurnOrder);

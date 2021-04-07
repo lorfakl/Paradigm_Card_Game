@@ -18,6 +18,7 @@ public class GameMaster : MonoBehaviour
     public static Player PlayerTwo { get; private set; }
     public static bool IsTurnActive { get; set; }
     public static GameObject UiCamera { get; private set; }
+    //public static (Player , TurnPhase Turnphase) TurnInfo { get; private set; }
     public StateMachine GameSetupStateMachince { get; private set; }
     public List<Func<IEnumerator>> FirstPlayerTurn { get; private set; }
     public List<Func<IEnumerator>> SecondPlayerTurn { get; private set; }
@@ -27,7 +28,11 @@ public class GameMaster : MonoBehaviour
     private StateMachine[] turnStateMachines = new StateMachine[2];
     private static Player FirstPlayer { get; set; }
     private static Player SecondPlayer { get; set; }
-    
+
+    public static Player CurrentTurnPlayer { get; private set; }
+    public static TurnPhase CurrentTurnPhase { get; private set; }
+
+
     private bool firstTurnHasStarted = false;
     private bool isPhaseComplete = false;
     private static bool isTurnOrderSet = false;
@@ -69,7 +74,7 @@ public class GameMaster : MonoBehaviour
         GameSetupStateMachince = new StateMachine("TurnPhase", new List<IState> {new TerritoryChallengeState(),
             new BarrierSelectState(), new EndPhaseState() }, MarkTurnCompleted);
 
-        GameSetupStateMachince.ProcessStates();
+        StartCoroutine(GameSetupStateMachince.ProcessStates());
         //GameSetupStateMachince.
         //SUBSCRIBE TO THE STATE MACHINES EVENT TO COUNT TURNCYCLES AND STUFF
 
@@ -79,20 +84,20 @@ public class GameMaster : MonoBehaviour
 
     void Update()
     {
-       
 
-        print("Game Master Upfate");
+
+        //print("Game Start StateMachine Current State: " + GameSetupStateMachince.CurrentState);
         if(isTurnOrderSet && !areTurnsInitialized)
         {
             InitalizeTurns();
-            print("Turn order is set and turns initialized");
+            //print("Turn order is set and turns initialized");
 
             
         }
 
         if(areTurnsInitialized && isPhaseComplete)
         {
-            print("Turns are happening");
+            //print("Turns are happening");
             //if (isPhaseComplete)
             //{
                 
@@ -118,13 +123,18 @@ public class GameMaster : MonoBehaviour
         if (!firstTurnHasStarted)
         {
             firstTurnHasStarted = true;
-            foreach ( Func<IEnumerator> turnphaseFunc in FirstPlayerTurn)
+            CurrentTurnPlayer = FirstPlayer;
+            for (int i=0; i<FirstPlayerTurn.Count; i++)
             {
                 //if(isPhaseComplete == false)
                 //{
-                    yield return StartCoroutine(turnphaseFunc());
-                    //yield return new WaitUntil(() => isPhaseComplete);
-                //}
+                CurrentTurnPhase = (TurnPhase)i;
+                print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
+                print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
+                yield return StartCoroutine(FirstPlayerTurn[i]());
+                //This isnt gonna work online the Transport layer will need to start player turns based off of an event 
+                //from the server
+               
             }
             print("first player turn done");
             isPhaseComplete = true;
@@ -133,9 +143,13 @@ public class GameMaster : MonoBehaviour
         else
         {
             firstTurnHasStarted = false;
-            foreach (Func<IEnumerator> turnphaseFunc in SecondPlayerTurn)
-            {               
-                yield return StartCoroutine(turnphaseFunc());
+            CurrentTurnPlayer = SecondPlayer;
+            for (int i = 0; i < SecondPlayerTurn.Count; i++)
+            {
+                CurrentTurnPhase = (TurnPhase)i;
+                print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
+                print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
+                yield return StartCoroutine(SecondPlayerTurn[i]());
             }
             print("Second Player Turn Done");
             isPhaseComplete = true;

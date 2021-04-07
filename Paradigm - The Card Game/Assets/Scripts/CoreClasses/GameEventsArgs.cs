@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Utilities;
 
 public enum MoveAction
 {
@@ -11,7 +12,12 @@ public enum MoveAction
 
 public enum NonMoveAction
 {
-    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, TurnPhase, DimensionTwist, None, GameEnd
+    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd
+}
+
+public enum TurnPhase
+{
+    Gather, Awaken, Central, Crystallization, End, Start, None
 }
 
 public enum EventType
@@ -21,25 +27,34 @@ public enum EventType
 
 public struct GameAction
 {
-    MoveAction MoveAction { get; set; }
-    NonMoveAction NonMoveAction { get; set; }
+    public MoveAction MoveAction { get; private set; }
+    public NonMoveAction NonMoveAction { get; private set; }
+
+    public TurnPhase TurnPhase { get; private set; }
     public GameAction(MoveAction ma, NonMoveAction nma)
     {
         MoveAction = ma;
         NonMoveAction = nma;
+        TurnPhase = TurnPhase.None;
     }
 
-    
+    public GameAction(NonMoveAction non, TurnPhase phase)
+    {
+        NonMoveAction = non;
+        TurnPhase = phase;
+        MoveAction = MoveAction.None;
+    }
 }
+
 
 public class GameEventsArgs : EventArgs
 {
     protected Player owner;
     protected Card cardSource;
-    protected Turn turn;
     protected List<LocationChanges> boardMovements;
     protected MoveAction moveAction;
     protected NonMoveAction notMoveAction;
+    protected TurnPhase phase;
     protected Player playerTarget;
     protected List<Card> cardTargets;
     protected Card targetCard;
@@ -58,7 +73,7 @@ public class GameEventsArgs : EventArgs
         this.moveAction = moveAction;
         this.notMoveAction = notMoveAction;
         this.cardTargets = cardTargets;
-        this.turn = this.owner.PlayerTurn;
+        
 
         Debug.Log("Event Data Created!");
 
@@ -76,7 +91,7 @@ public class GameEventsArgs : EventArgs
         this.owner = boardMovements[0].destination.Owner;
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
-        this.turn = this.owner.PlayerTurn;
+        
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
@@ -100,7 +115,7 @@ public class GameEventsArgs : EventArgs
         this.owner = boardMovements[0].destination.Owner;
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
-        this.turn = this.owner.PlayerTurn;
+        
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
@@ -118,15 +133,15 @@ public class GameEventsArgs : EventArgs
     /// <param name="owner"></param>
     /// <param name="target"></param>
     /// <param name="nonMoveAction"></param>
-    public GameEventsArgs(Player owner, Player target, NonMoveAction nonMoveAction)
+    public GameEventsArgs(Player owner, Player target, GameAction gameAction)
     {
         this.owner = owner;
         this.cardSource = null;
         this.boardMovements = null;
         this.playerTarget = target;
-        this.notMoveAction = nonMoveAction;
-        this.moveAction = MoveAction.None;
-        this.turn = owner.PlayerTurn;
+        this.notMoveAction = gameAction.NonMoveAction;
+        this.phase = gameAction.TurnPhase;
+        this.moveAction = gameAction.MoveAction;
         this.cardTargets = null;
 
     }
@@ -146,16 +161,24 @@ public class GameEventsArgs : EventArgs
         this.notMoveAction = notMoveAction;
         this.targetCard = cardTarget;
         this.playerTarget = cardTarget.getOwner();
-        this.turn = this.owner.PlayerTurn;
+        
 
         Debug.Log("Event Data Created!");
     }
 
     public void Print()
     {
-        string data = "CardSource: " + cardSource.Name + "\n MoveAction: " + moveAction.ToString()
+        try
+        {
+            string data = "CardSource: " + cardSource.Name + "\n MoveAction: " + moveAction.ToString()
             + "\n Non-Move Action: " + notMoveAction.ToString() + "\n Owner: " + cardSource.Owner.Type;
-        Utilities.HelperFunctions.Print(data);
+            Utilities.HelperFunctions.Print(data);
+        }
+        catch(Exception ex)
+        {
+            HelperFunctions.CatchException(ex);
+        }
+        
     }
 
     public List<Card> CardTargets
@@ -196,6 +219,11 @@ public class GameEventsArgs : EventArgs
     public NonMoveAction ActionEvent
     {
         get { return notMoveAction; }
+    }
+
+    public TurnPhase TurnPhase
+    {
+        get { return phase; }
     }
 
     public bool IsUIEvent

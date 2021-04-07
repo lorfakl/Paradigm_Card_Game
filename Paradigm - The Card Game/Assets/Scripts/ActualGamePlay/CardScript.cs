@@ -76,17 +76,20 @@ public class CardScript : MonoBehaviour {
             {
                 if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
                 {
-                    //print("You hit a card with a click");
-                    if (displayMode) //if the script is in displayMode, for selection from the overlay
-                    {
-                        //print("Is display mode enabled: " + displayMode);
-                        selected = !selected; //invert selection bool
-                        ChangeSprite(selected); //update the selection status sprite
-                    }
-                    else
-                    {
-                        this.cardData.PlayCard();
-                        print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
+                    if (this.cardData.Owner.Type == PlayerType.MainHuman)
+                    { 
+                        //print("You hit a card with a click");
+                        if (displayMode) //if the script is in displayMode, for selection from the overlay
+                        {
+                            //print("Is display mode enabled: " + displayMode);
+                            selected = !selected; //invert selection bool
+                            ChangeSprite(selected); //update the selection status sprite
+                        }
+                        else
+                        {
+                            this.cardData.PlayCard();
+                            print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
+                        }
                     }
                 }
             }
@@ -110,7 +113,7 @@ public class CardScript : MonoBehaviour {
                 print("Mouse is in");
                 Vector3 targetValueDoScale = Vector3.Scale(transform.localScale, scaleFactor);
                 transform.DOScale(targetValueDoScale, 0.25f);
-                transform.DOMove(transform.position + new Vector3(0.0f, 3f, 0.0f), 0.25f);
+                transform.DOMove(transform.position + new Vector3(0.0f, 3f, -5f), 0.25f);
                 hasScrolled = true;
             }
         }

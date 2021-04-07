@@ -34,7 +34,7 @@ public class SpawnCommand : ICommand
 
     private void Show(UiEvents ue)
     {
-        if(ue.EventOwner.Type != PlayerType.Human)
+        if(ue.EventOwner.Type != PlayerType.MainHuman)
         {
             handSpace = GameObject.FindGameObjectWithTag("enemyHand");
             fieldSpace = GameObject.FindGameObjectWithTag("enemyField");
@@ -43,7 +43,6 @@ public class SpawnCommand : ICommand
         }
         else
         {
-            Debug.LogWarning("This Player type should be change MainHuman");
             handSpace = GameObject.FindGameObjectWithTag("playerHand");
             fieldSpace = GameObject.FindGameObjectWithTag("playerField");
             drawnCards = UIManager.HandCards;
