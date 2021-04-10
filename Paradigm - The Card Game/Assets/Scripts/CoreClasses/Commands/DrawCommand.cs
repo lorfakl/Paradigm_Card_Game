@@ -41,7 +41,7 @@ public class DrawCommand : ICommand
     {
         Player owner = e.EventOwner;
         GameObject startPoint = drawUIEffects.UiEntryPoint;
-
+        bool isFaceDown = false;
         GameObject handspace;
         if (owner.Type == PlayerType.MainHuman)
         {
@@ -50,6 +50,7 @@ public class DrawCommand : ICommand
         else
         {
             handspace = otherHandSpace;
+            isFaceDown = true;
         }
 
         Tween LeftMovingTween = null;
@@ -66,7 +67,7 @@ public class DrawCommand : ICommand
         }
 
 
-        GameObject cardObject = HelperFunctions.CreateCard(e.EventOriginCard, false, handspace.transform);
+        GameObject cardObject = HelperFunctions.CreateCard(e.EventOriginCard, false, handspace.transform, isFaceDown);
 
         cardsCreated.Add(cardObject);
 

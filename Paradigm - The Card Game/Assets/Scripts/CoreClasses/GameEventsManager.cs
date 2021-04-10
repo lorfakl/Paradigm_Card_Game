@@ -11,27 +11,17 @@ using Utilities;
 
 public class GameEventsManager : MonoBehaviour
 {
-    public GameObject player1;
-    public GameObject player2;
-    public GameObject rendererManager;
-    public Text deckCount;
-    public Text graveCount;
-    public Text barrierCount;
-    public Text nonUIDeckCount;
-    public Text nonUIGraveCount;
-    public Text nonUIHandCount;
-    public Text nonUIBarrierCount;
-
-
     private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
-    
-    
+
+    private static Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs,GameEventsArgs>> LegalityCheckCommands = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs, GameEventsArgs>>();
+    private static bool isLegal = false;
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
-    //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
 
+    //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
+    
     /// <summary>
     /// the delegate for updating the UI, sends out a message to the RenderManager's subscriber
     /// </summary>
@@ -72,31 +62,33 @@ public class GameEventsManager : MonoBehaviour
 
     public static void CheckLegality(object s, GameEventsArgs e)
     {
-        bool isLegal = true;
-        HelperFunctions.Print("For now everything is legal");
+        try
+        {
+            e = LegalityCheckCommands[(e.MoveActionEvent, e.ActionEvent)](e);
+        }
+        catch(Exception ex)
+        {
+            HelperFunctions.CatchException(ex);
+            HelperFunctions.Print("Inside the catch block of check legality");
+            isLegal = true;
+        }
+
         if(isLegal)
         {
             PublishEvent(s, e);
+            isLegal = false;
         }
     }
 
-    private static void OnPlayerInfoChange(int[] data, List<Card> handCards, List<Card> fieldCards, List<Card> enemyHandCards, List<Card> enemyFieldCards)
-    {
-        if(UpdateUI != null)
-        {
-            UpdateUI(data, handCards, fieldCards, enemyHandCards, enemyFieldCards);
-        }
-    }
 
-    /// <summary>
-    /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
-    /// Thats why it extends Monobehaviour and has Awake, Update, and Start functions
-    /// </summary>
+
     
+    #region Unity Callbacks
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
-       
+        LegalityCheckCommands.Add((MoveAction.None, NonMoveAction.Attack), CheckAttackPhaseEntryLegality);
+        LegalityCheckCommands.Add((MoveAction.None, NonMoveAction.DeclaredAttack), CheckDeclaredAttackLegality);
     }
 
     void Start()
@@ -107,20 +99,76 @@ public class GameEventsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
+    #endregion
 
-   /// <summary>
-   /// THIS IS GARBAGE USE THE OBSERVER PATTERN
-   /// </summary>
-    private void CheckPlayerInfo()
+    #region Private Functions for Legality
+    private GameEventsArgs CheckAttackPhaseEntryLegality(GameEventsArgs g)
     {
-        /*int[] data = { UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("BZ").Count, UIPlayer.PlayerDeck.Count, UIPlayer.GetLocation("Grave").Count, UIPlayer.GetLocation("Hand").Count, UIPlayer.GetLocation("BZ").Count };
-        if(!initalData.SequenceEqual(data))
+        print("CHECKING LEGALITY");
+        GameEventsArgs gevent = new GameEventsArgs();
+        List<Card> cardsAbleToAttack = new List<Card>();
+        if(g.EventOwner.Type == g.PlayerTarget.Type) //prevents making attacks with a different player's cards
         {
-            OnPlayerInfoChange(data, UIPlayer.GetLocation("Hand").GetContents(), UIPlayer.GetLocation("Field").GetContents(), NonUIPlayer.GetLocation("Hand").GetContents(), NonUIPlayer.GetLocation("Field").GetContents());
-            initalData = data;
-        }*/
+            print("Checking that the same player is declaring this attack");
+            print("Cards on the field: " + g.EventOwner.Field.Count);
+            foreach (Card c in g.EventOwner.Field) //for each card on the field
+            {
+                print("Are the cards on the field accessors?");
+                print("Is the card an Accessor?: " + c.GetType().ToString());
+                print("Is the card a subclass of Accessor?: " + c.GetType().IsSubclassOf(typeof(Accessor)));
+                if (c.GetType() == typeof(Accessor) || c.GetType().IsSubclassOf(typeof(Accessor)) ) //check to see if they inherit from Accessor
+                {
+                    Accessor a = (Accessor)c; //do a cast
+                    print("lastly does it have attacks?: " + a.NumOfAttacks);
+                    if(a.NumOfAttacks > 0) //if the accessor can do an attack
+                    {
+                        print("HAS ATTACKS AND IS ACCESSOR");
+                        cardsAbleToAttack.Add(c); //add to cardtargets
+                    }
+                    
+                }
+            }
+
+            gevent = HelperFunctions.GenerateReturnEvent(g.EventOwner, g.PlayerTarget, cardsAbleToAttack, new GameAction(MoveAction.None, NonMoveAction.Attack), EventType.UIUpdate);
+            if (TransportLayer.EventIngestion.IsOnline)
+            {
+                TransportLayer.EventIngestion.SendReturnEvent(gevent);
+            }
+            else
+            {
+                isLegal = true;
+                return gevent;
+            }
+            
+        }
+
+        isLegal = false;
+        return gevent;
     }
- 
+    
+    private GameEventsArgs CheckDeclaredAttackLegality(GameEventsArgs g)
+    {
+        if(g.TargetCard.CurrentLocation == ValidLocations.Field)
+        {
+            isLegal = true;
+            if(g.TargetCard.Owner.Field.Count > 1)
+            {
+                //Generate a return event telling the UI Manager to give a block prompt to the other player
+                GameEventsArgs gameEvent = HelperFunctions.GenerateReturnEvent(g.EventOriginCard, g.ActionEvent, g.TargetCard);
+                return gameEvent;
+            }
+            return g;
+        }
+        else
+        {
+            isLegal = false;
+            return g;
+        }
+        
+    }
+    #endregion
 }
+
+

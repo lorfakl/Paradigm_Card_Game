@@ -27,19 +27,28 @@ public enum ListToUpdate
 public class UIManager : MonoBehaviour
 {
     #region Public Inspector Fields
+    [Header("Card Space Game Object References")]
     public GameObject handspace;
     public GameObject fieldspace;
     public GameObject otherHandspace;
     public GameObject otherFieldspace;
-    public GameObject cardPrefab;
-    public GameObject turnphaseTextPrefab;
+    public GameObject attackPrefab;
+    public GameObject blockPrefab;
 
+    public GameObject cardPrefab;
+    [Header("Turnphase Notice Game Object References")]
+    public GameObject turnphaseTextPrefab;
+    public GameObject onScreenTurnphase;
+    [Header("Info Groups Object References")]
+    public GameObject playerInfoGroup;
+    public GameObject otherInfoGroup;
+
+    [Header("Scriptable Object References")]
     public UIScriptableObject drawUIEffects;
     public UIScriptableObject spawnUIEffects;
     public UIScriptableObject turnphaseUIEffects;
+    public UIScriptableObject attackUIEffects;
 
-    public GameObject playerInfoGroup;
-    public GameObject otherInfoGroup;
     #endregion
 
     #region Private Fields
@@ -58,7 +67,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private static float tweenSpeed = .1f;
 
-    private Dictionary<MoveAction, ICommand> UICommandsDict = new Dictionary<MoveAction, ICommand>();
+    private Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), ICommand> UICommandsDict = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), ICommand>();
+    
+    
     #endregion
 
     #region Properties
@@ -115,15 +126,16 @@ public class UIManager : MonoBehaviour
         //UICommandsDict.Add(MoveAction.Rest, "Doing Rest UI Action");
         //UICommandsDict.Add(MoveAction.Return, "Doing Return UI Action");
         //UICommandsDict.Add(MoveAction.Search, "Doing Search UI Action");
-        UICommandsDict.Add(MoveAction.Spawn, new SpawnCommand(spawnUIEffects));
+        UICommandsDict.Add((MoveAction.Spawn, NonMoveAction.None), new SpawnCommand(spawnUIEffects));
         //UICommandsDict.Add(MoveAction.Unlock, "Doing Unlock UI Action");
-        UICommandsDict.Add(MoveAction.Draw, new DrawCommand(drawUIEffects));
-        UICommandsDict.Add(MoveAction.None, new TurnPhaseCommand(turnphaseUIEffects, turnphaseTextPrefab));
-
+        UICommandsDict.Add((MoveAction.Draw, NonMoveAction.None), new DrawCommand(drawUIEffects));
+        UICommandsDict.Add((MoveAction.None, NonMoveAction.Turn), new TurnPhaseCommand(turnphaseUIEffects, turnphaseTextPrefab, onScreenTurnphase));
+        UICommandsDict.Add((MoveAction.None, NonMoveAction.Attack), new AttackCommand(attackUIEffects, attackPrefab));
         fieldCards.CollectionChanged += HandleFieldItemChange;
         handCards.CollectionChanged += HandleHandItemChange;
         otherFieldCards.CollectionChanged += HandleFieldItemChange;
         otherHandCards.CollectionChanged += HandleHandItemChange;
+        
 
     }
     void Start()
@@ -223,26 +235,65 @@ public class UIManager : MonoBehaviour
         if(e.IsUIEvent)
         {
             print("UI manager Caught a UI event");
-            print("UI Event Data: ");
-            e.Print();
+            //print("UI Event Data: " + "\n" + "Player: " + e.EventOwner.Type.ToString() + " Target" + e.PlayerTarget.Type.ToString() + "\n" + 
+            //    "MoveAction: " + e.MoveActionEvent + " NonMoveAction: " + e.ActionEvent);
+     
             if (e.ActionEvent == NonMoveAction.Turn)
             {
                 print(e.EventOwner.Type + " is starting their " + e.TurnPhase + " phase");
             }
-
-            UiEvents ue = (UiEvents)e;
             
             try
             {
-                StartCoroutine(UICommandsDict[ue.MoveActionEvent].Execute(ue));
+                StartCoroutine(UICommandsDict[(e.MoveActionEvent, e.ActionEvent)].Execute(e));
             }
             catch(Exception ex)
             {
                 print(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException + "\n" + ex.Source);
-                print("Move action found: " + ue.MoveActionEvent);
+                print("Action Combo found: " + "MoveAction: " + e.MoveActionEvent + "NonMoveAction: " + e.ActionEvent);
             }
         }
+
+        UpdateInfoGroup(e);
         
+    }
+
+    private void UpdateInfoGroup(GameEventsArgs e)
+    {
+        Text[] textInInfoGroup;
+        if(e.EventOwner.Type == PlayerType.AI)
+        {
+            textInInfoGroup = otherInfoGroup.GetComponentsInChildren<Text>();
+        }
+        else
+        {
+            textInInfoGroup = playerInfoGroup.GetComponentsInChildren<Text>();
+        }
+
+        for (int i = 0; i < textInInfoGroup.Length; i++)
+        {
+            string[] splitString = textInInfoGroup[i].text.Split(':');
+            textInInfoGroup[i].text = splitString[0] + ": ";
+
+            switch (i)
+            {
+                case 0:
+                    textInInfoGroup[i].text += e.EventOwner.PlayerDeck.Count;
+                    break;
+                case 1:
+                    textInInfoGroup[i].text += e.EventOwner.GetLocation(ValidLocations.DZ).Count;
+                    break;
+                case 2:
+                    textInInfoGroup[i].text += e.EventOwner.GetLocation(ValidLocations.SC).Count;
+                    break;
+                case 3:
+                    textInInfoGroup[i].text += e.EventOwner.GetLocation(ValidLocations.Grave).Count;
+                    break;
+                case 4:
+                    textInInfoGroup[i].text += e.EventOwner.BZ.Count;
+                    break;
+            }
+        }
     }
 
 }

@@ -12,7 +12,7 @@ public enum MoveAction
 
 public enum NonMoveAction
 {
-    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd
+    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd, DeclaredAttack
 }
 
 public enum TurnPhase
@@ -166,19 +166,42 @@ public class GameEventsArgs : EventArgs
         Debug.Log("Event Data Created!");
     }
 
+    public GameEventsArgs(Player owner, Player target, List<Card> cardTargets, GameAction action, EventType type)
+    {
+        this.owner = owner;
+        this.playerTarget = target;
+        this.cardTargets = cardTargets;
+        this.moveAction = action.MoveAction;
+        this.notMoveAction = action.NonMoveAction;
+        this.type = type;
+        SetUIEvent(type);
+        
+
+
+    }
+
     public void Print()
     {
+        HelperFunctions.Print("event data print:");
         try
         {
-            string data = "CardSource: " + cardSource.Name + "\n MoveAction: " + moveAction.ToString()
+            string data = "CardSource: " + cardSource?.Name + "\n MoveAction: " + moveAction.ToString()
             + "\n Non-Move Action: " + notMoveAction.ToString() + "\n Owner: " + cardSource.Owner.Type;
-            Utilities.HelperFunctions.Print(data);
+            HelperFunctions.Print(data);
         }
         catch(Exception ex)
         {
             HelperFunctions.CatchException(ex);
         }
         
+    }
+
+    private void SetUIEvent(EventType t)
+    {
+        if(t == EventType.UIUpdate)
+        {
+            this.IsUIEvent = true;
+        }
     }
 
     public List<Card> CardTargets

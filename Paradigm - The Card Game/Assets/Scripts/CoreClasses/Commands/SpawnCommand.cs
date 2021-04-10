@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using DG.Tweening;
+using DG.Tweening.Core;
 using Utilities;
 
 
@@ -53,6 +54,12 @@ public class SpawnCommand : ICommand
         GameObject c = ue.EventOriginCard.GameObj;
         if(drawnCards.Remove(c))
         {
+            if(ue.EventOwner.Type != PlayerType.MainHuman)
+            {
+                c.transform.DORotateQuaternion(new Quaternion(0, 0, 0, -1), .05f);
+                HelperFunctions.FlipCard(c);
+            }
+            
             c.transform.SetParent(fieldSpace.transform);
             Vector3 offsetFromOrigin = fieldSpace.transform.position;
             offsetFromOrigin.x -= UIManager.CardWidth / 2;

@@ -36,6 +36,7 @@ public class TestingCardSpacing : MonoBehaviour
         Player2.PlayerDeck.GameStartSetup();
         //PlayerOne.PlayerDeck.Shuffle();
         drawButton.onClick.AddListener(StupidButton);
+        arrangeButton.onClick.AddListener(AttackBtn);
         //arrangeButton.onClick.AddListener(UIManager.Rearrange);
         print("Mid point fomula");
         
@@ -47,6 +48,11 @@ public class TestingCardSpacing : MonoBehaviour
     void Update()
     {
        
+    }
+
+    private void AttackBtn()
+    {
+        StartCoroutine(PlayerOne.PerformAttack());
     }
 
     private void StupidButton()

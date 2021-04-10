@@ -5,6 +5,7 @@ using DG.Tweening;
 public class DragOnTargetTest : DraggingActionsTest
 {
     //public TargetingOptions Targets = TargetingOptions.AllCharacters;
+    public GameObject spellCard;
     private SpriteRenderer sr;
     private LineRenderer lr;
     private Transform triangle;
@@ -29,7 +30,9 @@ public class DragOnTargetTest : DraggingActionsTest
     {
         // This code only draws the arrow
         Vector3 notNormalized = transform.position - transform.parent.position;
+        Debug.DrawLine(notNormalized, spellCard.transform.position, Color.black, 2, false);
         Vector3 direction = notNormalized.normalized;
+        Debug.DrawLine(direction, spellCard.transform.position, Color.green, 2, false);
         float distanceToTarget = (direction*2.3f).magnitude;
         if (notNormalized.magnitude > distanceToTarget)
         {
@@ -42,8 +45,8 @@ public class DragOnTargetTest : DraggingActionsTest
             triangleSR.transform.position = transform.position - 1.5f*direction;
 
             // proper rotarion of arrow end
-            float rot_z = Mathf.Atan2(notNormalized.y, notNormalized.x) * Mathf.Rad2Deg;
-            triangleSR.transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
+            //float rot_z = Mathf.Atan2(notNormalized.y, notNormalized.x) * Mathf.Rad2Deg;
+            //triangleSR.transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
         }
         else
         {
@@ -58,10 +61,10 @@ public class DragOnTargetTest : DraggingActionsTest
     {
         // return target and arrow to original position
         // this position is special for spell cards to show the arrow on top
-        transform.localPosition = new Vector3(0f, 0f, 0.1f);
-        sr.enabled = false;
-        lr.enabled = false;
-        triangleSR.enabled = false;
+        //transform.localPosition = new Vector3(0f, 0f, 0.1f);
+        //sr.enabled = false;
+        //lr.enabled = false;
+        //triangleSR.enabled = false;
 
     }
 

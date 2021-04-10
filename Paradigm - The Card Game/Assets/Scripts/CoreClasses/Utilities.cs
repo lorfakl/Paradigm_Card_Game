@@ -16,7 +16,7 @@ namespace Utilities
     public static class HelperFunctions
     {
         private static string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
-
+        #region General Instantiation Functions
         /// <summary>
         /// TODO ADD A FILTER TO CHOOSE WHICH CARDS ARE DISPLAYED(most work to be 
         /// done in DisplaySelectionCards.cs)
@@ -48,13 +48,21 @@ namespace Utilities
         /// <param name="parent">Transform of the parent</param>
         /// <param name="cardPrefab">Optional: If you have a prefab reference or nah</param>
         /// <returns>GameOject so that the number of objects created can be kept by the caller</returns>
-        public static GameObject CreateCard(Card c, bool inDisplayMode, Transform parent, GameObject cardPrefab = null)
+        public static GameObject CreateCard(Card c, bool inDisplayMode, Transform parent, bool isfaceDown = false, GameObject cardPrefab = null)
         {
             GameObject cardObject = null; 
             if (cardPrefab == null)
             {
                 cardObject = GameObject.Instantiate(Resources.Load("Card", typeof(GameObject)), parent) as GameObject;
-                Debug.Log("Instantiated from Resources.Load");
+
+                if (isfaceDown)
+                {
+                    cardObject.transform.Find("cardBack").GetComponent<SpriteRenderer>().gameObject.SetActive(true);
+                    cardObject.transform.Find("cardtemplate").GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+                }
+                
+               
+                
             }
             else
             {
@@ -77,12 +85,25 @@ namespace Utilities
             return cardObject;
         }
 
+
         public static void ScaleCard(GameObject c, Vector3 scale)
         {
             RectTransform rectTrans = c.GetComponent<RectTransform>();
             
 
             rectTrans.localScale = scale;
+        }
+
+        public static void FlipCard(GameObject c)
+        {
+            if(c.GetComponent<CardScript>() == null)
+            {
+                Debug.LogWarning("GameObjects that are not Cards can not be passed into this function");
+                return;
+            }
+
+            c.transform.Find("cardBack").GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+            c.transform.Find("cardtemplate").GetComponent<SpriteRenderer>().gameObject.SetActive(true);
         }
 
         public static MonoBehaviour AccessMonoBehaviour()
@@ -100,6 +121,10 @@ namespace Utilities
         /// <param name="moveAction"></param>
         /// <param name="notMoveAction"></param>
         /// <param name="cardTargets"></param>
+        #endregion
+
+        #region Raise Event Overloads
+
         public static void RaiseNewEvent(object sender, List<LocationChanges> boardChanges, Card source, MoveAction moveAction,
                                 NonMoveAction notMoveAction, List<Card> cardTargets)
         {
@@ -158,52 +183,24 @@ namespace Utilities
             UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
             EventIngestion.EventIntake(sender, uiEvent);
         }
+        #endregion
 
-        
-        /// <summary>
-        /// This functions is to both read and write from the Database. If you read from a Table, the function returns a Dictionary with keys 0 - Records returned
-        /// If you write to a Table well, thats not implemented yet.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="command"></param>
-        /// <param name="read"></param>
-        /// <returns></returns>
-        public static Dictionary<int, List<System.Object>> AccessDataBaseTable(string table, bool read = true, string command = "")
+        #region Generate Return Event Overloads
+
+        public static GameEventsArgs GenerateReturnEvent(Player owner, Player target, List<Card> cardTargets, GameAction action, EventType type)
         {
-            Dictionary<int, List<System.Object>> tableData = new Dictionary<int, List<System.Object>>();
-            using (SqliteConnection dbConnection = new SqliteConnection(conn))
-            {
-                dbConnection.Open();
-                using (SqliteCommand cmd = dbConnection.CreateCommand())
-                {
-                    if(read)
-                    {
-                        string query = "SELECT * FROM " + table; //get the info from the table 
-                        cmd.CommandText = query;
-                        using (IDataReader reader = cmd.ExecuteReader())
-                        {
-                            int recordsReturned = 0;
-                            while (reader.Read())
-                            {
-                                List<System.Object> recordData = new List<System.Object>();
-                                for(int i = 0; i < reader.FieldCount; i++)
-                                {
-                                    recordData.Add(reader[i]);
-                                }
-                                tableData.Add(recordsReturned, recordData);
-                                recordsReturned++;
-                            }
-                            return tableData;
-                        }
-                    }
-                    else //write
-                    {
-                        Debug.Log("Currently You Can only read. Write hasn't been implemented");
-                        return null;
-                    }
-                }
-            }
+            GameEventsArgs e = new GameEventsArgs(owner, target, cardTargets, action, type);
+            return e;
         }
+
+        public static GameEventsArgs GenerateReturnEvent(Card source, NonMoveAction nonMove, Card targetCard)
+        {
+            GameEventsArgs e = new GameEventsArgs(source, NonMoveAction.DeclaredAttack, targetCard);
+            return e;
+        }
+        #endregion
+
+        #region Debug Utility Functions
 
         public static void Error(string msg)
         {
@@ -222,6 +219,8 @@ namespace Utilities
             Debug.LogWarning(e.StackTrace);
             Debug.LogWarning(e.InnerException);
         }
+        #endregion
+
     }
 
 

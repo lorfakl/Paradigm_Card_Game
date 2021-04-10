@@ -11,6 +11,8 @@ public class AIPlayer : Player
     private int initChance = 41;
     private int spawnChance = 60;
     private int aiAttackChance = 50;
+    private bool isAlwaysAttacking = false;
+    private bool isAlwaysSpawning = true;
 
     public AIPlayer(GameTimeManager mgmt, int id) : base(mgmt, id)
     {
@@ -35,6 +37,14 @@ public class AIPlayer : Player
         yield return new WaitForSeconds(3);
     }
 
+    private void GiveAlwaysReminder(bool anAlways)
+    {
+        if(anAlways == true)
+        {
+            Debug.LogWarning("One or more always flags are sent be sure thats on purpose");
+        }
+    }
+
     public override IEnumerator PerformCentral()
     {
         Debug.Log("AI Central");
@@ -43,8 +53,9 @@ public class AIPlayer : Player
         {
             Location hand = GetLocation(ValidLocations.Hand);
 
-            if (GetChanceSuccess(spawnChance))//if random suceeds
+            if (GetChanceSuccess(spawnChance) || isAlwaysSpawning)//if random suceeds
             {
+                GiveAlwaysReminder(isAlwaysSpawning);
                 Debug.Log("AI Spawn");
                 if (hand.Contains(typeof(Accessor)))
                 {
@@ -99,8 +110,9 @@ public class AIPlayer : Player
                 centralActions--;
             }
 
-            if (GetChanceSuccess(aiAttackChance))
+            if (GetChanceSuccess(aiAttackChance) || isAlwaysAttacking)
             {
+                GiveAlwaysReminder(isAlwaysAttacking);
                 Debug.Log("AI Attack");
                 //PerformAttack();
                 centralActions--;
@@ -180,7 +192,7 @@ public class AIPlayer : Player
         }
         PlayerDeck.MoveContent(barriers, GetLocation(ValidLocations.BZ));
 
-        PlayerDeck.Draw(5);
+        //PlayerDeck.Draw(5);
         yield return null;
     }
 

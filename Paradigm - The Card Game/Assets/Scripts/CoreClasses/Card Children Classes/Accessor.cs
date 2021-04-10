@@ -50,6 +50,11 @@ public class Accessor: Card
         set { this.hp = value; }
     }
 
+    public int NumOfAttacks
+    {
+        get { return numOfAttacks; }
+    }
+
     public void SetPower(int p) { power = p; }
     public void SetMaxHp(int h) { maxHp = h; }
     public void SetHp(int h) { hp = h; }

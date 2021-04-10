@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public delegate void StateProcessingComplete();
@@ -13,10 +14,12 @@ public class GameMaster : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     public GameObject uiCamera;
+    public Button attckBtn;
 
     public static Player PlayerOne { get; private set; }
     public static Player PlayerTwo { get; private set; }
     public static bool IsTurnActive { get; set; }
+    public static bool IsPhaseComplete { get; private set; }
     public static GameObject UiCamera { get; private set; }
     //public static (Player , TurnPhase Turnphase) TurnInfo { get; private set; }
     public StateMachine GameSetupStateMachince { get; private set; }
@@ -41,6 +44,8 @@ public class GameMaster : MonoBehaviour
 
     void Awake()
     {
+        attckBtn.onClick.AddListener(BeginAttackPhase);
+
         PlayerOne = new HumanPlayer(Guid.NewGuid());
         PlayerTwo = new AIPlayer(Guid.NewGuid());
         UiCamera = uiCamera;
@@ -79,6 +84,8 @@ public class GameMaster : MonoBehaviour
         //SUBSCRIBE TO THE STATE MACHINES EVENT TO COUNT TURNCYCLES AND STUFF
 
         print("GameMaster Start Exit: Done");
+
+        
         
     }
 
@@ -119,7 +126,7 @@ public class GameMaster : MonoBehaviour
 
     private IEnumerator ExecuteTurnPhase()
     {
-        print("execute turn pjases");
+        //print("execute turn pjases");
         if (!firstTurnHasStarted)
         {
             firstTurnHasStarted = true;
@@ -129,14 +136,14 @@ public class GameMaster : MonoBehaviour
                 //if(isPhaseComplete == false)
                 //{
                 CurrentTurnPhase = (TurnPhase)i;
-                print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
-                print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
+                //print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
+                //print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
                 yield return StartCoroutine(FirstPlayerTurn[i]());
                 //This isnt gonna work online the Transport layer will need to start player turns based off of an event 
                 //from the server
                
             }
-            print("first player turn done");
+            //print("first player turn done");
             isPhaseComplete = true;
             //print("RUN ONLY ONCE");
         }
@@ -147,15 +154,33 @@ public class GameMaster : MonoBehaviour
             for (int i = 0; i < SecondPlayerTurn.Count; i++)
             {
                 CurrentTurnPhase = (TurnPhase)i;
-                print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
-                print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
+                //print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
+                //print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
                 yield return StartCoroutine(SecondPlayerTurn[i]());
             }
-            print("Second Player Turn Done");
+            //print("Second Player Turn Done");
             isPhaseComplete = true;
             //print("RUN ONLY ONCE");
         }
     }
+
+    private void AttackBtnClicked()
+    {
+        print("Anything?");
+        BeginAttackPhase();
+    }
+
+    private void BeginAttackPhase()
+    {
+        print("State when button CLicked: " + CurrentTurnPhase.ToString() + " " +CurrentTurnPlayer.Type.ToString());
+        if (CurrentTurnPhase == TurnPhase.Central && CurrentTurnPlayer.Type == PlayerType.MainHuman)
+        {
+            print("ATTACK!");
+            IPlayable attackingPlayer = (IPlayable)CurrentTurnPlayer;
+            StartCoroutine(attackingPlayer.PerformAttack());
+        }
+    }
+
     public static void SetTurnOrder(List<IPlayable> playerTurnOrder)
     {
         FirstPlayer = (Player)playerTurnOrder[0];
@@ -171,4 +196,6 @@ public class GameMaster : MonoBehaviour
         isPhaseComplete = true;
         print("Turn complete");
     }
+
+
 }

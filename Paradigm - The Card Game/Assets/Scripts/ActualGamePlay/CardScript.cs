@@ -149,6 +149,11 @@ public class CardScript : MonoBehaviour {
 
     }
 
+    private void OnMouseDown()
+    {
+       
+    }
+
     #endregion
 
     private void ChangeSprite(bool s)

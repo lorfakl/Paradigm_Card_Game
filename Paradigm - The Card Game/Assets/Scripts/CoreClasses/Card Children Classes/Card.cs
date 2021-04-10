@@ -84,6 +84,11 @@ public abstract class Card
             set { this.classType = value; }
         }
 
+        public ValidLocations CurrentLocation
+        {
+            get { return (ValidLocations)Location.ConvertFromLocation(currentLocation); }
+        }
+
         public bool IsValid
         {
             get { return this.isValid; }
@@ -215,6 +220,7 @@ public abstract class Card
         public void PlayCard()
         {
             HelperFunctions.RaiseNewUIEvent(this, ValidLocations.Hand, ValidLocations.Field, MoveAction.Spawn, (Card)this);
+            this.getLocation().MoveContent(this, this.Owner.Field);
         }
 
         public void UseEffect()

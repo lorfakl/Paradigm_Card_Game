@@ -74,7 +74,7 @@ public class HumanPlayer : Player, IPlayable
             //SetCardScript(true); //enable it back
         }
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(10);
     }
 
     public override IEnumerator PerformCrystal()
@@ -203,7 +203,9 @@ public class HumanPlayer : Player, IPlayable
 
     public override IEnumerator PerformAttack()
     {
-        throw new NotImplementedException();
+        HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(MoveAction.None, NonMoveAction.Attack));
+        HelperFunctions.Print("Human Attack!");
+        yield return null;//new WaitUntil(() => GameMaster.IsPhaseComplete);
     }
 
     private void SetCardScript(bool status)
