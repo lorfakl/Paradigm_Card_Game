@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace TransportLayer
 {
-
-    
     public static class EventIngestion
     {
         private static bool isOnline = false;
@@ -26,7 +24,7 @@ namespace TransportLayer
             else
             {
                 //send to local event manager
-                GameEventsManager.CheckLegality(s, e);
+                GameEventsManager.AddToStack(s, e);
             }
         }
 

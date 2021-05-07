@@ -21,7 +21,7 @@ public class Element: Card
         }
 
         this.setName(n);
-        this.SetAbilities(a, a2, a3);
+        ///this.SetAbilities(a, a2, a3);
         this.SetTraits(t); 
         this.setPower((int)p);
         Family fam = new Family(k);

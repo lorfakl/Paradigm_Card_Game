@@ -21,7 +21,7 @@ public class AuxiliaryCard: Card
        
 
         this.setName(n);
-        this.SetAbilities(a, a2, a3); 
+        //this.SetAbilities(a, a2, a3); 
         SetTraits(t);
         Family fam = new Family(k);
         this.setFam(fam);

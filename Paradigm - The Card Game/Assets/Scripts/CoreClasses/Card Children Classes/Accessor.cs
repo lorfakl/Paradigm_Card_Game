@@ -22,7 +22,7 @@ public class Accessor: Card
     public Accessor(string n, string k, System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);
-        this.SetAbilities(a,a2,a3);
+        //this.SetAbilities(a,a2,a3);
         this.SetTraits(t);
         this.SetPower((int)p);
         this.SetMaxHp((int)h);
@@ -30,11 +30,16 @@ public class Accessor: Card
         Family fam = new Family(k);
         this.setFam(fam);
         bonds = new List<Card>();
-            
-    }
-
-    public Accessor(Card c):base(c)
-    {
+        this.Abilities.Add(new Ability(new Condition(), new Action()));
+        this.Abilities[0].Name = "OnSpawn";
+        this.Abilities[0].Actions[0].Ability = this.Abilities[0];
+        this.Abilities[0].Actions[0].Card = this;
+        this.Abilities[0].Actions[0].EventType = "NonMove";
+        this.Abilities[0].Actions[0].EventType = "Active";
+        this.Abilities[0].Conditions[0].EventType = "Move";
+        this.Abilities[0].Conditions[0].EventType = "Spawn";
+        this.Abilities[0].Conditions[0].Ability = this.Abilities[0];
+        this.Abilities[0].Conditions[0].Card = this;
 
     }
 

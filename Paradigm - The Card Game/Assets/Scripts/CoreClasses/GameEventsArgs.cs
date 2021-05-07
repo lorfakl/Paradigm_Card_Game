@@ -7,12 +7,13 @@ using Utilities;
 
 public enum MoveAction
 {
-    Break, Build, Collect, Crystallize, Delete, Despawn, Draw, Lock, Rest, Return, Search, Spawn, Unlock, None
+    Break, Build, Collect, Crystallize, Delete, Despawn, Destroy, Draw, Lock, Rest, Restore, Return, Search, Spawn, Unlock, UndefinedMove, None
 }
 
 public enum NonMoveAction
 {
-    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd, DeclaredAttack
+    Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd, DeclaredAttack,
+    Active
 }
 
 public enum TurnPhase
@@ -22,7 +23,7 @@ public enum TurnPhase
 
 public enum EventType
 {
-    Gameplay, LegalCheck, UIUpdate
+    Gameplay, LegalCheck, UIUpdate, StackNotification
 }
 
 public struct GameAction
@@ -44,6 +45,13 @@ public struct GameAction
         TurnPhase = phase;
         MoveAction = MoveAction.None;
     }
+
+    public GameAction(MoveAction ma, NonMoveAction nma, TurnPhase tp)
+    {
+        MoveAction = ma;
+        NonMoveAction = nma;
+        TurnPhase = tp;
+    }
 }
 
 
@@ -59,11 +67,97 @@ public class GameEventsArgs : EventArgs
     protected List<Card> cardTargets;
     protected Card targetCard;
     protected EventType type;
+    protected Ability abilityTrigger;
 
+    #region Properties
+
+    private void SetUIEvent(EventType t)
+    {
+        if (t == EventType.UIUpdate)
+        {
+            this.IsUIEvent = true;
+        }
+    }
+
+    public List<Card> CardTargets
+    {
+        get { return cardTargets; }
+        set { cardTargets = value; }
+    }
+
+    public Card TargetCard
+    {
+        get { return targetCard; }
+        set { targetCard = value; }
+    }
+
+    public Player PlayerTarget
+    {
+        get { return playerTarget; }
+        set { playerTarget = value; }
+    }
+
+    public Card EventOriginCard
+    {
+        get { return cardSource; }
+        set { cardSource = value; }
+    }
+
+    public Player EventOwner
+    {
+        get { return owner; }
+        set { owner = value; }
+    }
+
+    public MoveAction MoveActionEvent
+    {
+        get { return moveAction; }
+        set { moveAction = value; }
+    }
+
+    public NonMoveAction ActionEvent
+    {
+        get { return notMoveAction; }
+        set { notMoveAction = value; }
+    }
+
+    public GameEventsArgs InitiateEventDetails
+    {
+        get;
+        set;
+    }
+
+    public TurnPhase TurnPhase
+    {
+        get { return phase; }
+        set { phase = value; }
+    }
+
+    public Ability TriggeringAbility
+    {
+        get { return abilityTrigger; }
+        set { abilityTrigger = value; }
+    }
+    public bool IsUIEvent
+    {
+        get;
+        set;
+
+    }
+
+    public EventType Type
+    {
+        get;
+        set;
+    }
+    #endregion
+
+    #region Constructors
     public GameEventsArgs() 
     {
     }
-    
+
+  
     public GameEventsArgs(List<LocationChanges> boardMovements, Card cardSource, MoveAction moveAction,
                                 NonMoveAction notMoveAction, List<Card> cardTargets)
     {
@@ -175,85 +269,56 @@ public class GameEventsArgs : EventArgs
         this.notMoveAction = action.NonMoveAction;
         this.type = type;
         SetUIEvent(type);
-        
-
-
     }
 
-    public void Print()
+    /// <summary>
+    /// For single Card move actions that other Card Abls should know about
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="source"></param>
+    /// <param name="destination"></param>
+    /// <param name="moveAction"></param>
+    /// <param name="target"></param>
+    public GameEventsArgs(Card origin, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card target)
     {
-        HelperFunctions.Print("event data print:");
+        EventOriginCard = origin;
+        this.owner = target.Owner;
+        this.playerTarget = target.Owner;
+        this.TargetCard = target;
+        this.moveAction = moveAction;
+        if(moveAction == MoveAction.Spawn)
+        {
+            foreach(var abl in target.Abilities)
+            {
+                if(abl.Name == "OnSpawn")
+                {
+                    TriggeringAbility = abl;
+                }
+            }
+        }
+        this.notMoveAction = NonMoveAction.None;
+        this.Type = EventType.Gameplay;
+    }
+    #endregion
+
+    public string Print()
+    {
+        //HelperFunctions.Print("event data print:");
         try
         {
-            string data = "CardSource: " + cardSource?.Name + "\n MoveAction: " + moveAction.ToString()
-            + "\n Non-Move Action: " + notMoveAction.ToString() + "\n Owner: " + cardSource.Owner.Type;
+            string data = "CardSource: " + this?.EventOriginCard?.Name + "\n MoveAction: " + this?.moveAction.ToString()
+            + "\n Non-Move Action: " + this?.notMoveAction.ToString() + "\n Owner: " + this?.EventOriginCard?.Owner.Type
+            + "\n Ability Trigger: " + this?.abilityTrigger?.Name;
             HelperFunctions.Print(data);
+            return data;
         }
         catch(Exception ex)
         {
             HelperFunctions.CatchException(ex);
+            return "Error Printing Event Data";
         }
         
     }
 
-    private void SetUIEvent(EventType t)
-    {
-        if(t == EventType.UIUpdate)
-        {
-            this.IsUIEvent = true;
-        }
-    }
-
-    public List<Card> CardTargets
-    {
-        get { return cardTargets; }
-    }
-
-    public Card TargetCard
-    {
-        get { return targetCard; }
-    }
-
-    public Player PlayerTarget
-    {
-        get { return playerTarget; }
-    }
-
-    public Card EventOriginCard
-    {
-        get { return cardSource; }
-    }
-
-    public Player EventOwner
-    {
-        get { return owner; }
-    }
-
-    public List<LocationChanges> GameBoardMovements
-    {
-        get { return boardMovements; }
-    }
-
-    public MoveAction MoveActionEvent
-    {
-        get { return moveAction; }
-    }
-
-    public NonMoveAction ActionEvent
-    {
-        get { return notMoveAction; }
-    }
-
-    public TurnPhase TurnPhase
-    {
-        get { return phase; }
-    }
-
-    public bool IsUIEvent
-    {
-        get;
-        protected set;
-
-    }
-
+    
 }

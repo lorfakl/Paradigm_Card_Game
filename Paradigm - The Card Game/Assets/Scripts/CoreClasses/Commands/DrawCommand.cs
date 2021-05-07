@@ -59,7 +59,7 @@ public class DrawCommand : ICommand
         {
             foreach (GameObject c in cardsCreated)
             {
-                c.GetComponent<CardScript>().Print();
+                //c.GetComponent<CardScript>().Print();
                 LeftMovingTween = c.transform.DOMoveX(c.transform.position.x + UIManager.CardWidth, 0.1f);
                 //HelperFunctions.Print("Moving to: " + c.transform.position.x + UIManager.CardWidth);
                 //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the left");
@@ -106,7 +106,7 @@ public class DrawCommand : ICommand
         {
             foreach (GameObject c in cardsCreated)
             {
-                c.GetComponent<CardScript>().Print();
+                //c.GetComponent<CardScript>().Print();
                 c.transform.DOMoveX(c.transform.position.x - (UIManager.CardWidth / 2f), drawUIEffects.MoveSpeed);
                 //HelperFunctions.Print("Should move " + cardsCreated.Count + " to the right");
             }

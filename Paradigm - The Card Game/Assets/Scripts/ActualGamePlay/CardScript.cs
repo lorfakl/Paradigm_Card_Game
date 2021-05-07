@@ -88,7 +88,7 @@ public class CardScript : MonoBehaviour {
                         else
                         {
                             this.cardData.PlayCard();
-                            print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
+                            //print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
                         }
                     }
                 }

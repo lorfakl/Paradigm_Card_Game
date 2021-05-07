@@ -31,8 +31,8 @@ public class UiEvents : GameEventsArgs
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
         this.type = EventType.UIUpdate;
-        Utilities.HelperFunctions.Print("UI Event Data Created!");
-        Utilities.HelperFunctions.Print("Moved a card from " + source + " to " + destination);
+        //Utilities.HelperFunctions.Print("UI Event Data Created!");
+        //Utilities.HelperFunctions.Print("Moved a card from " + source + " to " + destination);
 
     }
 
@@ -58,7 +58,7 @@ public class UiEvents : GameEventsArgs
         this.moveAction = moveAction;
         this.notMoveAction = NonMoveAction.None;
         this.type = EventType.UIUpdate;
-        Utilities.HelperFunctions.Print("UI Event Data Related to moving a new GameObject was Created!");
+        //Utilities.HelperFunctions.Print("UI Event Data Related to moving a new GameObject was Created!");
 
     }
 

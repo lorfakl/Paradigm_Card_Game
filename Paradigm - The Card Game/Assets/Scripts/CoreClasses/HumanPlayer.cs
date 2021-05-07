@@ -7,7 +7,8 @@ using Utilities;
 
 public class HumanPlayer : Player, IPlayable
 {
-    
+    Text timerText;
+
 
     public HumanPlayer(GameTimeManager mgmt, int id) :base(mgmt, id)
     {
@@ -18,11 +19,18 @@ public class HumanPlayer : Player, IPlayable
     public HumanPlayer(Guid id) : base(id)
     {
         this.type = PlayerType.MainHuman;
+        GameObject timer = GameObject.FindGameObjectWithTag("timer");
+        timerText = timer.GetComponent<Text>();
     }
 
     public int OriginalTimerTime
     {
         get { return timerTime; }
+    }
+
+    public Text TimerText
+    {
+        get { return timerText; }
     }
 
     public override IEnumerator PerformGather()
@@ -46,14 +54,22 @@ public class HumanPlayer : Player, IPlayable
             Debug.Log(ex.StackTrace);
             Debug.Log(ex.ToString());
         }
+
         yield return new WaitForSeconds(3);
+        //HelperFunctions.Print("Never stop gathering");
+        //yield return new WaitUntil(() => GameMaster.IsPhaseComplete);
+
+        //HelperFunctions.Print("some how it has exited");
 
     }
 
     public override IEnumerator PerformAwaken()
     {
         HelperFunctions.RaiseNewEvent(this, this, this, new GameAction(NonMoveAction.Turn, TurnPhase.Awaken));
+
         yield return new WaitForSeconds(3);
+        //yield return new WaitUntil(() => GameMaster.IsPhaseComplete);
+        
     }
 
     public override IEnumerator PerformCentral()
@@ -74,7 +90,7 @@ public class HumanPlayer : Player, IPlayable
             //SetCardScript(true); //enable it back
         }
 
-        yield return new WaitForSeconds(10);
+        yield return new WaitUntil(() => GameMaster.IsPhaseComplete);
     }
 
     public override IEnumerator PerformCrystal()

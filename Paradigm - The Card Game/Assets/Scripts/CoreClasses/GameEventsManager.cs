@@ -11,7 +11,10 @@ using Utilities;
 
 public class GameEventsManager : MonoBehaviour
 {
-    private static Stack<GameEventsArgs> eventStack = new Stack<GameEventsArgs>();  //there's only ever gonna be one of these
+    private static Queue<Action> actionQ = new Queue<Action>();
+    private static Stack<Action> actionStack = new Stack<Action>();
+    public static bool isTimeToResolveStack = false;
+
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
 
     private static Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs,GameEventsArgs>> LegalityCheckCommands = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs, GameEventsArgs>>();
@@ -19,19 +22,6 @@ public class GameEventsManager : MonoBehaviour
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
-
-    //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
-    
-    /// <summary>
-    /// the delegate for updating the UI, sends out a message to the RenderManager's subscriber
-    /// </summary>
-    /// <param name="data">Int array to update the values of the player and enemy card locations</param>
-    /// <param name="uiHand">A list of cards that represent the cards that the player has in their hand</param>
-    /// <param name="uiField">A list of cards that represent the cards that the player has on their field</param>
-    /// <param name="noUiField">A list of cards that represent the cards that the enemy has on their field</param>
-    /// <param name="noUiHand">A list of cards that represent the cards that the enemy has in their hand</param>
-    public delegate void UIUpdateHandler(int[] data, List<Card> uiHand, List<Card> uiField, List<Card> noUiHand, List<Card> noUiField); 
-    public static event UIUpdateHandler UpdateUI; 
 
     private static void OnEventAdd(object sender, GameEventsArgs data)
     {
@@ -60,35 +50,47 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-    public static void CheckLegality(object s, GameEventsArgs e)
-    {
-        try
+    private static IEnumerator ResolveStack()
+    {//make this into a Coroutine
+        
+        while (actionStack.Count > 0)
         {
-            e = LegalityCheckCommands[(e.MoveActionEvent, e.ActionEvent)](e);
+            actionStack.Pop().Resolve();
         }
-        catch(Exception ex)
-        {
-            HelperFunctions.CatchException(ex);
-            HelperFunctions.Print("Inside the catch block of check legality");
-            isLegal = true;
-        }
-
-        if(isLegal)
-        {
-            PublishEvent(s, e);
-            isLegal = false;
-        }
+        
+        yield return null;
     }
 
+    public static void AddToStack(object s, GameEventsArgs e)
+    {
+        PublishEvent(s, e);
+    }
 
+    public static void AddToStack(List<Action> actions, GameEventsArgs e)
+    {
+        foreach (Action a in actions)
+        {
+            actionQ.Enqueue(a);
+        }
 
-    
+        actionStack.Push(actionQ.Dequeue());
+        actionStack.Peek().GenerateEvent(e);
+        //GenerateEvent tells all other abilities that something happened specifically 
+        //this will be am Initiate Event so conditions that pop off from initiate events
+        //are able to trigger This is the stack notification 
+
+        //Conditions that trigger this way should notify the UIManager with a stack notification
+        //This is why UI Manager needs a Queue
+        HelperFunctions.Print("Other abilities should trigger and UI should do stuff");
+        //TransportLayer.ServerMessages.PromptForResponse(); //something like this for networked play
+
+    }
+
     #region Unity Callbacks
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
-        LegalityCheckCommands.Add((MoveAction.None, NonMoveAction.Attack), CheckAttackPhaseEntryLegality);
-        LegalityCheckCommands.Add((MoveAction.None, NonMoveAction.DeclaredAttack), CheckDeclaredAttackLegality);
+
     }
 
     void Start()
@@ -99,6 +101,11 @@ public class GameEventsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isTimeToResolveStack)
+        {
+            isTimeToResolveStack = false;
+            StartCoroutine(ResolveStack());
+        }
         
     }
     #endregion
@@ -170,5 +177,6 @@ public class GameEventsManager : MonoBehaviour
     }
     #endregion
 }
+
 
 

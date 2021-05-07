@@ -1,0 +1,61 @@
+{
+		"Card": "Oracle Dracomage",
+		"Ability 1":{
+			"Type": "Optional",
+			"Condition":{
+				"EventType":"NonMove",
+				"EventName": "Active"
+			},
+			"Action": {
+				"Move": {
+					"Search Criteria": {
+						"CardType": "Element",
+						"CustomData": ["Fire", "Water", "Earth", "Wind"]
+					},
+					"Selection Constraint": {
+						"Total": 4,
+						"Specific Count": {
+							"Criteria": "CustomData",
+							"Fire": 1,
+							"Water": 1,
+							"Earth": 1,
+							"Wind": 1
+						}
+					},
+					"Source": {
+						"Owner": "This",
+						"Location": "Network"
+					},
+					"Destination": {
+						"Owner": "This",
+						"Location": "Hand"
+					}
+				}
+			}
+		},
+		"Ability 2": {
+			"Condition":[
+				{
+					"EventType":"NonMove",
+					"EventName": "Active"
+				},
+				{
+					"EventType":"NonMove",
+					"EventName": "Initiate",
+					"EventDetails":{
+						"CardType": "Mechanism",
+						"Effect":
+						{
+							"Despawn":"Any",
+							"Damage": "ClassType.Accessor"
+						}
+					}
+				}
+			],
+			"Action": {
+				"Null": {
+					"Trigger": "Other"
+					}
+				}
+			}
+		}

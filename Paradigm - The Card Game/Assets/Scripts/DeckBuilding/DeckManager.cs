@@ -32,7 +32,7 @@ public class DeckManager : MonoBehaviour {
             Debug.Log("Card Added: " + c.getName());
         }
         initialDeck.AddRange(playDeck.GetContents());
-
+        CardDataBase.LoadAllCardsList();
         Debug.Log("Called Awake Function");
     }
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
 using TransportLayer;
-
+using System.Reflection;
 
 /// <summary>
 /// The utilities class is for storing the general purpose commonly used functions and data structures 
@@ -85,6 +85,10 @@ namespace Utilities
             return cardObject;
         }
 
+        public static void RaiseNewUIEvent(Action action, EventType stackNotification)
+        {
+            throw new NotImplementedException();
+        }
 
         public static void ScaleCard(GameObject c, Vector3 scale)
         {
@@ -142,9 +146,15 @@ namespace Utilities
         {
             GameEventsArgs newEvent = new GameEventsArgs(owner, target, action);
             UiEvents uiEvents = new UiEvents(owner, target, action);
-            EventIngestion.EventIntake(sender, newEvent);
+            //EventIngestion.EventIntake(sender, newEvent);
             EventIngestion.EventIntake(sender, uiEvents);
             return newEvent;
+        }
+
+        public static void RaiseNewEvent(object sender, Card origin, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card target)
+        {
+            GameEventsArgs newEvent = new GameEventsArgs(origin, source, destination, moveAction, target);
+            EventIngestion.EventIntake(sender, newEvent);
         }
 
         /// <summary>
@@ -179,9 +189,25 @@ namespace Utilities
 
         public static void RaiseNewUIEvent(object sender, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card c)
         {
-
             UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
             EventIngestion.EventIntake(sender, uiEvent);
+        }
+
+        /// <summary>
+        /// This Raise event overload is specifically for Initate Events, it requires the 
+        /// Internal Initate details containing the actions taken and targets involved
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="initiateEventInfo"></param>
+        /// <param name="initiatingCard"></param>
+        public static void RaiseNewEvent(object sender, GameEventsArgs initiateEventInfo, Card initiatingCard)
+        {
+            GameEventsArgs newEvent = new GameEventsArgs(initiateEventInfo.EventOwner, initiateEventInfo.PlayerTarget,
+                    initiateEventInfo.CardTargets, new GameAction(MoveAction.None, NonMoveAction.Initiate, initiateEventInfo.TurnPhase),
+                    EventType.Gameplay);
+            newEvent.EventOriginCard = initiatingCard;
+            newEvent.InitiateEventDetails = initiateEventInfo;
+            EventIngestion.EventIntake(sender, newEvent);
         }
         #endregion
 
@@ -192,6 +218,8 @@ namespace Utilities
             GameEventsArgs e = new GameEventsArgs(owner, target, cardTargets, action, type);
             return e;
         }
+
+        
 
         public static GameEventsArgs GenerateReturnEvent(Card source, NonMoveAction nonMove, Card targetCard)
         {
@@ -219,8 +247,54 @@ namespace Utilities
             Debug.LogWarning(e.StackTrace);
             Debug.LogWarning(e.InnerException);
         }
+
+        public static void PrintObjectProperties<T>(T src)
+        {
+            Type type = typeof(T);
+
+            PropertyInfo[] propertyInfo = type.GetProperties();
+
+            foreach (PropertyInfo pInfo in propertyInfo)
+            {
+                string val = type.GetProperty(pInfo.Name)?.GetValue(src, null)?.ToString();
+                if(!String.IsNullOrEmpty(val))
+                {
+                    Print(pInfo.Name + ": " + val);
+                }
+                    
+
+            }
+        }
         #endregion
 
+        #region Misc
+
+        public static T ParseEnum<T>(string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
+
+        public static Player GetReferenceToOtherPlayer(Player p, GameEventsArgs e)
+        {
+            if(p.ID != e.EventOwner.ID)
+            {
+                return e.EventOwner;
+            }
+            else if(p.ID != e.PlayerTarget.ID)
+            {
+                return e.PlayerTarget;
+            }
+            else
+            {
+                Print("ID of the Known Player: " + p.ID);
+                e.Print();
+                throw new Exception("There was not a different Player reference found in event \n " +
+                    "This means that there is an issue in the assignment of the events somewhere \n" +
+                    "This is a MAJOR bug and need immediate attention");
+
+            }
+        }
+        #endregion
     }
 
 

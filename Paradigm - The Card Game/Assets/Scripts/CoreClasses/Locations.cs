@@ -46,6 +46,11 @@ public class Location: IEnumerable
         get { return this.contents; }
     }
 
+    public ValidLocations ValidName
+    {
+        get { return (ValidLocations)ConvertFromLocation(this); }
+    }
+
     public Location()
     {
     
@@ -249,7 +254,6 @@ public class Location: IEnumerable
             Card temp = contents[j];
             contents[j] = contents[i];
             contents[i] = temp;
-
         }
     }
 
@@ -305,7 +309,16 @@ public class Location: IEnumerable
                 //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
                                                                 //+ destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
-                Utilities.HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+                if (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ)
+                {
+                    foreach (var abl in c.Abilities)
+                    {
+                        abl.CanCheckEvent = true;
+                        HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
+                        HelperFunctions.Print(abl.Name);
+                    }
+                }
+                HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
         }
         
@@ -329,8 +342,7 @@ public class Location: IEnumerable
         newChanges.destination = destination;
         newChanges.origin = this;
         changes.Add(newChanges);
-        destination.contents.Add(c);
-        c.setLocation(destination);
+        
         if (!(RemoveContent(c)))
         {
             Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
@@ -342,13 +354,37 @@ public class Location: IEnumerable
                                                             //+ destination.owner.PlayerID + "'s " + destination.Name);
             changesDict[this] = changes;
             MoveAction ma = GetMoveAction(this, destination);
-            Utilities.HelperFunctions.RaiseNewEvent(this, changes, ma);
+            //Utilities.HelperFunctions.RaiseNewEvent(this, changes, ma);
             int returnSorcIndex = ConvertFromLocation(this);
             int returnDestIndex = ConvertFromLocation(destination);
 
             if(returnDestIndex > -1 && returnSorcIndex > -1)
             {
+                HelperFunctions.Print("It this true?: " + (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ));
+                HelperFunctions.Print("Current Location: " + c.CurrentLocation.ToString());
+                HelperFunctions.Print("Current Destination: " + destination.ValidName.ToString());
+                if (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ)
+                {
+                    foreach (var abl in c.Abilities)
+                    {
+                        abl.CanCheckEvent = true;
+                        HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
+                        HelperFunctions.Print(abl.Name);
+                        if(abl.Conditions == null)
+                        {
+                            HelperFunctions.Print("Conditions for " + abl.Name + " on Card " + abl.OwningCardName + " is null for some reason");
+                        }
+
+                        if (abl.Actions == null)
+                        {
+                            HelperFunctions.Print("Actions for " + abl.Name + " on Card " + abl.OwningCardName + " is null for some reason");
+                        }
+                    }
+                }
+                destination.contents.Add(c);
+                c.setLocation(destination);
                 HelperFunctions.RaiseNewUIEvent(this, (ValidLocations)returnSorcIndex, (ValidLocations)returnDestIndex, ma, c);
+                
             }
             else
             {

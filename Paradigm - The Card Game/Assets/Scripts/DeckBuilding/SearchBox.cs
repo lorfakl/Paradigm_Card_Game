@@ -15,6 +15,7 @@ public class SearchBox : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        
         InputField search = searchBox.GetComponent<InputField>(); 
         search.onValueChanged.AddListener(delegate { CallDataBaseSearch(search.text, GetSearchMod()); }); 
         //adds a delagate to the onValue changed event so that when the text in the InputField changes a new 

@@ -50,7 +50,7 @@ public class SpawnCommand : ICommand
             spawnCards = UIManager.FieldCards;
         }
 
-        HelperFunctions.Print(ue.EventOriginCard.Name);
+        //HelperFunctions.Print(ue.EventOriginCard.Name);
         GameObject c = ue.EventOriginCard.GameObj;
         if(drawnCards.Remove(c))
         {

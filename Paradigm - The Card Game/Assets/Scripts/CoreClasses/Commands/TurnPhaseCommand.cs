@@ -36,8 +36,16 @@ public class TurnPhaseCommand : ICommand
             turnTextInstance = UnityEngine.Object.Instantiate(turnphaseNotificationObject, GameObject.FindGameObjectWithTag("Respawn").transform.position, Quaternion.identity);
             isInstantiated = true;
         }
-        onScreenTurnphase.GetComponent<TextMeshPro>().text = GameMaster.CurrentTurnPlayer.Type.ToString() + " " + GameMaster.CurrentTurnPhase.ToString();
-        turnTextInstance.GetComponent<TextMeshPro>().text = GameMaster.CurrentTurnPlayer.Type.ToString() + " " + GameMaster.CurrentTurnPhase.ToString();
+        try
+        {
+            onScreenTurnphase.GetComponent<TextMeshPro>().text = GameMaster.CurrentTurnPlayer.Type.ToString() + " " + GameMaster.CurrentTurnPhase.ToString();
+            turnTextInstance.GetComponent<TextMeshPro>().text = GameMaster.CurrentTurnPlayer.Type.ToString() + " " + GameMaster.CurrentTurnPhase.ToString();
+        }
+        catch(Exception ex)
+        {
+            Utilities.HelperFunctions.CatchException(ex);
+        }
+
         turnTextInstance.transform.DOMove(new Vector3(0, 2, -20), .1f);
         
         

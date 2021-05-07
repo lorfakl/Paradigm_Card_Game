@@ -8,6 +8,7 @@ using Mono.Data.Sqlite;
 //using System.Collections;
 //using System.Globalization;
 using System.Collections.Generic;
+using Builder;
 
 namespace DataBase
 {
@@ -121,6 +122,25 @@ namespace DataBase
             }
         }
 
+        public static Card CreateCardInstance(int id, Player p)
+        {
+            if (!isCardDictLoaded)
+            {
+                GetDataBaseData();
+            }
+
+            var (type, arguments) = cardDict[id];
+            Card c = (Card)Activator.CreateInstance(type, arguments);
+
+            c.ID = id;
+            c.ClassType = c.GetType().ToString();
+            c.Owner = p;
+            c.GenerateInstanceID();
+            AbilityBuilder.CreateAbilityInstance(c);
+
+            return c;
+        }
+
         public static Card CreateCardInstance(int id)
         {
             if (!isCardDictLoaded)
@@ -133,21 +153,41 @@ namespace DataBase
 
             c.ID = id;
             c.ClassType = c.GetType().ToString();
-
-
-            foreach (Ability a in c.getAbilities())
-            {
-                a.LinkToCard(c.getName());
-            }
-
-            foreach (Trait t in c.getTraits())
-            {
-                t.LinkToCard(c.getName());
-            }
+            c.GenerateInstanceID();
+            AbilityBuilder.CreateAbilityInstance(c);
 
             return c;
         }
-        
+
+        public static void LoadAllCardsList()
+        {
+            if(!isCardDictLoaded)
+            {
+                GetDataBaseData();
+            }
+
+            foreach(int id in allCardIDs)
+            {
+                var (type, arguments) = cardDict[id];
+                Card c = (Card)Activator.CreateInstance(type, arguments);
+
+                c.ID = id;
+                c.ClassType = c.GetType().ToString();
+
+
+                foreach (Ability a in c.getAbilities())
+                {
+                    throw new Exception("You have to fix rhe card ability text also do the art too");
+                }
+
+                foreach (Trait t in c.getTraits())
+                {
+                    t.LinkToCard(c.getName());
+                }
+
+                allCards.Add(c);
+            }
+        }
 
         public static void SavePlayerDeck(Deck d)
         {
@@ -350,16 +390,17 @@ namespace DataBase
                 throw new Exception("You passed in a null deck to MakePlayerDeck");
             }
 
-            if (!isDataLoaded)
+            if (!isDataLoaded && !AbilityBuilder.isJSONDataLoaded)
             {
                 GetDataBaseData();
+                AbilityBuilder.ParseAbilityJSON();
             }
 
             if (IsPlayerDeckSaved())
             {
                 foreach (int id in LoadPlayerDeck())
                 {
-                    playerDeck.AddCard(CreateCardInstance(id));
+                    playerDeck.AddCard(CreateCardInstance(id, p));
                 }
                 
                 return;
@@ -370,7 +411,7 @@ namespace DataBase
             foreach (int id in allCardIDs)
             {
                 Debug.Log("Card ID: " + id);
-                Card c = CreateCardInstance(id);
+                Card c = CreateCardInstance(id, p);
                 Debug.Log("Card Instance NAme: " + c.Name);
                 if (playerDeck.AddCard(c)) 
                 {

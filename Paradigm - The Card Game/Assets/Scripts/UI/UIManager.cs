@@ -171,7 +171,7 @@ public class UIManager : MonoBehaviour
     {
         ObservableCollection<GameObject> originCollection;
         originCollection = (ObservableCollection<GameObject>)sender;
-        print("was this called?");
+        //print("was this called?");
         float xMove = -3.07f * (originCollection.Count - 1);
 
         
@@ -195,7 +195,7 @@ public class UIManager : MonoBehaviour
         ObservableCollection<GameObject> originCollection;
         originCollection = (ObservableCollection<GameObject>)sender;
 
-        try
+        /*try
         {
             print(originCollection[0].GetComponent<CardScript>().Card.Owner.Type);
 
@@ -203,7 +203,7 @@ public class UIManager : MonoBehaviour
         catch(Exception ex)
         {
             HelperFunctions.CatchException(ex);
-        }
+        }*/
 
         switch (e.Action)
         {
@@ -234,23 +234,23 @@ public class UIManager : MonoBehaviour
     {
         if(e.IsUIEvent)
         {
-            print("UI manager Caught a UI event");
+            //print("UI manager Caught a UI event");
             //print("UI Event Data: " + "\n" + "Player: " + e.EventOwner.Type.ToString() + " Target" + e.PlayerTarget.Type.ToString() + "\n" + 
             //    "MoveAction: " + e.MoveActionEvent + " NonMoveAction: " + e.ActionEvent);
      
             if (e.ActionEvent == NonMoveAction.Turn)
             {
-                print(e.EventOwner.Type + " is starting their " + e.TurnPhase + " phase");
+                //print(e.EventOwner.Type + " is starting their " + e.TurnPhase + " phase");
             }
             
             try
             {
+
                 StartCoroutine(UICommandsDict[(e.MoveActionEvent, e.ActionEvent)].Execute(e));
             }
             catch(Exception ex)
             {
-                print(ex.Message + "\n" + ex.StackTrace + "\n" + ex.InnerException + "\n" + ex.Source);
-                print("Action Combo found: " + "MoveAction: " + e.MoveActionEvent + "NonMoveAction: " + e.ActionEvent);
+                HelperFunctions.CatchException(ex);
             }
         }
 

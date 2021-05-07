@@ -101,6 +101,11 @@ public abstract class Player: IPlayable
         get { return GetLocation(ValidLocations.Field); }
     }
   
+    public int CentralActions
+    {
+        get { return centralActions; }
+        set { centralActions = value; }
+    }
 
     public Majesty Majesty
     {

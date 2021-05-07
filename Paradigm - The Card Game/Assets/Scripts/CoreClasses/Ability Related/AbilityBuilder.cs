@@ -7,102 +7,232 @@ using System.Security.Permissions;
 using Mono.Data.Sqlite;
 using System.IO;
 using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using DataBase;
+using System.Linq;
 
 namespace Builder
 {
     public static class AbilityBuilder
     {
-        public delegate bool ConditionCheck(GameEventsArgs e, Card a, string mod = "");
-        private static Dictionary<string, ConditionCheck> ConditionDict = new Dictionary<string, ConditionCheck>();
+        static List<Condition> cndAll = new List<Condition>();
+        static List<Action> actsAll = new List<Action>();
+        public static List<Ability> abilities = new List<Ability>();
 
-        public static void AddCondition(string key, ConditionCheck value)
-        {
-            ConditionDict.Add(key, value);
-            ConditionDict.Add("trash", ThisActive);
-        }
+        public static bool isJSONDataLoaded = false;
 
-        public static ConditionCheck GetConditionCheck(string key)
+        public static void CreateAbilityInstance(Card c)
         {
-            return ConditionDict[key];
-        }
+            if(!isJSONDataLoaded)
+            {
+                ParseAbilityJSON();
+            }
 
-        public static bool ThisActive(GameEventsArgs e, Card a, string m = "")
-        {
-            if (e.EventOriginCard == a)
+            foreach(var a in abilities)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        /*
-        public static bool ThisOwnerTurnEnd(GameEventsArgs e, Card a, string m = "")
-        {
-            if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.End)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool Despawned(GameEventsArgs e, Card c, string m = "")
-        {
-            if(e.MoveActionEvent == MoveAction.Despawn)
-            {
-                if(e.TargetCard.Name.Contains(m))
+                if(a.OwningCardName == c.Name)
                 {
-                    return true;
+                    try
+                    {
+                        Ability newAbl = new Ability(a);
+                        c.Abilities.Add(newAbl);
+                        newAbl.LinkToCard(c);
+                    }
+                    catch(Exception ex)
+                    {
+                        HelperFunctions.CatchException(ex);
+                        HelperFunctions.Print(a.OwningCardName);
+                    }
+                    
+                    
                 }
             }
-
-            return false;
         }
 
-        public static bool ThisTurn(GameEventsArgs e, Card c, string m = "")
+        public static void ParseAbilityJSON()
         {
-            if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.Start)
+            if(!isJSONDataLoaded)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+                string path = "Assets/JSONAbilityLanguage.json";
+                StreamReader read = new StreamReader(path);
+                var o = JObject.Parse(read.ReadToEnd());
+                //HelperFunctions.Print(o.ToString());
+                //HelperFunctions.Print(o["Cards"].ToString());
 
-        public static bool Spawned(GameEventsArgs e, Card c, string m = "")
-        {
+                string[] infoFromFile = { "Name", "ClassType", "ID" };
 
-            if (e.MoveActionEvent == MoveAction.Spawn)
-            {
-                if (m == "") //if the condition is This Card Spawned
+                foreach (var item in o["Cards"])
                 {
-                    if(e.TargetCard.Name == c.Name)
+                    //HelperFunctions.Print(item["Name"]);
+                    foreach (var abl in item["Abilities"])
+                    {
+
+                        List<Condition> cnd = new List<Condition>();
+                        List<Action> acts = new List<Action>();
+
+                        //HelperFunctions.Print("Reading the Conditions");
+                        //HelperFunctions.Print(item.ToString());
+                        foreach (var cond in abl["Conditions"])
+                        {
+                            //HelperFunctions.Print(cond.ToString());
+                            Condition c = JsonConvert.DeserializeObject<Condition>(cond.ToString());
+                            cnd.Add(c);
+                            cndAll.Add(c);
+                            //HelperFunctions.PrintObjectProperties<Condition>(c);
+                        }
+
+                        //HelperFunctions.Print("Reading theActions");
+                        foreach (var act in abl["Actions"])
+                        {
+                            //HelperFunctions.Print(act.ToString());
+                            Action a = JsonConvert.DeserializeObject<Action>(act.ToString());
+                            acts.Add(a);
+                            actsAll.Add(a);
+                            //HelperFunctions.PrintObjectProperties<Action>(a);
+                        }
+
+                        Ability ability = new Ability(cnd, acts);
+                        try
+                        {
+                            ability.Name = item["Name"] + " " + abl["Name"].ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            HelperFunctions.Print("There's a Name missing?");
+                            HelperFunctions.CatchException(ex);
+                        }
+
+                        try
+                        {
+                            ability.IsLimited = JsonConvert.DeserializeObject<bool>(abl["IsLimited"].ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            ability.IsLimited = false;
+                        }
+
+                        if (abl["Type"].ToString() == "Optional")
+                        {
+                            ability.IsMandatory = false;
+                        }
+                        else
+                        {
+                            ability.IsMandatory = true;
+                        }
+                        ability.OwningCardName = item["Name"].ToString();
+                        abilities.Add(ability);
+
+                    }
+                }
+                isJSONDataLoaded = true;
+            }
+            
+        }
+
+    }
+    public enum Target { Any, LocationBased, ClassType, Query}
+   
+    public class TargetAction
+    {
+        [JsonProperty(PropertyName = "EventName")]
+        public string EventName { get; private set; }
+        [JsonProperty]
+        public Target Targets { get; private set; }
+        [JsonProperty]
+        public string ClassType { get; private set; }
+        [JsonProperty]
+        public string Location { get; private set; }
+        [JsonProperty]
+        public string Query { get; private set; }
+
+        [JsonProperty(PropertyName = "Search Criteria")]
+        public SearchCriteria SearchCriteria { get; private set; }
+
+    }
+
+    public class Criterion
+    {
+        private enum Op { Equal, Not, Contains }
+
+        [JsonProperty(PropertyName = "CardInfo")]
+        public string CardInfo { get; set; }
+
+        [JsonProperty(PropertyName = "Operation")]
+        public string Operation { get; set; }
+
+        [JsonProperty(PropertyName = "Operand")]
+        public string Operand { get; set; }
+
+        public bool CheckIfCardMeetsCriteria(Card c)
+        { 
+            switch (HelperFunctions.ParseEnum<Op>(Operation))
+            {
+                case Op.Contains:
+                    if (c[CardInfo].ToString().Contains(Operand)) //doing the operation
                     {
                         return true;
                     }
-                }
-                else if(m.Contains("not This.Owner;")) //anything just not owned by the player that owns the condition being checked
-                {
-                    return true;
-                }
-                else if(e.TargetCard.Name.Contains(m)) //if the spawn is something specific
-                {
-                    return true;
-                }
+                    break;
+                case Op.Equal:
+                    if (c[CardInfo].ToString() == Operand) //doing the operation
+                    {
+                        return true;
+                    }
+                    break;
+                case Op.Not:
+                    if (c[CardInfo].ToString() != Operand) //doing the operation
+                    {
+                        return true;
+                    }
+                    break;
             }
+
             return false;
+        }
+    }
+
+    public class SearchCriteria
+    {
+        public enum QueryModifier { Separate, OR, AND, Null };
+        private enum Op { Equal, Not, Contains}
+
+        [JsonProperty(PropertyName = "SearchOperation")]
+        public object SearchOperation { get; set; }
+
+        public QueryModifier QueryMod { get; private set; }
+        
+
+        [JsonProperty(PropertyName = "Criteria")]
+        public List<Criterion> Criteria { get; set; }
+
+        public SearchCriteria()
+        {
+
+          
         }
 
 
-        public static bool TurnGatherPhase(GameEventsArgs e, Card c, string m = "")
+        public static bool FindCardInfo(SearchCriteria searchCriteria, List<Card> cardsFromEvent)
         {
-            if (e.ActionEvent == NonMoveAction.TurnPhase && e.EventOwnerTurn == TurnPhase.Gather)
+            bool isCriteriaMet = false;
+
+            foreach (var c in cardsFromEvent)
+            {
+                foreach (var criteria in searchCriteria.Criteria)
+                {
+                    isCriteriaMet = criteria.CheckIfCardMeetsCriteria(c);
+                    if (searchCriteria.QueryMod == QueryModifier.AND && !isCriteriaMet)
+                    {//if the query is an AND operation and a single criteria is not met
+                     //exit the loop and move to the next card
+                        break;
+                    }
+
+
+                }
+            }
+
+            if (searchCriteria.QueryMod == QueryModifier.AND && isCriteriaMet)
             {
                 return true;
             }
@@ -110,106 +240,59 @@ namespace Builder
             {
                 return false;
             }
+            
         }
 
-        public static bool ActivatedElementTrait(GameEventsArgs e, Card c, string m = "")
+        public static List<Card> FindandReturnCards(SearchCriteria searchCriteria, Location source)
         {
-            string[] possibleTraits = { "Earth", "Fire", "Water", "Wind"}; //change to search a file containing ALL traits
-            List<string> traitPool = new List<string>(possibleTraits);
-
-            if(traitPool.Contains(m))
+            List<Card> results = new List<Card>();
+            bool isCriteriaMet = false;
+            foreach(Card c in source)
             {
-                if(e.ActionEvent == NonMoveAction.Activate)
+                foreach (var criteria in searchCriteria.Criteria)
                 {
-                    return true;
+                    isCriteriaMet = criteria.CheckIfCardMeetsCriteria(c);
+                    if(searchCriteria.QueryMod == QueryModifier.AND && !isCriteriaMet)
+                    {//if the query is an AND operation and a single criteria is not met
+                     //exit the loop and move to the next card
+                        break;
+                    }
+
+                    if(isCriteriaMet)
+                    {
+                        results.Add(c);
+                    }
                 }
             }
 
-            return false;
+            return results;
         }
+    }
 
-        public static bool GameStateIsDamageCalculation(GameEventsArgs e, Card c, string m = "")
-        {
-            //IMPLEMENT A GAME STATE SYSTEM THING
-            //if(Game.State == GameState.DamageCalc)
-            //{
-                return false;
-            //}
-        }
+    public class Root
+    {
+        public SearchCriteria SearchCriteria { get; set; }
+    }
 
-        public static bool CheckLocation(GameEventsArgs e, Card c, string m = "")
-        {
-            //IMPLEMENT A HASH THAT HOLDS ALL THE EXTRA BITS FOR THINGS
-            return false;
-        }
+    public class Source
+    {
+        [JsonProperty]
+        public string Player { get; set; }
+        [JsonProperty]
+        public string Location { get; set; }
+    }
 
-        
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")
-        public static bool (GameEventsArgs e, Card c, string m = "")*/
+    public class ActionTarget
+    {
+        [JsonProperty]
+        public SearchCriteria SearchCriteria { get; set; }
+    }
+
+    public class Destination
+    {
+        [JsonProperty]
+        public string Player { get; set; }
+        [JsonProperty]
+        public string Location { get; set; }
     }
 }

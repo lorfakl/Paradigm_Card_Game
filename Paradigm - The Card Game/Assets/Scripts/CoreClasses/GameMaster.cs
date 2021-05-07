@@ -138,6 +138,7 @@ public class GameMaster : MonoBehaviour
                 CurrentTurnPhase = (TurnPhase)i;
                 //print("GameMaster Reporting CurrentTurnPlayer" + CurrentTurnPlayer.Type);
                 //print("GameMaster Reporting CurrentTurnPhase" + CurrentTurnPhase.ToString());
+                isPhaseComplete = false;
                 yield return StartCoroutine(FirstPlayerTurn[i]());
                 //This isnt gonna work online the Transport layer will need to start player turns based off of an event 
                 //from the server
