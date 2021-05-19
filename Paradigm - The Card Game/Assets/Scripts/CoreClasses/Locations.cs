@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using UnityEngine;
-using HelperFunctions;
+using Utilities;
 
 public struct LocationChanges  //this struct is for containing infomation regarding a location change in one package
 {
@@ -15,7 +14,7 @@ public struct LocationChanges  //this struct is for containing infomation regard
 
 public enum ContainsCriteria { Name, Type, Reference, ID}
 
-public class Location : IEnumerable<Card>
+public class Location: IEnumerable
 {
     private string name;
     private Player owner;
@@ -24,9 +23,6 @@ public class Location : IEnumerable<Card>
     protected static Dictionary<Location, List<LocationChanges>> changesDict = 
                    new Dictionary<Location, List<LocationChanges>>(); 
     protected List<LocationChanges> changes;
-
-    public delegate void LocationContents(Location l);
-    public event LocationContents locationChangesEvent;
 
     public string Name
     {
@@ -50,6 +46,11 @@ public class Location : IEnumerable<Card>
         get { return this.contents; }
     }
 
+    public ValidLocations ValidName
+    {
+        get { return (ValidLocations)ConvertFromLocation(this); }
+    }
+
     public Location()
     {
     
@@ -65,10 +66,18 @@ public class Location : IEnumerable<Card>
         changesDict.Add(this, this.changes);
     }
 
+    public static Location CreateTempLocation(Player p)
+    {
+        return new Location("temp", p);
+    }
+
     public List<LocationChanges> GetChangesOnLocation()
     {
         return this.changes;
     }
+
+    public List<Card> GetContents() {
+        Debug.Log("What is happening?");  return this.contents; }
 
     public List<Card> GetContents(Type t)
     {
@@ -89,6 +98,23 @@ public class Location : IEnumerable<Card>
         return cardsOfTypet;
     }
 
+    public static int ConvertFromLocation(Location l)
+    {
+        ValidLocations validLocation;
+        foreach(string name in Enum.GetNames(typeof(ValidLocations)))
+        {
+            if(name == l.Name)
+            {
+                if(Enum.TryParse<ValidLocations>(name, out validLocation))
+                {
+                    HelperFunctions.Print("Is the location enum actually Valid?: " + validLocation);
+                    return (int)validLocation;
+                }
+            }
+        }
+
+        return -1;
+    }
     public void MoveContent(List<Card> l, Location destination, bool overrideSamePlayer = false)
     {
         ProcessListLocationChanges(l, destination);
@@ -126,11 +152,6 @@ public class Location : IEnumerable<Card>
     public Card SelectRandomContent()
     {
         int index = UnityEngine.Random.Range(0, this.Count);
-        if(this.contents.Count == 0)
-        {
-            throw new Exception("This location " + this.Name + " is empty and this will fail or Count: " + this.Count);
-        }
-        
         Card c = this.contents[index];
         return c;
     }
@@ -195,17 +216,45 @@ public class Location : IEnumerable<Card>
         return null;
     }
 
-    public bool Contains(Type type)
+    public bool Contains(Type cardType)
     {
-        foreach(Card c in contents)
+        foreach(Card c in this.contents)
         {
-            if(c.GetType() == type)
+            if(c.GetType() == cardType)
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+
+    public bool ContainsValidContent()
+    {
+        if(contents.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Fisher yates shuffle algorithm using System Random so its not related to any other randoms
+    /// </summary>
+    public void Shuffle()
+    {
+        System.Random rand = new System.Random();
+        for(int i = 0; i < contents.Count; i++)
+        {
+            int j = rand.Next(0, contents.Count);
+            Card temp = contents[j];
+            contents[j] = contents[i];
+            contents[i] = temp;
+        }
     }
 
     public IEnumerator<Card> GetEnumerator()
@@ -221,6 +270,7 @@ public class Location : IEnumerable<Card>
         return GetEnumerator();
     }
 
+
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
@@ -232,8 +282,6 @@ public class Location : IEnumerable<Card>
         try
         {
             CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
-            locationChangesEvent?.Invoke(this); //checks if null if not then calls subscribers
-
         }
         catch (Exception)
         {
@@ -261,7 +309,16 @@ public class Location : IEnumerable<Card>
                 //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to "
                                                                 //+ destination.owner.PlayerID + "'s " + destination.Name);
                 changesDict[this] = changes;
-                Utilities.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+                if (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ)
+                {
+                    foreach (var abl in c.Abilities)
+                    {
+                        abl.CanCheckEvent = true;
+                        HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
+                        HelperFunctions.Print(abl.Name);
+                    }
+                }
+                HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
         }
         
@@ -272,7 +329,6 @@ public class Location : IEnumerable<Card>
         try
         {
             CheckSamePlayerMoveOverride(overrideSamePlayer, this, destination);
-            locationChangesEvent?.Invoke(this); //checks if null if not then calls subscribers
         }
         catch(Exception)
         {
@@ -286,8 +342,7 @@ public class Location : IEnumerable<Card>
         newChanges.destination = destination;
         newChanges.origin = this;
         changes.Add(newChanges);
-        destination.contents.Add(c);
-        c.setLocation(destination);
+        
         if (!(RemoveContent(c)))
         {
             Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
@@ -298,7 +353,44 @@ public class Location : IEnumerable<Card>
             //Debug.Log(c.getName() + " has been moved from " + this.owner.PlayerID + "'s " + this.Name + " to " 
                                                             //+ destination.owner.PlayerID + "'s " + destination.Name);
             changesDict[this] = changes;
-            Utilities.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
+            MoveAction ma = GetMoveAction(this, destination);
+            //Utilities.HelperFunctions.RaiseNewEvent(this, changes, ma);
+            int returnSorcIndex = ConvertFromLocation(this);
+            int returnDestIndex = ConvertFromLocation(destination);
+
+            if(returnDestIndex > -1 && returnSorcIndex > -1)
+            {
+                HelperFunctions.Print("It this true?: " + (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ));
+                HelperFunctions.Print("Current Location: " + c.CurrentLocation.ToString());
+                HelperFunctions.Print("Current Destination: " + destination.ValidName.ToString());
+                if (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ)
+                {
+                    foreach (var abl in c.Abilities)
+                    {
+                        abl.CanCheckEvent = true;
+                        HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
+                        HelperFunctions.Print(abl.Name);
+                        if(abl.Conditions == null)
+                        {
+                            HelperFunctions.Print("Conditions for " + abl.Name + " on Card " + abl.OwningCardName + " is null for some reason");
+                        }
+
+                        if (abl.Actions == null)
+                        {
+                            HelperFunctions.Print("Actions for " + abl.Name + " on Card " + abl.OwningCardName + " is null for some reason");
+                        }
+                    }
+                }
+                destination.contents.Add(c);
+                c.setLocation(destination);
+                HelperFunctions.RaiseNewUIEvent(this, (ValidLocations)returnSorcIndex, (ValidLocations)returnDestIndex, ma, c);
+                
+            }
+            else
+            {
+                HelperFunctions.Print("This is a non normal location move. Maybe territory challenge. Skip the UI event");
+            }
+            
         }
 
     }

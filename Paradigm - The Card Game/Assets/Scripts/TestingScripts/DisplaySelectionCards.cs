@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 
 public class DisplaySelectionCards :MonoBehaviour
@@ -11,7 +12,10 @@ public class DisplaySelectionCards :MonoBehaviour
     //It should get the cards from somewhere, Likely a location object
     //It should display those cards, allow the player to select them and send the selected cards back to the sender
     public GameObject cardPrefab;
+    //public Camera uiCamera;
+
     private GameObject display;
+    private GameObject mainCamera;
     private Transform parent;
     private Transform canvas;
     private Vector3 position = new Vector3();
@@ -102,9 +106,6 @@ public class DisplaySelectionCards :MonoBehaviour
 
     public bool SendSelectionEnd()
     {
-        PlayerInteraction playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerInteraction>();
-        Player p = (Player)playerScript.CurrentPlayer;
-        p.TimeLeftOnTimer = 0;
         isDoneSelecting = true;
         return true;
     }
@@ -114,15 +115,31 @@ public class DisplaySelectionCards :MonoBehaviour
     {
         display = this.gameObject;
         parent = display.transform;
-        //Debug.Log("Awake Displaying Cards?");
+        //GameMaster.UiCamera.SetActive(true);
+
+
     }
 
     private void Start()
-    {
-        //print("Start!");
+    {      
         canvas = gameObject.transform.parent.parent;
+        Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
+        canvasComp.renderMode = RenderMode.WorldSpace;
+        //uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        //uiCamera.gameObject.tag = "MainCamera";
+        /*if(uiCamera != null)
+        {
+            canvasComp.worldCamera = uiCamera;
+            uiCamera.gameObject.SetActive(true);
+            mainCamera.SetActive(false);
+        }
+        else
+        {
+            HelperFunctions.Error("UI Camera is set to null add in inspector");
+        }*/
+        
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
-        //Debug.Log("Start Displaying Cards?");
         DisplayCards();
         
     }
@@ -146,23 +163,36 @@ public class DisplaySelectionCards :MonoBehaviour
             source.MoveContent(selectedCards, destination);
             //print(destination.Count);
             //IsDoneChoosing(this, destination);
+            //mainCamera.SetActive(true);
+            //uiCamera.gameObject.SetActive(false);
             Destroy(canvas.gameObject);
         }
     }
 
     private void DisplayCards()
     {
-        //Debug.Log("Displaying Cards? " + (source != null && destination != null) + "so why: " + source.Name);
+        //print("Do we ever call DisplayCards?");
         if (source != null && destination != null)
-        {                                          
-            foreach(Card c in source)
-            {
-                //Debug.Log("Eat my fucking ass");
-                CreateCard(c);
+        {
+            try
+            { 
+                foreach (Card c in source?.GetContents())
+                {
+                    print("Is Display Card called?");
+                    CreateCard(c);
+                }
             }
+            catch(Exception e)
+            {
+                print(e.Message);
+                print(e.StackTrace);
+                print(e.InnerException);
+            }
+            
         }
         else
         {
+            print("Is this error here occurring?");
             throw new Exception("The Source and/or Destination Location is null, did you forget to call " +
                                                                                     "DisplaySelectionCards.SetCardPath?");
         }
@@ -170,8 +200,8 @@ public class DisplaySelectionCards :MonoBehaviour
 
     private void CreateCard(Card c)
     {
+        print("Are we entering CreateCard?");
         //cardPrefab.GetComponent<CardScript>().SetCard(c);
-        //Debug.Log("Cards?");
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
         cardObject.SendMessage("SetMode", true);
         cardObject.GetComponent<CardScript>().SetCard(c);
@@ -182,6 +212,7 @@ public class DisplaySelectionCards :MonoBehaviour
         content.GetComponent<Text>().text = c.GetAbilityText();
         if (c == null)
         {
+            print("Is this card null dumbass?");
             throw new Exception("The Card's null dumbass!(CreateCard)");
         }
         position = cardObject.transform.position;
@@ -197,7 +228,8 @@ public class DisplaySelectionCards :MonoBehaviour
     private void StopSelecting()
     {
         isDoneSelecting = true;
-        SendSelectionEnd();
+        destination.Owner.TimeLeftOnTimer = 0;
+        Debug.Log("Selecting Cards complete");
     }
 
 }

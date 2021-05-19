@@ -19,8 +19,9 @@ public class DeckManager : MonoBehaviour {
             CardDataBase.GetDataBaseData();
         }
 
-        foreach (Card c in CardDataBase.SavedDeckContents)
+        foreach (int id in CardDataBase.SavedDeckContents)
         {
+            Card c = CardDataBase.CreateCardInstance(id);
             if(c == null)
             {
                 print("This is null my guy");
@@ -30,8 +31,8 @@ public class DeckManager : MonoBehaviour {
             playDeck.AddCard(c);
             Debug.Log("Card Added: " + c.getName());
         }
-        initialDeck.AddRange(playDeck.Content);
-
+        initialDeck.AddRange(playDeck.GetContents());
+        CardDataBase.LoadAllCardsList();
         Debug.Log("Called Awake Function");
     }
 
@@ -70,7 +71,7 @@ public class DeckManager : MonoBehaviour {
         {
             for(int i =0; i < playDeck.Count; i++)
             {
-                if(initialDeck[i] != playDeck.Content[i])
+                if(initialDeck[i] != playDeck.GetContents()[i])
                 {
                     return true;
                 }

@@ -7,52 +7,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DataBase;
-using HelperFunctions;
+using Utilities;
 
-public class EventManager : MonoBehaviour
+public class GameEventsManager : MonoBehaviour
 {
-    public GameObject player1;
-    public GameObject player2;
-    public GameObject rendererManager;
-    public GameObject combatManager;
-    //public GameObject eventProcessor;
-    public Text deckCount;
-    public Text graveCount;
-    public Text barrierCount;
-    public Text nonUIDeckCount;
-    public Text nonUIGraveCount;
-    public Text nonUIHandCount;
-    public Text nonUIBarrierCount;
+    private static Queue<Action> actionQ = new Queue<Action>();
+    private static Stack<Action> actionStack = new Stack<Action>();
+    public static bool isTimeToResolveStack = false;
 
     private static Queue<GameEventsArgs> eventQueue = new Queue<GameEventsArgs>();
-    private static List<Card> tcBuffer = new List<Card>();
-    private static Card activeLand;
-    private Location uiPlayerReturnedLocation = null;
-    private Location noUiPlayerReturnedLocation = null;
-    private bool setUp = false;
-    private List<Player> playerPool = new List<Player>();
-    private int playerIndex = 0;
-    private Player p1;
-    private Player p2;
-    private Majesty p1Majesty;
-    private Majesty p2Majesty;
-    Player firtTurnPlayer;
-    Player secTurnPlayer;
 
-
+    private static Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs,GameEventsArgs>> LegalityCheckCommands = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs, GameEventsArgs>>();
+    private static bool isLegal = false;
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
-    //Only functions that return void and have parameters of type object and GameEventsArgs can be called when 
-
 
     private static void OnEventAdd(object sender, GameEventsArgs data)
     {
-        if (NotifySubsOfEvent != null) //if there are subcribers
-        {
-            NotifySubsOfEvent(sender, data);
-        }
-        
+        NotifySubsOfEvent?.Invoke(sender, data);
     }
 
     /// <summary>
@@ -60,7 +33,7 @@ public class EventManager : MonoBehaviour
     /// Which will lead into adding things to the stack and doing timer things 
     /// </summary>
     /// <param name="e"></param>
-    public static void PublishEvent(object s, GameEventsArgs e)
+    private static void PublishEvent(object s, GameEventsArgs e)
     {
         eventQueue.Enqueue(e);
         OnEventAdd(s, e);
@@ -77,221 +50,133 @@ public class EventManager : MonoBehaviour
         }
     }
 
-  
-
-
-    public Location UiPlayerReturnedLocation
-    {
-        get { return uiPlayerReturnedLocation; }
-        set { uiPlayerReturnedLocation = value; }
-    }
-
-    public Player UIPlayer
-    {
-        get { return p2; }
-    }
-
-    public Location NoUiPlayerReturnedLocation
-    {
-        get { return noUiPlayerReturnedLocation; }
-        set { noUiPlayerReturnedLocation = value; }
-    }
-
-    public Player NonUIPlayer
-    {
-        get { return p1; }
-    }
-
-    public Queue<GameEventsArgs> GetQueue
-    {
-        get { return eventQueue; }
-    }
-
-
-    public static void AddTCLand(Card l)
-    {
-        tcBuffer.Add(l);
-        Debug.Log("Player:" + l.getOwner().PlayerID + " selected " + l.getName() + " for Territory Challenge");
-    }
-
-    public Player GrabPlayer()
-    {
+    private static IEnumerator ResolveStack()
+    {//make this into a Coroutine
         
-        if(playerIndex == 2)
+        while (actionStack.Count > 0)
         {
-            playerIndex = 0;
+            actionStack.Pop().Resolve();
         }
-        //print("prolly no players " + playerPool.Count);
-        Player playReturned = playerPool[playerIndex];
-        playerIndex++;
-        return playReturned;
+        
+        yield return null;
     }
 
-    public PlayerInteraction GetPlayerInteraction(bool ai)
+    public static void AddToStack(object s, GameEventsArgs e)
     {
-        GameObject g = null;
-        if (ai)
+        PublishEvent(s, e);
+    }
+
+    public static void AddToStack(List<Action> actions, GameEventsArgs e)
+    {
+        foreach (Action a in actions)
         {
-            g = GameObject.FindWithTag("AiPlayer");
-        }
-        else
-        {
-           g = GameObject.FindWithTag("Player");
+            actionQ.Enqueue(a);
         }
 
-        return g.GetComponent<PlayerInteraction>();
+        actionStack.Push(actionQ.Dequeue());
+        actionStack.Peek().GenerateEvent(e);
+        //GenerateEvent tells all other abilities that something happened specifically 
+        //this will be am Initiate Event so conditions that pop off from initiate events
+        //are able to trigger This is the stack notification 
+
+        //Conditions that trigger this way should notify the UIManager with a stack notification
+        //This is why UI Manager needs a Queue
+        HelperFunctions.Print("Other abilities should trigger and UI should do stuff");
+        //TransportLayer.ServerMessages.PromptForResponse(); //something like this for networked play
 
     }
-    /// <summary>
-    /// GameEventManager will end up attached to an empty gameobject when the game starts to well...manage game events
-    /// Thats why it extends Monobehaviour and has Awake, Update, and Start functions
-    /// </summary>
-    
+
+    #region Unity Callbacks
     //MOST CODE BELOW THIS LINE IS PURELY FOR TESTING AND WILL BE REMOVED AND REWORKED
     void Awake()
     {
 
-        p1 = new HumanPlayer(52);
-        playerPool.Add(p1);
-
-        p2 = new AIPlayer(12);
-        playerPool.Add(p2);
-        Debug.Log("The desks are the same: " + p1.PlayerDeck.Equals(p2.PlayerDeck));
-        Debug.Log("P1 Deck ID: " + p1.PlayerDeck.Owner.PlayerID);
-        Debug.Log("P2 Deck ID: " + p2.PlayerDeck.Owner.PlayerID);
-        p1.Majesty = p1.PlayerDeck.GetMajesty();
-        //p1.Majesty.PrintData();
-        p2.Majesty = p2.PlayerDeck.GetMajesty();
-        //p2.Majesty.PrintData();
-        
-        p1.ListLocationSizes();
-        print("Now other one");
-        p2.ListLocationSizes();
-
-        if ( p1 == null || p2 == null)
-        {
-            Debug.Log("Player in EventManager is Null as fuck!");
-        }
-
-        GameObject player1Obj = Instantiate(player1);
-        GameObject player2Obj = Instantiate(player2);
-        p1.GamePlayHook = player1Obj.GetComponent<PlayerInteraction>();
-        p2.GamePlayHook = player2Obj.GetComponent<PlayerInteraction>();
     }
 
     void Start()
     {
-        
-        //print("Should still be a full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
         
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //CheckPlayerInfo();
-        if (!setUp)
+        if(isTimeToResolveStack)
         {
-            Location p1Temp = UiPlayerReturnedLocation;
+            isTimeToResolveStack = false;
+            StartCoroutine(ResolveStack());
+        }
+        
+    }
+    #endregion
 
-            Location p2Temp = NoUiPlayerReturnedLocation;
-            if (p1Temp == null || p2Temp == null)
+    #region Private Functions for Legality
+    private GameEventsArgs CheckAttackPhaseEntryLegality(GameEventsArgs g)
+    {
+        print("CHECKING LEGALITY");
+        GameEventsArgs gevent = new GameEventsArgs();
+        List<Card> cardsAbleToAttack = new List<Card>();
+        if(g.EventOwner.Type == g.PlayerTarget.Type) //prevents making attacks with a different player's cards
+        {
+            print("Checking that the same player is declaring this attack");
+            print("Cards on the field: " + g.EventOwner.Field.Count);
+            foreach (Card c in g.EventOwner.Field) //for each card on the field
             {
-                print("Someone hasnt selected a TC card yet");
-                if (p1Temp == null)
+                print("Are the cards on the field accessors?");
+                print("Is the card an Accessor?: " + c.GetType().ToString());
+                print("Is the card a subclass of Accessor?: " + c.GetType().IsSubclassOf(typeof(Accessor)));
+                if (c.GetType() == typeof(Accessor) || c.GetType().IsSubclassOf(typeof(Accessor)) ) //check to see if they inherit from Accessor
                 {
-                    print("Human hasnt chosen");
+                    Accessor a = (Accessor)c; //do a cast
+                    print("lastly does it have attacks?: " + a.NumOfAttacks);
+                    if(a.NumOfAttacks > 0) //if the accessor can do an attack
+                    {
+                        print("HAS ATTACKS AND IS ACCESSOR");
+                        cardsAbleToAttack.Add(c); //add to cardtargets
+                    }
+                    
                 }
-                else
-                {
-                    print("Ai hasnt chosen");
-                }
+            }
 
+            gevent = HelperFunctions.GenerateReturnEvent(g.EventOwner, g.PlayerTarget, cardsAbleToAttack, new GameAction(MoveAction.None, NonMoveAction.Attack), EventType.UIUpdate);
+            if (TransportLayer.EventIngestion.IsOnline)
+            {
+                TransportLayer.EventIngestion.SendReturnEvent(gevent);
             }
             else
             {
-                try
-                {
-                    if (p2Temp.Owner.PlayerID == p1Temp.Owner.PlayerID)
-                    {
-                        throw new Exception("Somehow these are the same");
-                    }
-                    else
-                    {
-                        //Debug.Log("Not the same we are not the same");
-                        //Debug.Log("UI PLayer location owner ID: " + UiPlayerReturnedLocation.Owner.PlayerID + " here's the card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
-                        //Debug.Log("NOUI PLayer location owner ID: " + NoUiPlayerReturnedLocation.Owner.PlayerID + " here's the card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
-                        //Debug.Log("p1 Card ID: " + UiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID + "p2 Card ID: " + NoUiPlayerReturnedLocation.GetContents()[0].Owner.PlayerID);
-                    }
-                    playerPool = Utilities.StartTerritoryChallenge(p1Temp.Content[0], p2Temp.Content[0]);
-                    //print("Should be a slightly less full deck" + gameTime.NoUIPlayer.PlayerDeck.Count);
-                    //print("Human  count Should be a slightly less full deck" + gameTime.UIPlayer.PlayerDeck.Count);
-                }
-                catch (ArgumentOutOfRangeException e)
-                {
-                    print("One of the locations was null");
-                    print(e.Message);
-                    List<Card> p1Lands = p1.PlayerDeck.GetLandscapesInDeck();
-                    List<Card> p2Lands = p2.PlayerDeck.GetLandscapesInDeck();
-                    int i = UnityEngine.Random.Range(0, p1Lands.Count);
-                    int j = UnityEngine.Random.Range(0, p2Lands.Count);
-                    Utilities.StartTerritoryChallenge(p1Lands[i], p2Lands[j]);
-
-                }
-                setUp = true;
-                firtTurnPlayer = playerPool[0];
-                secTurnPlayer = playerPool[1];
-
-                if(firtTurnPlayer.Equals(secTurnPlayer))
-                {
-                    throw new Exception("Thery the same, TC eval function is fucked");
-                }
-
-                activeLand = p2.TCCard;
-
+                isLegal = true;
+                return gevent;
             }
-
-            //firtTurnPlayer.PlayerTurn.Owner = 
-            //secTurnPlayer.PlayerTurn
-
+            
         }
 
-
-        //print("Events enqueued: " + eventQueue.Count);
-
-        print("Is anybody out there!?!: ");
-
-        if (p1.IsPreparedToStart && p2.IsPreparedToStart)
-        {
-            //print("P1 HP: " + p1.GetPlayerUIStatus());
-            //print("P2 HP: " + p2.GetPlayerUIStatus());
-            if (p1.Majesty.HP > 0 && p2.Majesty.HP > 0)
-            {
-                if(!Turn.isActiveTurn)
-                {
-                    GrabPlayer().PlayerTurn.StartTurn();
-                    //activeIndex++;
-                }
-                else
-                {
-                    Debug.Log("A turn is active please wait");
-                    if(Input.GetKeyDown(KeyCode.A) && (Turn.CurrentPlayerTurn == UIPlayer)) //maybe this should be in PlayerInteraction?
-                    {
-                        GameObject cm = Instantiate(combatManager);
-                        cm.SendMessage("InitializePlayers", UIPlayer);
-                        
-                    }
-                    else
-                    {
-                        print("You cant attack outside your turn");
-                    }
-                }
-
-                
-            }
-
-        }
+        isLegal = false;
+        return gevent;
     }
- 
+    
+    private GameEventsArgs CheckDeclaredAttackLegality(GameEventsArgs g)
+    {
+        if(g.TargetCard.CurrentLocation == ValidLocations.Field)
+        {
+            isLegal = true;
+            if(g.TargetCard.Owner.Field.Count > 1)
+            {
+                //Generate a return event telling the UI Manager to give a block prompt to the other player
+                GameEventsArgs gameEvent = HelperFunctions.GenerateReturnEvent(g.EventOriginCard, g.ActionEvent, g.TargetCard);
+                return gameEvent;
+            }
+            return g;
+        }
+        else
+        {
+            isLegal = false;
+            return g;
+        }
+        
+    }
+    #endregion
 }
+
+
+

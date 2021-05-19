@@ -20,7 +20,7 @@ using UnityEngine;
     public Majesty(string n, string k,  System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);
-        this.SetAbilities(a, a2, a3);
+        //this.SetAbilities(a, a2, a3);
         this.SetTraits(t);
         this.SetPower((int)p);
         this.SetMaxHp((int)h);
@@ -30,14 +30,7 @@ using UnityEngine;
         this.SetValidity(true);
     }
 
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
 
-    public override void UseEffect()
-    {
-
-    }
+ 
 }
 
