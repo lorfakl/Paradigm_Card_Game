@@ -85,11 +85,6 @@ namespace Utilities
             return cardObject;
         }
 
-        public static void RaiseNewUIEvent(Action action, EventType stackNotification)
-        {
-            throw new NotImplementedException();
-        }
-
         public static void ScaleCard(GameObject c, Vector3 scale)
         {
             RectTransform rectTrans = c.GetComponent<RectTransform>();
@@ -187,12 +182,6 @@ namespace Utilities
             EventIngestion.EventIntake(sender, newEvent);
         }
 
-        public static void RaiseNewUIEvent(object sender, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card c)
-        {
-            UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
-            EventIngestion.EventIntake(sender, uiEvent);
-        }
-
         /// <summary>
         /// This Raise event overload is specifically for Initate Events, it requires the 
         /// Internal Initate details containing the actions taken and targets involved
@@ -209,6 +198,27 @@ namespace Utilities
             newEvent.InitiateEventDetails = initiateEventInfo;
             EventIngestion.EventIntake(sender, newEvent);
         }
+
+        public static void RaiseNewUIEvent(object sender, ValidLocations source, ValidLocations destination, MoveAction moveAction, Card c)
+        {
+            UiEvents uiEvent = new UiEvents(source, destination, moveAction, c);
+            EventIngestion.EventIntake(sender, uiEvent);
+        }
+
+        /// <summary>
+        /// Raises an Event of type stack notification to let the UI Manager know that
+        /// an item has been added onto the stack and it should present the information
+        /// to the player
+        /// </summary>
+        /// <param name="sender">Object added on the stack</param>
+        /// <param name="action">The specific Action that was added on the stack</param>
+        /// <param name="stackNotification">Sets the EventType variable in the UI Event</param>
+        public static void RaiseNewUIEvent(object sender, Action action, EventType stackNotification)
+        {
+            UiEvents uievent = new UiEvents(action, stackNotification);
+            EventIngestion.EventIntake(sender, uievent);
+        }
+        
         #endregion
 
         #region Generate Return Event Overloads

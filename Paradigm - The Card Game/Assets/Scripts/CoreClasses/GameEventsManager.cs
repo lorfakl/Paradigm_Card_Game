@@ -19,6 +19,7 @@ public class GameEventsManager : MonoBehaviour
 
     private static Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs,GameEventsArgs>> LegalityCheckCommands = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), Func<GameEventsArgs, GameEventsArgs>>();
     private static bool isLegal = false;
+    private static int requestsToEndStack;
 
     public delegate void EventAddedHandler(object sender, GameEventsArgs data); //the delegate
     public static event EventAddedHandler NotifySubsOfEvent; // an instance of the delegate only ever gonna be one
@@ -82,8 +83,26 @@ public class GameEventsManager : MonoBehaviour
         //Conditions that trigger this way should notify the UIManager with a stack notification
         //This is why UI Manager needs a Queue
         HelperFunctions.Print("Other abilities should trigger and UI should do stuff");
+        HelperFunctions.RaiseNewUIEvent(actionStack.Peek(), actionStack.Peek(), EventType.StackNotification);
         //TransportLayer.ServerMessages.PromptForResponse(); //something like this for networked play
 
+    }
+
+    public static void EndStackSignal(object caller)
+    {
+        if(caller.GetType() != typeof(UIManager))
+        {
+            return;
+        }
+        else
+        {
+            requestsToEndStack++;
+            if(requestsToEndStack >= GlobalGameConfiguration.NumberOfPlayers)
+            {
+                UIManager uIManager = (UIManager)caller;
+                uIManager.StartCoroutine(ResolveStack());
+            }
+        }
     }
 
     #region Unity Callbacks

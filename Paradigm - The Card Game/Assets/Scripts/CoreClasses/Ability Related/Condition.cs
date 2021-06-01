@@ -249,9 +249,9 @@ public class Condition
             }
             else
             {
-                HelperFunctions.Print(Card.Name + " is the card that was not moved " +  e.TargetCard.Name + " was moved instead");
-                HelperFunctions.Print("InstanceID of Conditioner Owner " + Card.InstanceID);
-                HelperFunctions.Print("InstanceID of Card Moved " + e.TargetCard.InstanceID);
+                //HelperFunctions.Print(Card.Name + " is the card that was not moved " +  e.TargetCard.Name + " was moved instead");
+                //HelperFunctions.Print("InstanceID of Conditioner Owner " + Card.InstanceID);
+                //HelperFunctions.Print("InstanceID of Card Moved " + e.TargetCard.InstanceID);
             }
         }
         else

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TransportLayer
 {
@@ -33,6 +35,49 @@ namespace TransportLayer
 
         }
 
+        /// <summary>
+        /// This function is called by the Control Board State class to send a updated
+        /// board state object from the client across the internet to the BoardStateModel 
+        /// object on the server  
+        /// </summary>
+        /// <param name="boardModelJson"></param>
+        public static void SendNewBoardModelUpdate(Dictionary<(string playerID, ValidLocations location), Location> boardStateModelDIct)
+        {
+            //network call to other TransportLayr
+            if(isOnline)
+            {
+
+            }
+            else
+            {
+                string boardModelJson = ConvertToJson(boardStateModelDIct);
+                BoardStateModel.UpdateBoardModel(JObject.Parse(boardModelJson));
+            }
+        }
+
+        /// <summary>
+        /// This function is called by the BoardStateModel class to send a updated
+        /// board state object across the internet to the BoardStateView object on the
+        /// client machine
+        /// </summary>
+        /// <param name="boardStateModelDIct"></param>
+        public static void SendBoardModelToView(Dictionary<(string playerID, ValidLocations location), Location> boardStateModelDIct)
+        {
+            if(isOnline)
+            {
+                //do some online stuff
+            }
+            else
+            {
+                string jsonBoardString = ConvertToJson(boardStateModelDIct);
+                ViewBoardState.ReceivedUpdatedModel(JObject.Parse(jsonBoardString));
+            }
+        }
+
+        private static string ConvertToJson(System.Object o)
+        {
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
 
 
     }
