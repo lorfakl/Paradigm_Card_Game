@@ -13,7 +13,7 @@ public enum MoveAction
 public enum NonMoveAction
 {
     Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd, DeclaredAttack,
-    Active
+    Active, StackNotification
 }
 
 public enum TurnPhase
@@ -147,8 +147,8 @@ public class GameEventsArgs : EventArgs
 
     public EventType Type
     {
-        get;
-        set;
+        get { return type; }
+        set { type = value; }
     }
     #endregion
 

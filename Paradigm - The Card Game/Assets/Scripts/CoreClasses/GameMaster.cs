@@ -22,6 +22,8 @@ public class GameMaster : MonoBehaviour
     public static bool IsPhaseComplete { get; private set; }
     public static GameObject UiCamera { get; private set; }
     //public static (Player , TurnPhase Turnphase) TurnInfo { get; private set; }
+
+    public static Dictionary<string, Player> PlayerIdDict = new Dictionary<string, Player>();
     public StateMachine GameSetupStateMachince { get; private set; }
     public List<Func<IEnumerator>> FirstPlayerTurn { get; private set; }
     public List<Func<IEnumerator>> SecondPlayerTurn { get; private set; }
@@ -44,10 +46,14 @@ public class GameMaster : MonoBehaviour
 
     void Awake()
     {
+        
         attckBtn.onClick.AddListener(BeginAttackPhase);
 
         PlayerOne = new HumanPlayer(Guid.NewGuid());
         PlayerTwo = new AIPlayer(Guid.NewGuid());
+        PlayerIdDict.Add(PlayerOne.ID, PlayerOne);
+        PlayerIdDict.Add(PlayerTwo.ID, PlayerTwo);
+
         UiCamera = uiCamera;
 
         CardDataBase.MakePlayerDeck(PlayerOne);
@@ -191,6 +197,8 @@ public class GameMaster : MonoBehaviour
         print("TURN ORDER SET");
         //print("going second: " + SecondPlayer.ID);
     }
+
+    
 
     public void MarkTurnCompleted()
     {

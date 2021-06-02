@@ -67,6 +67,23 @@ public class UiEvents : GameEventsArgs
         IsUIEvent = true;
     }
 
+    public UiEvents(Action action, EventType stackNotification)
+    {
+        IsUIEvent = true;
+        Type = EventType.StackNotification;
+        EventOwner = action.Owner;
+        EventOriginCard = action.Card;
+        if(action.EventType == "Move")
+        {
+            MoveActionEvent = Utilities.HelperFunctions.ParseEnum<MoveAction>(action.EventName);
+        }
+        else
+        {
+            ActionEvent = Utilities.HelperFunctions.ParseEnum<NonMoveAction>(action.EventName);
+            MoveActionEvent = MoveAction.None;
+        }
+    }
+
     public new void Print()
     {
         string data = "Source " + Source.ToString() + "\n Destination: " + Destination

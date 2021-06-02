@@ -19,7 +19,7 @@ public class CardScript : MonoBehaviour {
     private bool displayMode;
     private bool hasScrolled;
     private bool isSetModeCalled;
-
+    private bool hasBeenPlayed = false;
 
     public Card Card { get{ return cardData; } }
     /*Dont know if there will be more than 2 modes
@@ -66,34 +66,39 @@ public class CardScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-
-        if (Input.GetMouseButtonDown(0)) //If the mouse button is clicked
+        if (!hasBeenPlayed)
         {
-            Ray rayLine = Camera.main.ScreenPointToRay(Input.mousePosition); //cast a ray from the camera to the mouse position
-            RaycastHit objectHit; //gameobject the ray hit
-
-            if (Physics.Raycast(rayLine, out objectHit)) //if the ray hits a collider
+            if (Input.GetMouseButtonDown(0)) //If the mouse button is clicked
             {
-                if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
+                Ray rayLine = Camera.main.ScreenPointToRay(Input.mousePosition); //cast a ray from the camera to the mouse position
+                RaycastHit objectHit; //gameobject the ray hit
+
+                if (Physics.Raycast(rayLine, out objectHit)) //if the ray hits a collider
                 {
-                    if (this.cardData.Owner.Type == PlayerType.MainHuman)
-                    { 
-                        //print("You hit a card with a click");
-                        if (displayMode) //if the script is in displayMode, for selection from the overlay
+                    if (objectHit.transform == gameObject.transform) //check the object hit if it contains this script
+                    {
+                        if (this.cardData.Owner.Type == PlayerType.MainHuman)
                         {
-                            //print("Is display mode enabled: " + displayMode);
-                            selected = !selected; //invert selection bool
-                            ChangeSprite(selected); //update the selection status sprite
-                        }
-                        else
-                        {
-                            this.cardData.PlayCard();
-                            //print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
+                            //print("You hit a card with a click");
+                            if (displayMode) //if the script is in displayMode, for selection from the overlay
+                            {
+                                //print("Is display mode enabled: " + displayMode);
+                                selected = !selected; //invert selection bool
+                                ChangeSprite(selected); //update the selection status sprite
+                            }
+                            else
+                            {
+                                this.cardData.PlayCard();
+                                hasBeenPlayed = true;
+                                //print("PlayCard was called. Card type was: " + cardData.GetType().ToString());
+                            }
                         }
                     }
                 }
             }
         }
+
+            
         
     }
 

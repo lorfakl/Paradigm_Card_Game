@@ -34,8 +34,10 @@ public class UIManager : MonoBehaviour
     public GameObject otherFieldspace;
     public GameObject attackPrefab;
     public GameObject blockPrefab;
+    public GameObject stackPrefab;
 
     public GameObject cardPrefab;
+    public GameObject stackNotificationPrefab;
     [Header("Turnphase Notice Game Object References")]
     public GameObject turnphaseTextPrefab;
     public GameObject onScreenTurnphase;
@@ -48,6 +50,7 @@ public class UIManager : MonoBehaviour
     public UIScriptableObject spawnUIEffects;
     public UIScriptableObject turnphaseUIEffects;
     public UIScriptableObject attackUIEffects;
+    public UIScriptableObject StackUIEffects;
 
     #endregion
 
@@ -69,6 +72,7 @@ public class UIManager : MonoBehaviour
 
     private Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), ICommand> UICommandsDict = new Dictionary<(MoveAction moveAction, NonMoveAction nonMoveAction), ICommand>();
     
+    //public delegate void StackNotAddedHandler()
     
     #endregion
 
@@ -131,6 +135,8 @@ public class UIManager : MonoBehaviour
         UICommandsDict.Add((MoveAction.Draw, NonMoveAction.None), new DrawCommand(drawUIEffects));
         UICommandsDict.Add((MoveAction.None, NonMoveAction.Turn), new TurnPhaseCommand(turnphaseUIEffects, turnphaseTextPrefab, onScreenTurnphase));
         UICommandsDict.Add((MoveAction.None, NonMoveAction.Attack), new AttackCommand(attackUIEffects, attackPrefab));
+        //UICommandsDict.Add((MoveAction.None, NonMoveAction.StackNotification), new StackCommand(StackUIEffects, stackPrefab));
+        //UICommandsDict.Add((MoveAction.None, NonMoveAction.Active), new ActiveCommand(activeUIEffects, activePrefab));
         fieldCards.CollectionChanged += HandleFieldItemChange;
         handCards.CollectionChanged += HandleHandItemChange;
         otherFieldCards.CollectionChanged += HandleFieldItemChange;
@@ -237,7 +243,12 @@ public class UIManager : MonoBehaviour
             //print("UI manager Caught a UI event");
             //print("UI Event Data: " + "\n" + "Player: " + e.EventOwner.Type.ToString() + " Target" + e.PlayerTarget.Type.ToString() + "\n" + 
             //    "MoveAction: " + e.MoveActionEvent + " NonMoveAction: " + e.ActionEvent);
-     
+            if(e.Type == EventType.StackNotification)
+            {
+                string msg = e.EventOriginCard.Name + " has " + e.ActionEvent;
+                DisplayStackNotification(msg);
+            }
+
             if (e.ActionEvent == NonMoveAction.Turn)
             {
                 //print(e.EventOwner.Type + " is starting their " + e.TurnPhase + " phase");
@@ -250,6 +261,7 @@ public class UIManager : MonoBehaviour
             }
             catch(Exception ex)
             {
+                e.Print();
                 HelperFunctions.CatchException(ex);
             }
         }
@@ -296,6 +308,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void DisplayStackNotification(string msg)
+    {
+        GameObject stkPrmpt = Instantiate(stackNotificationPrefab);
+        stkPrmpt.GetComponentInChildren<ResponsePromptScript>().SetPromptText(msg);
+    }
 }
 
 
