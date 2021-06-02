@@ -10,10 +10,8 @@ using Utilities;
 #region SERVER ONLY 
 public class BoardStateModel : MonoBehaviour
 {
-   
-
-    private static Dictionary<(string playerID, ValidLocations location), Location> boardStateModelDict = new Dictionary<(string playerID, ValidLocations location), Location>();
-
+    private static string initialThisTurnDictData = "{\"CardsPlayed\":0,\"Attacks\":0,\"CentralActionsAvailable\":3,\"CentralActionsTaken\":0,\"DamageDealt\":0,\"DamageRecieved\":0,\"BarriersBroken\":0,\"BarriersBrokenByOpponent\":0,\"BarriersBuilt\":0,\"DamageRedirected\":0,\"CardsDeleted\":0,\"Deleted\":0,\"Despawned\":0,\"Destroyed\":0,\"Drawn\":0,\"Forged\":0,\"TimesHealed\":0,\"DamageHealed\":0,\"Initiated\":0,\"Locked\":0,\"Nulled\":0,\"Reacted\":0,\"Resolved\":0,\"Restored\":0,\"Rested\":0,\"Returned\":0,\"Searched\":0,\"Spawned\":0}";
+    private static string initialOverGameDictData = "{\"CardsPlayed\":0,\"Attacks\":0,\"CentralActionsTaken\":0,\"DamageDealt\":0,\"DamageRecieved\":0,\"BarriersBroken\":0,\"BarriersBrokenByOpponent\":0,\"BarriersBuilt\":0,\"DamageRedirected\":0,\"CardsDeleted\":0,\"Deleted\":0,\"Despawned\":0,\"Destroyed\":0,\"Drawn\":0,\"Forged\":0,\"TimesHealed\":0,\"DamageHealed\":0,\"Initiated\":0,\"Locked\":0,\"Nulled\":0,\"Reacted\":0,\"Resolved\":0,\"Restored\":0,\"Rested\":0,\"Returned\":0,\"Searched\":0,\"Spawned\":0}";
     public static PlayerInfo PlayerInfoOne {get; set;}
 
     public static PlayerInfo PlayerInfoTwo { get; set; }
@@ -32,12 +30,26 @@ public class BoardStateModel : MonoBehaviour
 
     public static void SetInitialBoardState(Player p1, Player p2)
     {
-        //
+        //called from the GameMaster after set up
+        PlayerInfoOne.ThisTurn = JsonConvert.DeserializeObject<Dictionary<string, int>>(initialThisTurnDictData);
+        PlayerInfoTwo.ThisTurn = JsonConvert.DeserializeObject<Dictionary<string, int>>(initialThisTurnDictData);
+        PlayerInfoOne.OverGame = JsonConvert.DeserializeObject<Dictionary<string, int>>(initialOverGameDictData);
+        PlayerInfoTwo.OverGame = JsonConvert.DeserializeObject<Dictionary<string, int>>(initialOverGameDictData);
+
+        PlayerInfoOne.PlayerID = p1.ID;
+        PlayerInfoTwo.PlayerID = p2.ID;
+
+        foreach(ValidLocations l in Enum.GetValues(typeof(ValidLocations)))
+        {
+            PlayerInfoOne.LocationBoardStates.Add(l.ToString(), LocationBoardState.CreateLocationBoardState(p1.GetLocation(l)));
+            PlayerInfoTwo.LocationBoardStates.Add(l.ToString(), LocationBoardState.CreateLocationBoardState(p2.GetLocation(l)));
+        }
     }
 
     public static void UpdateBoardModel(JObject modelUpdate)
     {
         print(modelUpdate.ToString());
+
     }
 
     /// <summary>
@@ -53,12 +65,8 @@ public class BoardStateModel : MonoBehaviour
 
     public static void SendNewBoardModel()
     {
-        EventIngestion.SendBoardModelToView(boardStateModelDict);
+        EventIngestion.SendBoardModelToView(BoardState);
     }
-
-   
-
- 
 }
 #endregion
 
@@ -83,6 +91,8 @@ public class RecentMoves
     public int Count { get; set; }
     [JsonProperty]
     public MovedBy MovedBy { get; set; }
+    [JsonProperty]
+    public string PreviousMoveId { get; set; }
 
     public RecentMoves()
     {
@@ -92,6 +102,14 @@ public class RecentMoves
     public static RecentMoves CreateRecentMoveRecord(LocationChanges locationChanges)
     {
         RecentMoves recentMove = new RecentMoves();
+        foreach(Card card in locationChanges.c)
+        {
+            recentMove.ObjectsMoved.Add(card.Name);
+            recentMove.Count += 1;
+        }
+        recentMove.PreviousMoveId = locationChanges.changeId;
+        recentMove.Destination = locationChanges.destination.ValidName.ToString();
+
         throw new NotImplementedException(); //location changes needs to be exposed somehow
         //return recentMove;
     }
@@ -102,7 +120,7 @@ public class LocationBoardState
     [JsonProperty]
     public string LocationName { get; set; }
     [JsonProperty]
-    public List<string> Contents { get; set; }
+    public List<CardShell> Contents { get; set; }
     [JsonProperty]
     public int Count { get; set; }
     [JsonProperty]
@@ -111,7 +129,20 @@ public class LocationBoardState
     public LocationBoardState()
     {
         RecentMoves = new List<RecentMoves>();
-        Contents = new List<string>();
+        Contents = new List<CardShell>();
+    }
+
+    public static LocationBoardState CreateLocationBoardState(Location l)
+    {
+        LocationBoardState locationBoardState = new LocationBoardState();
+        locationBoardState.LocationName = l.Name;
+        locationBoardState.Count = l.Count;
+        foreach(Card c in l)
+        {
+            locationBoardState.Contents.Add(new CardShell(c.Name, c.Abilities.Count));
+        }
+
+        return locationBoardState;
     }
     
 }
@@ -121,24 +152,47 @@ public class PlayerInfo
     public string PlayerID { get; set; }
     public Dictionary<string, int> ThisTurn { get; set; }
     public Dictionary<string, int> OverGame { get; set; }
-    public List<LocationBoardState> LocationBoardStates { get; set; }
+    public Dictionary<string, LocationBoardState> LocationBoardStates { get; set; }
     public List<Bond> Bonds { get; set; }
 
     public PlayerInfo()
     {
         ThisTurn = new Dictionary<string, int>();
         OverGame = new Dictionary<string, int>();
-        LocationBoardStates = new List<LocationBoardState>();
+        LocationBoardStates = new Dictionary<string, LocationBoardState>();
         Bonds = new List<Bond>();
 
     }
 }
 
+public class CardShell
+{
+    public string Name { get; set; }
+    public List<AbilityShell> Abilities { get; private set; }
+
+    public CardShell()
+    {
+        Abilities = new List<AbilityShell>();
+    }
+
+    public CardShell(string name, int ablCount)
+    {
+        Name = name;
+        for(int i = 0; i < ablCount; i++)
+        {
+            Abilities.Add(new AbilityShell(i + 1)); //add 1 because ability count doesnt start at 0
+                                                    //this allows the view to know which ability on a
+                                                    //card is able to activate
+        }
+    }
+}
 public class BoardState
 {
     public string Turnphase { get; set; }
     public int TurnCount { get; set; }
     public int Phase { get; set; }
+    public string CurrentTurnPlayer { get; set; }
+    public string RespondingPlayer { get; set; }
     public bool DimTwistReady { get; set; }
     public int DimTwistCount { get; set; }
     public List<PlayerInfo> PlayerInfo { get; set; }
@@ -155,7 +209,9 @@ public class Bond
         if(e.ActionEvent == NonMoveAction.Forge)
         {
             Bond bondRecord = new Bond();
-            throw new NotImplementedException();
+            bondRecord.BondTarget = e.CardTargets[0].Name;
+            bondRecord.BondObject = e.EventOriginCard.Name;
+            return bondRecord;
         }
         else
         {
@@ -164,10 +220,23 @@ public class Bond
     }
 }
 
+public class AbilityShell
+{
+    public int AbilityIndex { get; set; }
+    public bool CanActivate { get; set; }
+
+    public AbilityShell(int index)
+    {
+        AbilityIndex = index;
+        CanActivate = false;
+    }
+}
 
 public class BoardStateRoot
 {
     public BoardState BoardState { get; set; }
 }
+
+
 #endregion
 

@@ -8,15 +8,14 @@ namespace AI
 {
     /// <summary>
     /// Contains the functions for the AI to make decisions. Right now issa dumb. But later its gonna upgrade thing of 
-    /// using some GOP
+    /// using some GOP(Goal Oriented Programming)
     /// </summary>
     public static class AiFunctions
     {
         public static void ChooseTCCard(Player p, Location destination)
         {
             Card chosenLand = null;
-            int index = UnityEngine.Random.Range(0, 2);
-            foreach(Card c in p.GetLocation(ValidLocations.DZ).GetContents())
+            foreach(Card c in p.GetLocation(ValidLocations.DZ))
             {
                 if(c.GetType() == typeof(Landscape))
                 {

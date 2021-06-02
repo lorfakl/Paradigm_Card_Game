@@ -215,7 +215,7 @@ namespace DataBase
 
                     string queryPortion = "INSERT INTO PlayerDeck (ID, Name) VALUES ("; //sql command text
                     playerDeckContents.Clear(); //removes old saved deck data for when the game doesn't restart so this static class is still in memory
-                    foreach (Card c in d.GetContents())
+                    foreach (Card c in d)
                     {
                         cmd.CommandText = queryPortion + c.ID + ", " + "'" + c.getName() + "')";
                         //Debug.Log(cmd.CommandText);
@@ -327,7 +327,6 @@ namespace DataBase
             
             List<Card> searchResults = new List<Card>(); //list for the results
             Debug.Log("Search Mod: " + searchMod + " SearchVal: " + searchVal);
-            string[] searchMods = new string[3] { "nameToggle", "typeToggle", "famToggle" }; //this array contains all possible values of searchMod      
             SearchMod currentSearchMod = (SearchMod)Enum.Parse(typeof(SearchMod), searchMod); //mapping the search mod name to an enum value
             switch (currentSearchMod) //since switch can only use ints and enums and the searchMod string HAS to be in the array the index is just returned
             {

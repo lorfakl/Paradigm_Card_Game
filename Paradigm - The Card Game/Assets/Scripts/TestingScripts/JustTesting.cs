@@ -6,14 +6,14 @@ using DataBase;
 
 public class JustTesting : MonoBehaviour
 {
-    public GameObject display;
+    /*public GameObject display;
    
     List<Card> cards = null;
     int numToSelect = 0;
-    int count = 0;
+    int count = 0;*/
 	void Awake ()
     {
-        //MakeTestPlayer.MakePlayer(new GameTimeManager());
+       /* //MakeTestPlayer.MakePlayer(new GameTimeManager());
         CardDataBase.GetDataBaseData();
         List<Card> AllCards = CardDataBase.GetAllCards();
 
@@ -37,7 +37,7 @@ public class JustTesting : MonoBehaviour
         numToSelect = Random.Range(1, 10);
         Debug.Log("Num To Select: " + numToSelect);
         cards = randomCards;
-        Debug.Log(size);
+        Debug.Log(size);*/
     }
 	
 	// Update is called once per frame
