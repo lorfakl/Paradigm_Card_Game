@@ -41,16 +41,15 @@ namespace TransportLayer
         /// object on the server  
         /// </summary>
         /// <param name="boardModelJson"></param>
-        public static void SendNewBoardModelUpdate(Dictionary<(string playerID, ValidLocations location), Location> boardStateModelDIct)
+        public static void SendNewBoardModelUpdate(BoardState boardStateUpdatedFromController)
         {
-            //network call to other TransportLayr
-            if(isOnline)
+            string boardModelJson = JsonConvert.SerializeObject(boardStateUpdatedFromController, Formatting.Indented);
+            if (isOnline)
             {
-
+                //network call to other TransportLayr
             }
             else
             {
-                string boardModelJson = ConvertToJson(boardStateModelDIct);
                 BoardStateModel.UpdateBoardModel(JObject.Parse(boardModelJson));
             }
         }
@@ -61,24 +60,21 @@ namespace TransportLayer
         /// client machine
         /// </summary>
         /// <param name="boardStateModelDIct"></param>
-        public static void SendBoardModelToView(Dictionary<(string playerID, ValidLocations location), Location> boardStateModelDIct)
+        public static void SendBoardModelToView(BoardState boardState)
         {
-            if(isOnline)
+            string jsonBoardString = JsonConvert.SerializeObject(boardState, Formatting.Indented);
+
+            if (isOnline)
             {
-                //do some online stuff
+                //sent it to the client machine
+                /*The client on the recieving end would then figure out which player it is and
+                 update the view as described in the JSON recieved*/
             }
             else
             {
-                string jsonBoardString = ConvertToJson(boardStateModelDIct);
                 ViewBoardState.ReceivedUpdatedModel(JObject.Parse(jsonBoardString));
             }
         }
-
-        private static string ConvertToJson(System.Object o)
-        {
-            return JsonConvert.SerializeObject(o, Formatting.Indented);
-        }
-
 
     }
 }

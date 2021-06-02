@@ -189,7 +189,11 @@ public class GameEventsArgs : EventArgs
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
-            cardsMoved.Add(l.c);
+            foreach(Card card in l.c)
+            {
+                cardsMoved.Add(card);
+            }
+            
         }
         this.cardTargets = cardsMoved;
         this.playerTarget = cardsMoved[0].getOwner();
@@ -213,7 +217,10 @@ public class GameEventsArgs : EventArgs
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
-            cardsMoved.Add(l.c);
+            foreach (Card card in l.c)
+            {
+                cardsMoved.Add(card);
+            }
         }
         this.cardTargets = cardsMoved;
         this.playerTarget = cardsMoved[0].getOwner();
