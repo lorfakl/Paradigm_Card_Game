@@ -21,20 +21,10 @@ public class AuxiliaryCard: Card
        
 
         this.setName(n);
-        this.SetAbilities(a, a2, a3); 
+        //this.SetAbilities(a, a2, a3); 
         SetTraits(t);
         Family fam = new Family(k);
         this.setFam(fam);
-    }
-
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void UseEffect()
-    {
-
     }
 }
 

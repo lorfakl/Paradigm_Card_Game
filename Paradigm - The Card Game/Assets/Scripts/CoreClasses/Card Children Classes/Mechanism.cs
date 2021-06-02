@@ -19,21 +19,12 @@ public class Mechanism: Card
     public Mechanism(string n, string k, System.Int64 p, string t, string a, string a2, string a3 )
     {
         this.setName(n);
-        this.SetAbilities(a, a2, a2);
+        //this.SetAbilities(a, a2, a2);
         this.SetTraits(t);
         this.setPower((int)p);
         Family fam = new Family(k);
         this.setFam(fam);
     }
 
-    public override void PlayCard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void UseEffect()
-    {
-
-    }
 }
 

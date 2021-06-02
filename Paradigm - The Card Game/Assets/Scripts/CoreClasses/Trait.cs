@@ -40,7 +40,7 @@ public class Trait
 
     public Trait(string t, string cN)
     {
-        EventManager.NotifySubsOfEvent += CheckNewEvent;
+        //EventManager.NotifySubsOfEvent += CheckNewEvent;
         this.TraitText = t;
         cardName = cN;
         this.isEnabled = false;

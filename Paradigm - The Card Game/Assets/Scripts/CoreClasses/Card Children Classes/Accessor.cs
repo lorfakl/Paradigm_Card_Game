@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using HelperFunctions;
 
 
 public class Accessor: Card
@@ -23,7 +22,7 @@ public class Accessor: Card
     public Accessor(string n, string k, System.Int64 p, System.Int64 h, string t, string a, string a2, string a3)
     {
         this.setName(n);
-        this.SetAbilities(a,a2,a3);
+        //this.SetAbilities(a,a2,a3);
         this.SetTraits(t);
         this.SetPower((int)p);
         this.SetMaxHp((int)h);
@@ -31,8 +30,17 @@ public class Accessor: Card
         Family fam = new Family(k);
         this.setFam(fam);
         bonds = new List<Card>();
-        AddDecoration(new CombatDecoration(), Decorations.Combat);
-            
+        this.Abilities.Add(new Ability(new Condition(), new Action()));
+        this.Abilities[0].Name = "OnSpawn";
+        this.Abilities[0].Actions[0].Ability = this.Abilities[0];
+        this.Abilities[0].Actions[0].Card = this;
+        this.Abilities[0].Actions[0].EventType = "NonMove";
+        this.Abilities[0].Actions[0].EventType = "Active";
+        this.Abilities[0].Conditions[0].EventType = "Move";
+        this.Abilities[0].Conditions[0].EventType = "Spawn";
+        this.Abilities[0].Conditions[0].Ability = this.Abilities[0];
+        this.Abilities[0].Conditions[0].Card = this;
+
     }
 
     public int Power
@@ -45,6 +53,11 @@ public class Accessor: Card
     {
         get { return this.hp; }
         set { this.hp = value; }
+    }
+
+    public int NumOfAttacks
+    {
+        get { return numOfAttacks; }
     }
 
     public void SetPower(int p) { power = p; }
@@ -64,30 +77,6 @@ public class Accessor: Card
     public int GetPower() { return power; }
     public int GetHp() { return hp; }
     public bool GetElementStatus() { return elemental; }
-
-    public int DecreaseHealth(int damage)
-    {
-        this.HP -= damage;
-        Utilities.RaiseNewEvent(this, this, NonMoveAction.Damage, this);
-        return HP;
-    }
-
-    public override void PlayCard()
-    {
-        if(this.Owner.PlayerTurn.Phase == TurnPhase.Central)
-        {
-
-        }
-        else
-        {
-
-        }
-    }
-
-    public override void UseEffect()
-    {
-        throw new NotImplementedException();
-    }
 
     protected void Attack()
     {
