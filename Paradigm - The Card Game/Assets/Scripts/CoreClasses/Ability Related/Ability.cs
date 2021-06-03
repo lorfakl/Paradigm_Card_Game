@@ -211,14 +211,14 @@ public class Ability
             cond.Ability = this;
             
             cond.Owner = c.Owner;
-            cond.Owner = Owner;
+            //cond.Owner = Owner;
         }
         foreach(var act in Actions)
         {
             act.Card = c;
             act.Ability = this;
             act.Owner = c.Owner;
-            act.Owner = Owner;
+            //act.Owner = Owner;
         }
     }
 

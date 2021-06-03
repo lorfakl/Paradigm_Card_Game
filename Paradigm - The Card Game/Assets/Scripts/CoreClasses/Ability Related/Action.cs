@@ -226,7 +226,8 @@ public class Action
         }
 
         gameEvent.EventOriginCard = Card;
-        gameEvent.EventOwner = Card.Owner; //had to use Card.Owner because the Owner of Action isnt getting set for some reason
+        gameEvent.EventOwner = Ability.Owner; //had to use Card.Owner because the Owner of Action isnt getting set for some reason
+        Owner = Ability.Owner;
         gameEvent.PlayerTarget = gameEvent.CardTargets[0].Owner;
         //gameEvent.TurnPhase = Utilities.HelperFunctions.ParseEnum<TurnPhase>(this.Turnphase);
         gameEvent.TriggeringAbility = Ability;

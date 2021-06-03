@@ -7,9 +7,10 @@ using Utilities;
 
 public struct LocationChanges  //this struct is for containing infomation regarding a location change in one package
 {
-    public Card c;
+    public List<Card> c;
     public Location origin;
     public Location destination;
+    public string changeId;
 }
 
 public enum ContainsCriteria { Name, Type, Reference, ID}
@@ -291,14 +292,16 @@ public class Location: IEnumerable
         }
 
         LocationChanges newChanges = new LocationChanges();
+        newChanges.c = l;
+        newChanges.destination = destination;
+        newChanges.origin = this;
+        newChanges.changeId = Guid.NewGuid().ToString();
+
+        changes.Add(newChanges);
         foreach (Card c in l)
         {
-            newChanges.c = c;
-            newChanges.destination = destination;
-            newChanges.origin = this;
-            changes.Add(newChanges);
-            destination.contents.Add(c);
-            c.setLocation(destination);
+            
+            
             if(!(RemoveContent(c)))
             {
                 Debug.Log("ERROR!! ERROR!! Card Cant be removed because" + c.getName() + " is not locationed in Location: " 
@@ -318,6 +321,8 @@ public class Location: IEnumerable
                         HelperFunctions.Print(abl.Name);
                     }
                 }
+                destination.contents.Add(c);
+                c.setLocation(destination);
                 HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
         }
@@ -338,7 +343,8 @@ public class Location: IEnumerable
         }
 
         LocationChanges newChanges = new LocationChanges();
-        newChanges.c = c;
+        newChanges.c = new List<Card>();
+        newChanges.c.Add(c);
         newChanges.destination = destination;
         newChanges.origin = this;
         changes.Add(newChanges);

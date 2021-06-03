@@ -13,7 +13,7 @@ public enum MoveAction
 public enum NonMoveAction
 {
     Attack, Activate, Battle, Block, Damage, Forge, Heal, Initiate, Respond, Turn, DimensionTwist, None, GameEnd, DeclaredAttack,
-    Active
+    Active, StackNotification
 }
 
 public enum TurnPhase
@@ -147,8 +147,8 @@ public class GameEventsArgs : EventArgs
 
     public EventType Type
     {
-        get;
-        set;
+        get { return type; }
+        set { type = value; }
     }
     #endregion
 
@@ -189,7 +189,11 @@ public class GameEventsArgs : EventArgs
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
-            cardsMoved.Add(l.c);
+            foreach(Card card in l.c)
+            {
+                cardsMoved.Add(card);
+            }
+            
         }
         this.cardTargets = cardsMoved;
         this.playerTarget = cardsMoved[0].getOwner();
@@ -213,7 +217,10 @@ public class GameEventsArgs : EventArgs
         List<Card> cardsMoved = new List<Card>();
         foreach (LocationChanges l in boardMovements)
         {
-            cardsMoved.Add(l.c);
+            foreach (Card card in l.c)
+            {
+                cardsMoved.Add(card);
+            }
         }
         this.cardTargets = cardsMoved;
         this.playerTarget = cardsMoved[0].getOwner();

@@ -7,6 +7,11 @@ public class GlobalGameConfiguration : MonoBehaviour
     public static int BarrierCount { get; private set; }
     public static int barriers = 12;
 
+    public static int NumberOfPlayers
+    {
+        get { return 2; }
+        set { }
+    }
     public static int TimeOnTimerInSeconds
     {
         get { return timeOnTimerInSeconds; }
