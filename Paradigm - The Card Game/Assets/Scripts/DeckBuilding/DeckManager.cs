@@ -45,8 +45,8 @@ public class DeckManager : MonoBehaviour {
     {
         //GlobalPlayerDeck.setPlayerDeck(playDeck);
         //print("Curr Size: " + playDeck.Count);
-        print("Inital deck size: " + initialDeck.Count);
-        print("Player deck size: " + playDeck.Count);
+        //print("Inital deck size: " + initialDeck.Count);
+        //print("Player deck size: " + playDeck.Count);
     }
 	
 	public Deck GetDeck()
