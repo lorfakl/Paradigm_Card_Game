@@ -177,7 +177,9 @@ namespace DataBase
 
                 foreach (Ability a in c.getAbilities())
                 {
-                    throw new Exception("You have to fix rhe card ability text also do the art too");
+
+                    //a.LinkToCard(c);
+                    //throw new Exception("You have to fix rhe card ability text also do the art too");
                 }
 
                 foreach (Trait t in c.getTraits())
