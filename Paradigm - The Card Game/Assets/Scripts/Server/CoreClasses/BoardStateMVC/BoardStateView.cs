@@ -18,7 +18,7 @@ public class ViewBoardState : MonoBehaviour
         
     }
 
-    public static void ReceivedUpdatedModel(JObject parsedBoardModel)
+    public static void ReceivedUpdatedModel(BoardState boardModel)
     {
 
     }

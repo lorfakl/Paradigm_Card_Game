@@ -36,25 +36,6 @@ namespace TransportLayer
         }
 
         /// <summary>
-        /// This function is called by the Control Board State class to send a updated
-        /// board state object from the client across the internet to the BoardStateModel 
-        /// object on the server  
-        /// </summary>
-        /// <param name="boardModelJson"></param>
-        public static void SendNewBoardModelUpdate(BoardState boardStateUpdatedFromController)
-        {
-            string boardModelJson = JsonConvert.SerializeObject(boardStateUpdatedFromController, Formatting.Indented);
-            if (isOnline)
-            {
-                //network call to other TransportLayr
-            }
-            else
-            {
-                BoardStateModel.UpdateBoardModel(JObject.Parse(boardModelJson));
-            }
-        }
-
-        /// <summary>
         /// This function is called by the BoardStateModel class to send a updated
         /// board state object across the internet to the BoardStateView object on the
         /// client machine
@@ -67,12 +48,36 @@ namespace TransportLayer
             if (isOnline)
             {
                 //sent it to the client machine
+                //convert the BoardState into JSON 
                 /*The client on the recieving end would then figure out which player it is and
                  update the view as described in the JSON recieved*/
             }
             else
             {
+<<<<<<< Updated upstream:Paradigm - The Card Game/Assets/Scripts/Server/CoreClasses/TransportLayer.cs
                 BoardStateView.ReceivedUpdatedModel(JObject.Parse(jsonBoardString));
+=======
+                ViewBoardState.ReceivedUpdatedModel(boardState);
+            }
+        }
+
+        /// <summary>
+        /// This function is called by the Input class to send a updated
+        /// board state object from the client across the internet to the ContrlBoardState 
+        /// object on the server 
+        /// </summary>
+        /// <param name="inputBoardState"></param>
+        public static void SendInputBoardStateToController(BoardState inputBoardState)
+        {
+            string eventJson = JsonConvert.SerializeObject(inputBoardState, Formatting.Indented);
+            if(isOnline)
+            {
+
+            }
+            else
+            {
+                ContrlBoardState.ValidateClientInput(inputBoardState);
+>>>>>>> Stashed changes:Paradigm - The Card Game/Assets/Scripts/CoreClasses/TransportLayer.cs
             }
         }
 

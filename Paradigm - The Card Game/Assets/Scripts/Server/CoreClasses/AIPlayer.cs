@@ -172,6 +172,7 @@ public class AIPlayer : Player
     public override IEnumerator ChooseTerritoryChallengeCard(Location t)
     {
         Location lands = this.PlayerDeck.GetLandsAsLocation();
+        Debug.Log("Show me your size: " + lands.Count);
         Card chosenLand = lands.SelectRandomContent();
         TCCard = chosenLand;
         GetLocation(ValidLocations.DZ).MoveContent(chosenLand, t);

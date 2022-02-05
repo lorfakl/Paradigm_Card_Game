@@ -123,7 +123,7 @@ public class HumanPlayer : Player, IPlayable
     public override IEnumerator ChooseTerritoryChallengeCard(Location temp)
     {
         Location lands = this.PlayerDeck.GetLandsAsLocation();
-        Debug.Log("Show me your size: " + lands.Count);
+        //Debug.Log("Show me your size: " + lands.Count);
         GameObject cardDisplay = HelperFunctions.SelectCards(lands, temp, 1);
         GameObject timer = GameObject.FindGameObjectWithTag("timer");
         Text timerText = timer.GetComponent<Text>();

@@ -115,7 +115,7 @@ using UnityEngine;
     public Location GetLandsAsLocation()
     {
         Location lands = new Location("Landscapes", this.Owner);
-        foreach (Card c in this.GetContents())
+        foreach (Card c in Owner.GetLocation(ValidLocations.DZ))
         {
             //Debug.Log(c.getName() + " " + c.getType());
             if (c is Landscape)

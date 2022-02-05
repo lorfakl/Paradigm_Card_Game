@@ -54,6 +54,7 @@ public class GameMaster : MonoBehaviour
         PlayerIdDict.Add(PlayerOne.ID, PlayerOne);
         PlayerIdDict.Add(PlayerTwo.ID, PlayerTwo);
 
+        
         UiCamera = uiCamera;
 
         CardDataBase.MakePlayerDeck(PlayerOne);

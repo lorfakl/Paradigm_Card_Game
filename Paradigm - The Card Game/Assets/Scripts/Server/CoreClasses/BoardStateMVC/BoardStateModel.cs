@@ -17,9 +17,9 @@ public class BoardStateModel : MonoBehaviour
 {
     private static string initialThisTurnDictData = "{\"CardsPlayed\":0,\"Attacks\":0,\"CentralActionsAvailable\":3,\"CentralActionsTaken\":0,\"DamageDealt\":0,\"DamageRecieved\":0,\"BarriersBroken\":0,\"BarriersBrokenByOpponent\":0,\"BarriersBuilt\":0,\"DamageRedirected\":0,\"CardsDeleted\":0,\"Deleted\":0,\"Despawned\":0,\"Destroyed\":0,\"Drawn\":0,\"Forged\":0,\"TimesHealed\":0,\"DamageHealed\":0,\"Initiated\":0,\"Locked\":0,\"Nulled\":0,\"Reacted\":0,\"Resolved\":0,\"Restored\":0,\"Rested\":0,\"Returned\":0,\"Searched\":0,\"Spawned\":0}";
     private static string initialOverGameDictData = "{\"CardsPlayed\":0,\"Attacks\":0,\"CentralActionsTaken\":0,\"DamageDealt\":0,\"DamageRecieved\":0,\"BarriersBroken\":0,\"BarriersBrokenByOpponent\":0,\"BarriersBuilt\":0,\"DamageRedirected\":0,\"CardsDeleted\":0,\"Deleted\":0,\"Despawned\":0,\"Destroyed\":0,\"Drawn\":0,\"Forged\":0,\"TimesHealed\":0,\"DamageHealed\":0,\"Initiated\":0,\"Locked\":0,\"Nulled\":0,\"Reacted\":0,\"Resolved\":0,\"Restored\":0,\"Rested\":0,\"Returned\":0,\"Searched\":0,\"Spawned\":0}";
-    public static PlayerInfo PlayerInfoOne {get; set;}
+    private static PlayerInfo PlayerInfoOne {get; set;}
 
-    public static PlayerInfo PlayerInfoTwo { get; set; }
+    private static PlayerInfo PlayerInfoTwo { get; set; }
     public static BoardState BoardState { get; set; }
 
     void Awake()
@@ -30,9 +30,9 @@ public class BoardStateModel : MonoBehaviour
         BoardState.PlayerInfo = new List<PlayerInfo>();
         BoardState.PlayerInfo.Add(PlayerInfoOne);
         BoardState.PlayerInfo.Add(PlayerInfoTwo);
-
     }
 
+    
     public static void SetInitialBoardState(Player p1, Player p2)
     {
         //called from the GameMaster after set up
@@ -51,12 +51,6 @@ public class BoardStateModel : MonoBehaviour
         }
     }
 
-    public static void UpdateBoardModel(JObject modelUpdate)
-    {
-        print(modelUpdate.ToString());
-
-    }
-
     /// <summary>
     /// Conditions call this function, this is how they perform board checks
     /// </summary>
@@ -66,6 +60,11 @@ public class BoardStateModel : MonoBehaviour
     public static Location CheckLocation(string id, ValidLocations validLocation)
     {
         return GameMaster.PlayerIdDict[id].GetLocation(validLocation);   
+    }
+
+    public static void UpdateBoardModel(BoardState boardState)
+    {
+        BoardState = boardState;
     }
 
     public static void SendNewBoardModel()
@@ -168,6 +167,22 @@ public class PlayerInfo
         Bonds = new List<Bond>();
 
     }
+
+    public string FindModifiedKey(BoardState previousState, string playerID)
+    {
+        var previousThisTurnData = previousState.GetPlayer(playerID).ThisTurn;
+        
+        foreach (KeyValuePair<string, int> entry in ThisTurn)
+        {
+            if (previousThisTurnData[entry.Key] != this.ThisTurn[entry.Key])
+            {
+                return entry.Key;
+            }
+        }
+
+        return "same";
+            
+    }
 }
 
 public class CardShell
@@ -176,6 +191,7 @@ public class CardShell
     public string InstanceID { get; set; }
 
     public List<AbilityShell> Abilities { get; private set; }
+
 
     public CardShell()
     {
@@ -204,6 +220,27 @@ public class BoardState
     public int DimTwistCount { get; set; }
     public List<PlayerInfo> PlayerInfo { get; set; }
 
+    public PlayerInfo GetPlayer(string id)
+    {
+        string currentIDs = "";
+        foreach(PlayerInfo pi in PlayerInfo)
+        {
+
+            if(pi.PlayerID == id)
+            {
+                return pi;
+            }
+            else
+            {
+                currentIDs += pi.PlayerID + " ";
+            }
+        }
+
+        throw new Exception("PlayerID not found. You entered: " + id + "The available IDs are " + currentIDs);
+    }
+
+    
+
 }
 
 public class Bond
@@ -231,11 +268,15 @@ public class AbilityShell
 {
     public int AbilityIndex { get; set; }
     public bool CanActivate { get; set; }
+    public bool HasActivated { get; set; }
+    public bool IsActive { get; set; }
 
     public AbilityShell(int index)
     {
         AbilityIndex = index;
         CanActivate = false;
+        HasActivated = false;
+        IsActive = false;
     }
 }
 

@@ -5,36 +5,6 @@ EditorUserSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 4
   m_ConfigSettings:
-    RecentlyUsedScenePath-0:
-      value: 2242470311464676041c1e2d026c7a08171a0826293b69132528097cd1e33136e7f479c4e63331722c0ce6281d
-      flags: 0
-    RecentlyUsedScenePath-1:
-      value: 2242470311464676041c1e2d026c7a08171a0826293b690022271a7cd1e33136e7f479dae43f31397717e1351027
-      flags: 0
-    RecentlyUsedScenePath-2:
-      value: 200b1b3316501b48420f1c321c261034190016262329222362040d20d1e13928eee225a4ea3b2c283c10a011142d323eff1a050ee546070a021af81c5eca1e1a05dc35cc08da100e842c12c7d904e2e6c7c0d1f897caf4cbdbcbb3bdc7f5fceef0e3eac8a9adf2c5b9e0d1b7a9cececac4f9b4c1c2c387d2b4dbc5ca
-      flags: 0
-    RecentlyUsedScenePath-3:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323621a1821f4e5260be1e238ecf47516323016e63d081d0e31fc0f0a1fb81e04020517
-      flags: 0
-    RecentlyUsedScenePath-4:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323621d1223cee5223deed21fdde2292b0f3a07e1394a2b0f36e613
-      flags: 0
-    RecentlyUsedScenePath-5:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323623d1820f6f3373dece221e0f3323d292d16e03217701431fb1e10
-      flags: 0
-    RecentlyUsedScenePath-6:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323623d1820f6f3373dece278fce9332b25
-      flags: 0
-    RecentlyUsedScenePath-7:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323621d1820f6e3352ae6f426e8e433313b7717e1351027
-      flags: 0
-    RecentlyUsedScenePath-8:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323621a1821f4e5260be1e238ecf4750c392b14ea2e373d0431f7441c05ff1f13
-      flags: 0
-    RecentlyUsedScenePath-9:
-      value: 22424703114646680e0b0227036c6b1505032b2929262323621a1821f4e5260be1e238ecf4751c303007e128373d0431f7441c05ff1f13
-      flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
       flags: 0
@@ -48,4 +18,4 @@ EditorUserSettings:
   m_VCProjectOverlayIcons: 1
   m_VCHierarchyOverlayIcons: 1
   m_VCOtherOverlayIcons: 1
-  m_VCAllowAsyncUpdate: 0
+  m_VCAllowAsyncUpdate: 1
