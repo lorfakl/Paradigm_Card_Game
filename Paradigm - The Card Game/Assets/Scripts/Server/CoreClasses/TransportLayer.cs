@@ -54,9 +54,8 @@ namespace TransportLayer
             }
             else
             {
-<<<<<<< Updated upstream:Paradigm - The Card Game/Assets/Scripts/Server/CoreClasses/TransportLayer.cs
                 BoardStateView.ReceivedUpdatedModel(JObject.Parse(jsonBoardString));
-=======
+
                 ViewBoardState.ReceivedUpdatedModel(boardState);
             }
         }
@@ -77,7 +76,7 @@ namespace TransportLayer
             else
             {
                 ContrlBoardState.ValidateClientInput(inputBoardState);
->>>>>>> Stashed changes:Paradigm - The Card Game/Assets/Scripts/CoreClasses/TransportLayer.cs
+
             }
         }
 

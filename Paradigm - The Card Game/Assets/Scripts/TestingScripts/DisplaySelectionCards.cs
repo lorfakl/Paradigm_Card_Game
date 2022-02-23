@@ -15,7 +15,7 @@ public class DisplaySelectionCards :MonoBehaviour
     //public Camera uiCamera;
 
     private GameObject display;
-    private GameObject mainCamera;
+    //private GameObject mainCamera;
     private Transform parent;
     private Transform canvas;
     private Vector3 position = new Vector3();
@@ -50,6 +50,66 @@ public class DisplaySelectionCards :MonoBehaviour
         get { return this.selectedCards; }
     }
 
+
+    
+    //Private Functions
+    private void Awake()
+    {
+        display = this.gameObject;
+        parent = display.transform;
+        //GameMaster.UiCamera.SetActive(true);
+
+
+    }
+
+    private void Start()
+    {      
+        canvas = gameObject.transform.parent.parent;
+        Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
+        canvasComp.renderMode = RenderMode.WorldSpace;
+        //uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
+        //mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        //uiCamera.gameObject.tag = "MainCamera";
+        /*if(uiCamera != null)
+        {
+            canvasComp.worldCamera = uiCamera;
+            uiCamera.gameObject.SetActive(true);
+            mainCamera.SetActive(false);
+        }
+        else
+        {
+            HelperFunctions.Error("UI Camera is set to null add in inspector");
+        }*/
+        
+        canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
+        DisplayCards();
+        
+    }
+
+    private void Update()
+    {
+        //print("Total Cards to Select: " + numToMove);
+        //print("Cards Selected: " + selectedCards.Count);
+        //print("Number of Cards left to select: " + leftToMove);
+
+        if (isDoneSelecting)
+        {
+            if (source.Owner.PlayerID == destination.Owner.PlayerID)
+            {
+                //print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
+            }
+            else
+            {
+                print("theres a fickin problem");
+            }
+            source.MoveContent(selectedCards, destination);
+            //print(destination.Count);
+            //IsDoneChoosing(this, destination);
+            //mainCamera.SetActive(true);
+            //uiCamera.gameObject.SetActive(false);
+            Destroy(canvas.gameObject);
+        }
+    }
 
     /// <summary>
     /// This function needs to be called by the script instantiating this display IMMEDIATELY after the instantiation. 
@@ -110,64 +170,6 @@ public class DisplaySelectionCards :MonoBehaviour
         return true;
     }
 
-    //Private Functions
-    private void Awake()
-    {
-        display = this.gameObject;
-        parent = display.transform;
-        //GameMaster.UiCamera.SetActive(true);
-
-
-    }
-
-    private void Start()
-    {      
-        canvas = gameObject.transform.parent.parent;
-        Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
-        canvasComp.renderMode = RenderMode.WorldSpace;
-        //uiCamera = GameMaster.UiCamera.GetComponent<Camera>();
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        //uiCamera.gameObject.tag = "MainCamera";
-        /*if(uiCamera != null)
-        {
-            canvasComp.worldCamera = uiCamera;
-            uiCamera.gameObject.SetActive(true);
-            mainCamera.SetActive(false);
-        }
-        else
-        {
-            HelperFunctions.Error("UI Camera is set to null add in inspector");
-        }*/
-        
-        canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
-        DisplayCards();
-        
-    }
-
-    private void Update()
-    {
-        //print("Total Cards to Select: " + numToMove);
-        //print("Cards Selected: " + selectedCards.Count);
-        //print("Number of Cards left to select: " + leftToMove);
-
-        if (isDoneSelecting)
-        {
-            if (source.Owner.PlayerID == destination.Owner.PlayerID)
-            {
-                //print(source.Owner.PlayerID + "equals" + destination.Owner.PlayerID);
-            }
-            else
-            {
-                print("theres a fickin problem");
-            }
-            source.MoveContent(selectedCards, destination);
-            //print(destination.Count);
-            //IsDoneChoosing(this, destination);
-            //mainCamera.SetActive(true);
-            //uiCamera.gameObject.SetActive(false);
-            Destroy(canvas.gameObject);
-        }
-    }
 
     private void DisplayCards()
     {

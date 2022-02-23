@@ -9,6 +9,8 @@ using System.Reflection;
 using PlayFab.ClientModels;
 using PlayFab.ServerModels;
 using PlayFab;
+using Mirror;
+using System.Collections;
 
 /// <summary>
 /// The utilities class is for storing the general purpose commonly used functions and data structures 
@@ -245,7 +247,24 @@ namespace Utilities
 
         public static void Log(string msg)
         {
-            Debug.LogWarning(DateTime.Now + ": " + msg);
+            Debug.Log(DateTime.Now + ": " + msg);
+        }
+
+        public static void LogListContent<T>(string msg, List<T> list)
+        {
+            string contents = PrintListContent(list);
+            Log(msg + contents);
+        }
+
+        public static string PrintListContent<T>(List<T> list)
+        {
+            string contents = "";
+            foreach (T element in list)
+            {
+                contents += element.ToString() + " ";
+            }
+
+            return contents;
         }
 
         public static void Print(string msg)
@@ -285,6 +304,12 @@ namespace Utilities
         public static T ParseEnum<T>(string value)
         {
             return (T)Enum.Parse(typeof(T), value, true);
+        }
+
+        public static IEnumerator Timer(int seconds)
+        {
+            HelperFunctions.Log("Waiting for " + seconds + " seconds");
+            yield return new WaitForSeconds(seconds);
         }
 
 
@@ -336,6 +361,10 @@ namespace Utilities
         {
             pd_player_connected_server,
             pd_player_disconnected_server,
+            pd_player_completed_bs,
+            pd_all_players_completed_bs,
+            pd_all_clients_connected,
+            pd_server_scene_change
         }
         #endregion
         private static PlayfabHelper _instance;
@@ -378,7 +407,7 @@ namespace Utilities
         public delegate void LoginSuccessEvent(LoginResult success);
         public static event LoginSuccessEvent OnLoginSuccess;
 
-        public delegate void AuthenticateSessionTicketSuccessEvent(AuthenticateSessionTicketResult success);
+        public delegate void AuthenticateSessionTicketSuccessEvent(AuthenticateSessionTicketResult success, NetworkConnection conn);
         public static event AuthenticateSessionTicketSuccessEvent OnAuthSessionTicketSuccess;
 
         public delegate void WriteTelemetryEvent(PlayFab.ServerModels.WriteEventResponse success);
@@ -391,7 +420,9 @@ namespace Utilities
         public PlayfabHelper()
         {
             _instance = this;
-            TitleID = "5EB3B";
+            PlayFabSettings.TitleId = TitleID = "5EB3B";
+            PlayFabSettings.DisableFocusTimeCollection = true;
+            PlayFabSettings.DeveloperSecretKey = "OHWSMJBCG4U18Y4KYY4ZDBNRQBUQAORC1HODRYIHKFU8BNAWDY";
             OnPlayFabError += HandlePlayFabError;
 
         }
@@ -437,10 +468,20 @@ namespace Utilities
         }
         public static void Login()
         {
+            string customID = "";
+            if(ClientStartUp.Instance.useOtherAccount)
+            {
+                customID = "SecondaryDevAccount";
+            }
+            else
+            {
+                customID = "MainDevAccount";
+            }
+
             PlayFab.PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest()
             {
                 TitleId = PlayFabSettings.TitleId,
-                CustomId = "MainDevAccount",
+                CustomId = customID,
                 CreateAccount = true
             }, (result) =>
             {
@@ -464,47 +505,40 @@ namespace Utilities
             return;
         }
 
-        public static void AuthenticateSessionTicket(string sessionTicket)
+        public static void AuthenticateSessionTicket(string sessionTicket, NetworkConnection conn, Action<PlayFabError, NetworkConnection> OnError)
         {
+            HelperFunctions.Log("SessionTicket: " + sessionTicket);
             PlayFabServerAPI.AuthenticateSessionTicket(new AuthenticateSessionTicketRequest()
             {
                 SessionTicket = sessionTicket
             }, (result) =>
             {
-                OnAuthSessionTicketSuccess?.Invoke(result);
+                OnAuthSessionTicketSuccess?.Invoke(result, conn);
             },
-            (error) =>
+            (error)=>
             {
-                OnPlayFabError?.Invoke(error);
+                OnError(error, conn);
             });
         }
 
+        
         private static void HandlePlayFabError(PlayFabError error)
         {
-            HelperFunctions.Log(error.ErrorDetails.ToString());
+            string fullErrorDetails = "Error in PlayFab API: " + error.ApiEndpoint + "\n" +
+                "Error: " + error.Error.ToString() + "\n" + "Error Message: " + error.ErrorMessage
+                + "\n" + "Error Details: " + error.ErrorDetails.ToString();
+            HelperFunctions.Log(fullErrorDetails);
+
+        }
+
+        public static string DisplayPlayFabError(PlayFabError error)
+        {
+            string fullErrorDetails = "Error in PlayFab API: " + error.ApiEndpoint + "\n" +
+                "Error: " + error.Error.ToString() + "\n" + "Error Message: " + error.ErrorMessage
+                + "\n" + "Error Details: " + error.ErrorDetails.ToString();
+
+            return fullErrorDetails;
         }
     }
 
-    public static class Dictionaries
-    {
-        //this static class will be responsible for mmapping card names to their abilities and traits
-        //which map to the functions that actually do the things for abilities and traits
-        private static bool arePrepared = false;
-        
-        
-        public static bool Prepared
-        {
-            get { return arePrepared; }
-        }
-
-        public static void PrepareAllDictionaries()
-        {
-
-
-            arePrepared = true;
-
-        }
-
-        
-    }
 }

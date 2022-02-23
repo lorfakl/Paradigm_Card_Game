@@ -45,7 +45,8 @@ public class VMAgentListener : MonoBehaviour
 
     private void OnServerActive()
     {
-        Debug.Log(DateTime.Now + ":Server Started From Agent Activation");
+        Debug.Log(DateTime.Now + ":Server Started From Agent Activation ServerID: " +
+            PlayFabMultiplayerAgentAPI.ServerIdKey + " was assigned");
         ParadigmServer.Instance.ServerID = PlayFabMultiplayerAgentAPI.ServerIdKey;
     }
     private void OnPlayerAdded(string playfabId)

@@ -138,14 +138,9 @@ using UnityEngine;
         {
             count = count + c.MoveToGameStartLocation();
         }
-        if (Owner.Type == PlayerType.AI)
-        {
-            Debug.Log("AI Moved " + count + " cards");
-        }
-        else
-        {
-            Debug.Log("HUman Moved " + count + " cards");
-        }
+
+        Debug.Log(Owner.ID + " Moved " + count + " cards");
+        
             
     }
 }

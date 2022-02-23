@@ -24,6 +24,7 @@ public class Location: IEnumerable
     protected static Dictionary<Location, List<LocationChanges>> changesDict = 
                    new Dictionary<Location, List<LocationChanges>>(); 
     protected List<LocationChanges> changes;
+    private Dictionary<string, Card> instanceIdDictionary = new Dictionary<string, Card>();
 
     public string Name
     {
@@ -40,6 +41,11 @@ public class Location: IEnumerable
     {
         get { return this.owner; }
         set { this.owner = value; }
+    }
+
+    public Dictionary<string, Card> InstanceIdLookUp
+    {
+        get { return instanceIdDictionary; }
     }
 
     public List<Card> Content
@@ -172,7 +178,10 @@ public class Location: IEnumerable
             return;
         }
 
-        this.contents.Add(c);    
+        this.contents.Add(c);
+        this.AddToLookUp(c);
+        
+        
     }
 
     public Card Contains(Card target, ContainsCriteria criteria)
@@ -275,6 +284,7 @@ public class Location: IEnumerable
     protected bool RemoveContent(Card c)
     {
         bool result = this.contents.Remove(c);
+        instanceIdDictionary.Remove(c?.InstanceID.ToString());
         return result;
     }
 
@@ -322,6 +332,7 @@ public class Location: IEnumerable
                     }
                 }
                 destination.contents.Add(c);
+                destination.AddToLookUp(c);
                 c.setLocation(destination);
                 HelperFunctions.RaiseNewEvent(this, changes, GetMoveAction(this, destination));
             }
@@ -366,15 +377,15 @@ public class Location: IEnumerable
 
             if(returnDestIndex > -1 && returnSorcIndex > -1)
             {
-                HelperFunctions.Print("It this true?: " + (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ));
-                HelperFunctions.Print("Current Location: " + c.CurrentLocation.ToString());
-                HelperFunctions.Print("Current Destination: " + destination.ValidName.ToString());
+                //HelperFunctions.Print("It this true?: " + (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ));
+                //HelperFunctions.Print("Current Location: " + c.CurrentLocation.ToString());
+                //HelperFunctions.Print("Current Destination: " + destination.ValidName.ToString());
                 if (c.CurrentLocation == ValidLocations.Deck && destination.ValidName != ValidLocations.BZ)
                 {
                     foreach (var abl in c.Abilities)
                     {
                         abl.CanCheckEvent = true;
-                        HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
+                        //HelperFunctions.Print("Ability is now looking for events: " + abl.OwningCardName);
                         HelperFunctions.Print(abl.Name);
                         if(abl.Conditions == null)
                         {
@@ -388,6 +399,7 @@ public class Location: IEnumerable
                     }
                 }
                 destination.contents.Add(c);
+                destination.AddToLookUp(c);
                 c.setLocation(destination);
                 HelperFunctions.RaiseNewUIEvent(this, (ValidLocations)returnSorcIndex, (ValidLocations)returnDestIndex, ma, c);
                 
@@ -410,6 +422,18 @@ public class Location: IEnumerable
                 Debug.Log("Content is being moved from " + source.Owner.PlayerID + "'s " + source.Name + " to " + destination.Owner.PlayerID + "'s " + destination.Name);
                 throw new Exception("Content is being moved between Owners without an Override");
             }
+        }
+    }
+
+    private void AddToLookUp(Card c)
+    {
+        if (this.instanceIdDictionary.ContainsKey(c.InstanceID.ToString()))
+        {
+            this.instanceIdDictionary[c.InstanceID.ToString()] = c;
+        }
+        else
+        {
+            this.instanceIdDictionary.Add(c.InstanceID.ToString(), c);
         }
     }
 

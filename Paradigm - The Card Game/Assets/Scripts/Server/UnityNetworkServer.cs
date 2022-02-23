@@ -36,9 +36,9 @@ public class UnityNetworkServer : NetworkManager
         {
             base.Awake();
             Instance = this;
-            NetworkServer.RegisterHandler<AuthenticatedMessage>(OnReceiveAuthenticate);
+            //NetworkServer.RegisterHandler<AuthenticatedMessage>(OnReceiveAuthenticate);
             NetworkServer.RegisterHandler<CountMessage>(OnReciveCountMessage);
-            PlayfabHelper.OnAuthSessionTicketSuccess += OnSuccessfulSessionTicketAuth;
+            //PlayfabHelper.OnAuthSessionTicketSuccess += OnSuccessfulSessionTicketAuth;
             //_netManager.transport.port = Port;
             //Instance.OnStartServer();
         }
@@ -54,17 +54,18 @@ public class UnityNetworkServer : NetworkManager
             NetworkServer.Shutdown();
         }
 
+         /*
         [Server]
-        private void OnReceiveAuthenticate(NetworkConnection nconn, AuthenticatedMessage message)
+        private void OnReceiveAuthenticate(NetworkConnection nconn, Ser message)
         {
             HelperFunctions.Log("Server received Authenticated Message");
             var conn = _connections.Find(c => c.ConnectionId == nconn.connectionId);
                 if (conn != null)
                 {
                     HelperFunctions.Log("Attempting to Authenticate session ticket");
-                    PlayfabHelper.AuthenticateSessionTicket(message.sessionTicket);
+                    PlayfabHelper.Instance.AuthenticateSessionTicket(message.sessionTicket);
                 }
-        }
+        }*/
 
         [Server]
         private void OnReciveCountMessage(NetworkConnection conn, CountMessage message)

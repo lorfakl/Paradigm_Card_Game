@@ -72,6 +72,23 @@ public abstract class Player: IPlayable
         this.isPreparedToStart = false;
     }
 
+    public Player(string id)
+    {
+        this.ID = id;
+
+        foreach (string s in validLocations)
+        {
+            Location l = new Location(s, this);
+            this.cardLocations.Add(s, l);
+        }
+        this.playerDeck = new Deck("Deck", this);
+        Debug.Log("Player GUID contructor created deck");
+        this.cardLocations["Deck"] = this.playerDeck;
+        this.majesty = playerDeck.GetMajesty();
+
+        this.isPreparedToStart = false;
+    }
+
     public Deck PlayerDeck
     {
         get { return playerDeck; }

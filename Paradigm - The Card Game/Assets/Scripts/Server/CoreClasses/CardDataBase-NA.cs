@@ -9,6 +9,7 @@ using Mono.Data.Sqlite;
 //using System.Globalization;
 using System.Collections.Generic;
 using Builder;
+using Utilities;
 
 namespace DataBase
 {
@@ -17,8 +18,13 @@ namespace DataBase
         private static List<int> allCardIDs = new List<int>();
         private static List<Card> allCards = new List<Card>();
         private static Dictionary<string, CardConstrInfo> typeDict = new Dictionary<string, CardConstrInfo>();
-        private static Dictionary<int, (Type type, System.Object[] arguments)> cardDict = new Dictionary<int, (Type type, System.Object[] arguments)>(); 
+        private static Dictionary<int, (Type type, System.Object[] arguments)> cardDict = new Dictionary<int, (Type type, System.Object[] arguments)>();
+#if UNITY_SERVER
+        private static string dbConnString = "URI=file:" + System.IO.Directory.GetCurrentDirectory() + "\\CardDataBase.db"; //get database file path
+#else
         private static string dbConnString = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+#endif
+
         private enum SearchMod { nameToggle, typeToggle, famToggle }
         private static bool isDataLoaded = false;
         private static List<int> playerDeckContents = new List<int>();
@@ -59,8 +65,13 @@ namespace DataBase
             {
                 PrepareDictionary();
             }
-                string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db"; //get database file path
-
+#if UNITY_SERVER
+            string conn = "URI=file:" + System.IO.Directory.GetCurrentDirectory() + "\\CardDataBase.db"; //get database file path
+#else
+            string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+#endif
+            HelperFunctions.Log("Database local scope file path" + conn);
+            HelperFunctions.Log("Database global scope file path" + dbConnString);
             using (SqliteConnection dbconn = new SqliteConnection(conn))
             {
                 dbconn.Open(); //connect to database
@@ -122,7 +133,7 @@ namespace DataBase
             }
         }
 
-        public static Card CreateCardInstance(int id, Player p)
+        private static Card CreateCardInstance(int id, Player p)
         {
             if (!isCardDictLoaded)
             {
@@ -157,6 +168,25 @@ namespace DataBase
             AbilityBuilder.CreateAbilityInstance(c);
 
             return c;
+        }
+
+        public static Dictionary<string, string> GetClientSafeCardInfo(int id)
+        {
+            Dictionary<string, string> cardInfo = new Dictionary<string, string>();
+
+            Card c = CreateCardInstance(id);
+            cardInfo.Add("Name", c.Name);
+            cardInfo.Add("Fam", c.Family);
+            cardInfo.Add("Type", c.ClassType);
+            
+            for(int i = 0; i< c.Abilities.Count; i++)
+            {
+                string ablKey = "Abl" + i;
+                cardInfo.Add(ablKey, c.Abilities[i].AbilityText);
+            }
+
+            return cardInfo;
+
         }
 
         public static void LoadAllCardsList()

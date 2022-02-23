@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.Events;
+using Utilities;
 
 public class UnityNetworkClient : NetworkManager 
 {
@@ -18,6 +19,7 @@ public class UnityNetworkClient : NetworkManager
     {
         base.Awake();
         Instance = this;
+        this.authenticator.OnClientAuthenticated.AddListener(OnClientAuthenticated);
     }
 
     public override void Start()
@@ -34,7 +36,6 @@ public class UnityNetworkClient : NetworkManager
         OnConnected.Invoke();
     }
 
-
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         base.OnClientDisconnect(conn);
@@ -42,12 +43,13 @@ public class UnityNetworkClient : NetworkManager
         OnDisconnected.Invoke(null);
     }
 
-    /// <summary>
-    /// Called on clients when a network error occurs.
-    /// </summary>
-    /// <param name="conn">Connection to a server.</param>
-    /// <param name="errorCode">Error code.</param>
-    public override void OnClientError(NetworkConnection conn, int errorCode) { }
+    private void OnClientAuthenticated(NetworkConnection client)
+    {
+        Debug.Log("This proves, private methods can subscribe to events");
+        Debug.Log("Client is authenticated by the way");
+
+        ClientStartUp.Instance.authStat.text = string.Format("Logged in as ID:{0}", PlayfabHelper.PlayFabID);
+    }
 
     /// <summary>
     /// Called on clients when a servers tells the client it is no longer ready.

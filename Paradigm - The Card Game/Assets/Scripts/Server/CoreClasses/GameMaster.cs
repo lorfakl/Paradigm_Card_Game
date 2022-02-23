@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
 
 public delegate void StateProcessingComplete();
@@ -76,6 +77,8 @@ public class GameMaster : MonoBehaviour
         if (player1 != null && player2 != null)
         {
             GameObject player1Obj = Instantiate(player1);
+            player1Obj.GetComponent<NetworkIdentity>().enabled = false;
+
             GameObject player2Obj = Instantiate(player2);
         }
     }

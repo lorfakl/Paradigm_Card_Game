@@ -23,6 +23,11 @@ public class HumanPlayer : Player, IPlayable
         timerText = timer.GetComponent<Text>();
     }
 
+    public HumanPlayer(string playFabID) : base(playFabID)
+    {
+
+    }
+
     public int OriginalTimerTime
     {
         get { return timerTime; }

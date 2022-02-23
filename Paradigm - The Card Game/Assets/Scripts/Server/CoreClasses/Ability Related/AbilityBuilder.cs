@@ -54,7 +54,12 @@ namespace Builder
         {
             if(!isJSONDataLoaded)
             {
-                string path = "Assets/JSONAbilityLanguage.json";
+#if UNITY_SERVER
+                string path = System.IO.Directory.GetCurrentDirectory() + "\\JSONAbilityLanguage.json";
+#else
+                string path = Application.dataPath + "/JSONAbilityLanguage.json";
+#endif
+
                 StreamReader read = new StreamReader(path);
                 var o = JObject.Parse(read.ReadToEnd());
                 //HelperFunctions.Print(o.ToString());

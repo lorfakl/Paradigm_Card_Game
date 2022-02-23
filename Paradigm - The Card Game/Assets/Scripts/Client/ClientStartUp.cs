@@ -17,11 +17,25 @@ public class ClientStartUp : MonoBehaviour
     UnityNetworkClient _nm;
     [SerializeField]
     TMP_Text connStat;
-    [SerializeField]
-    TMP_Text authStat;
+
+    public TMP_Text authStat;
+
     [SerializeField]
     TMP_Text serverStat;
 
+    public bool useOtherAccount;
+
+    public static ClientStartUp Instance
+    {
+        get;
+        private set;
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     // Use this for initialization
     void Start()
@@ -33,14 +47,17 @@ public class ClientStartUp : MonoBehaviour
         _nm = UnityNetworkClient.Instance;
         _nm.OnDisconnected.AddListener(OnDisconnected);
         _nm.OnConnected.AddListener(OnConnected);
+        
         NetworkClient.RegisterHandler<ServerShuttingDownMessage>(OnServerShutdown);
         NetworkClient.RegisterHandler<ServerMaintenanceMessage>(OnMaintenanceMessage);
-        //NetworkClient.RegisterHandler<CountMessage>(OnReciveCountMessage);
-        PlayfabHelper.OnLoginSuccess += OnLoginSuccess;
+        NetworkClient.RegisterHandler<CountMessage>(OnReciveCountMessage);
+        
 
 
         //_messageWindow = MessageWindow.Instance;
     }
+
+    
 
     [Client]
     private void OnMaintenanceMessage(ServerMaintenanceMessage msg)
@@ -54,8 +71,8 @@ public class ClientStartUp : MonoBehaviour
     [Client]
     private void OnReciveCountMessage(NetworkConnection conn, CountMessage message)
     {
-        HelperFunctions.Log("Client Reicved Count Message");
-        HelperFunctions.Log("Count Contents: " + message.number + " sent: " + message.timesSent +" times");
+        //HelperFunctions.Log("Client Reicved Count Message");
+        //HelperFunctions.Log("Count Contents: " + message.number + " sent: " + message.timesSent +" times");
         StartCoroutine(Timer(3, message.number, message.timesSent));
 
     }
@@ -75,34 +92,16 @@ public class ClientStartUp : MonoBehaviour
         connStat.text = "Connected to Server";
         serverStat.text = NetworkClient.serverIp.ToString();
         Utilities.HelperFunctions.Log("Connected");
-        PlayfabHelper.Login();
-        HelperFunctions.Log("Not Sending Count");
+        
+        //HelperFunctions.Log("Sending Count");
         //NetworkClient.connection.Send(new CountMessage());
 
     }
 
     [Client]
-    private void OnLoginSuccess(LoginResult success)
-    {
-        //_messageWindow.Title.text = "Login Successful";
-        authStat.text = string.Format("Logged in as ID:{0}", success.PlayFabId);
-        //_messageWindow.gameObject.SetActive(true);
-        if (NetworkClient.connection == null)
-        {
-            Debug.Log("This is null for some reason");
-        }
-
-        HelperFunctions.Log("Client Sent Authenticated Message");
-        NetworkClient.connection.Send(new AuthenticatedMessage()
-        {
-            sessionTicket = success.SessionTicket
-        });
-    }
-
-    [Client]
     IEnumerator Timer(int seconds, int val, int count)
     {
-        HelperFunctions.Log("Counting in " + seconds + " seconds");
+        //HelperFunctions.Log("Counting in " + seconds + " seconds");
         yield return new WaitForSeconds(seconds);
         NetworkClient.connection.Send(new CountMessage
         {
@@ -110,14 +109,18 @@ public class ClientStartUp : MonoBehaviour
             timesSent = count + 1
         }
              );
-        HelperFunctions.Log("Client Sent Count messafg");
+        //HelperFunctions.Log("Client Sent Count messafg");
     }
 
 
 
     private void OnDisconnected(int? code)
     {
-        connStat.text = "Disconnected!";
+        if(connStat != null)
+        {
+            connStat.text = "Disconnected!";
+        }
+        
         //_messageWindow.Message.text = "You were disconnected from the server";
         //_messageWindow.gameObject.SetActive(true);
     }

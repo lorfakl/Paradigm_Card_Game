@@ -143,7 +143,7 @@ public class LocationBoardState
         locationBoardState.Count = l.Count;
         foreach(Card c in l)
         {
-            locationBoardState.Contents.Add(new CardShell(c.Name, c.Abilities.Count));
+            //locationBoardState.Contents.Add(new CardShell(c.Name, c.Abilities.Count));
         }
 
         return locationBoardState;
@@ -189,24 +189,21 @@ public class CardShell
 {
     public string Name { get; set; }
     public string InstanceID { get; set; }
+    public string ID { get; set; }
 
-    public List<AbilityShell> Abilities { get; private set; }
+    public string[] Abilities { get; private set; }
 
-
-    public CardShell()
+    public CardShell(int ablCount)
     {
-        Abilities = new List<AbilityShell>();
+        Abilities = new string[ablCount];
     }
 
-    public CardShell(string name, int ablCount)
+    public CardShell(string name, string id, string instanceID, string[] abls)
     {
         Name = name;
-        for(int i = 0; i < ablCount; i++)
-        {
-            Abilities.Add(new AbilityShell(i + 1)); //add 1 because ability count doesnt start at 0
-                                                    //this allows the view to know which ability on a
-                                                    //card is able to activate
-        }
+        InstanceID = instanceID;
+        ID = id;
+        Abilities = abls;
     }
 }
 public class BoardState
@@ -270,6 +267,7 @@ public class AbilityShell
     public bool CanActivate { get; set; }
     public bool HasActivated { get; set; }
     public bool IsActive { get; set; }
+    public string Text { get; }
 
     public AbilityShell(int index)
     {
