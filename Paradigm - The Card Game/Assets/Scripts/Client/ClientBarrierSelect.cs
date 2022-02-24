@@ -11,27 +11,25 @@ using PlayFab;
 public class ClientBarrierSelect : NetworkBehaviour
 {
     [SerializeField]
-    private bool isLocalClientDebug = false;
-    private bool isQueueLoaded = false;
+    private MultiCardTransferSO transferCardsToDisplay;
+    [SerializeField]
+    private GameObject csoPrefab;
+
+    private bool isListLoaded = false;
+    private List<CardSO> cardsToDisplay = new List<CardSO>();
 
     public List<ClientCardInfo> cardsInDeck;
-
-    public GameObject displayPrefab;
-
-    public static Queue<CardSO> cardsToDisplay = new Queue<CardSO>();
 
     private BarrierSelectManager BarrierSelectManager
     {
         get;
         set;
     }
+
     private void Awake()
     {
         BarrierSelectManager = this.gameObject.GetComponent<BarrierSelectManager>();
         BarrierSelectManager.RequestDeckContentsCmd(PlayFabSettings.staticPlayer.PlayFabId);
-
-        displayPrefab = BarrierSelectManager.displayPanel;
-        
     }
 
     void Start()
@@ -46,30 +44,32 @@ public class ClientBarrierSelect : NetworkBehaviour
 
     void Update()
     {
-        if(!isQueueLoaded)
+        if(!isListLoaded)
         {
-            if(cardsInDeck.Count > 0)
+            if (cardsInDeck.Count > 0)
             {
-                LoadQueue();
-                isQueueLoaded = true;
+                LoadCardList();
+                isListLoaded = true;
             }
-        }
-        
+        } 
     }
 
-    private void LoadQueue()
+    private void LoadCardList()
     {
         foreach(ClientCardInfo c in cardsInDeck)
         {
             CardSO cSO = (CardSO)ScriptableObject.CreateInstance(typeof(CardSO));
             cSO.Init(c);
-            cardsToDisplay.Enqueue(cSO);
+            cardsToDisplay.Add(cSO);
         }
+        GameObject CSOobject = Instantiate(csoPrefab, this.gameObject.transform) as GameObject;
+        transferCardsToDisplay.dataTransferReadyEvent.Invoke(cardsToDisplay);
     }
 
     private void OnClientRecievedBarrierTimeReset(ServerResetBarrierTimer arg2)
     {
-        throw new NotImplementedException();
+        //Send the Server the selections we currently have 
+        //NetworkClient.Send<>
     }
 
 }

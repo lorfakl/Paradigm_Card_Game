@@ -17,7 +17,7 @@ public class BarrierSelectManager : NetworkBehaviour
 
     public Text timerText;
     public Text canvasText;
-    public GameObject displayPanel;
+    public GameObject clientSideBarrierObject;
     public Canvas sceneCanvas;
 
     public static List<ClientCardInfo> clientDeckContent;
@@ -68,8 +68,8 @@ public class BarrierSelectManager : NetworkBehaviour
         {
 
             HelperFunctions.Log("This is the client");
-            ClientBarrierSelect = this.gameObject.AddComponent<ClientBarrierSelect>();
-
+            GameObject clientSideBarrierManager = Instantiate(clientSideBarrierObject, this.gameObject.transform) as GameObject;
+            ClientBarrierSelect = clientSideBarrierManager.GetComponent<ClientBarrierSelect>();
         }
 
         
