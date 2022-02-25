@@ -7,18 +7,26 @@ using Mirror;
 using CustomNetworkMessages;
 using System;
 using PlayFab;
+using UnityEngine.Events;
 
 public class ClientBarrierSelect : NetworkBehaviour
 {
     [SerializeField]
     private MultiCardTransferSO transferCardsToDisplay;
+
+    [SerializeField]
+    private MultiCardTransferSO receiveCardsFromDisplay;
+
     [SerializeField]
     private GameObject csoPrefab;
 
     private bool isListLoaded = false;
     private List<CardSO> cardsToDisplay = new List<CardSO>();
+    private List<string> barriersCurrentlySelected = new List<string>();
 
+    private Canvas existingCanvas; 
     public List<ClientCardInfo> cardsInDeck;
+    
 
     private BarrierSelectManager BarrierSelectManager
     {
@@ -30,7 +38,10 @@ public class ClientBarrierSelect : NetworkBehaviour
     {
         BarrierSelectManager = this.gameObject.GetComponent<BarrierSelectManager>();
         BarrierSelectManager.RequestDeckContentsCmd(PlayFabSettings.staticPlayer.PlayFabId);
+        existingCanvas = GameObject.FindGameObjectWithTag("canvas").GetComponent<Canvas>();
+        receiveCardsFromDisplay.dataTransferReadyEvent.AddListener(ReceiveCurrentlySelectedCards);
     }
+   
 
     void Start()
     {
@@ -62,14 +73,43 @@ public class ClientBarrierSelect : NetworkBehaviour
             cSO.Init(c);
             cardsToDisplay.Add(cSO);
         }
-        GameObject CSOobject = Instantiate(csoPrefab, this.gameObject.transform) as GameObject;
+
+        LoadInCSOPrefab();
+    }
+
+    private void LoadInCSOPrefab()
+    {
+        Destroy(csoPrefab.GetComponent<Canvas>());
+        GameObject csoObject = Instantiate(csoPrefab, existingCanvas.transform) as GameObject;
+        CardSelectionOverlayForNetwork csoScript = csoObject.GetComponent<CardSelectionOverlayForNetwork>();
+        csoScript.MaxCardsToSelect = BarrierSelectManager.barriersToSelect;
+
         transferCardsToDisplay.dataTransferReadyEvent.Invoke(cardsToDisplay);
+    }
+
+    private void ReceiveCurrentlySelectedCards(List<CardSO> cardSOs)
+    {
+        foreach(CardSO c in cardSOs)
+        {
+            if(barriersCurrentlySelected.Contains(c.InstanceId))
+            {
+                barriersCurrentlySelected.Remove(c.InstanceId);
+            }
+            else
+            {
+                barriersCurrentlySelected.Add(c.InstanceId);
+            }
+        }
     }
 
     private void OnClientRecievedBarrierTimeReset(ServerResetBarrierTimer arg2)
     {
-        //Send the Server the selections we currently have 
-        //NetworkClient.Send<>
+
+        NetworkClient.Send<ClientBarrierSelectionTimeout>(new ClientBarrierSelectionTimeout
+        {
+            playFadId = PlayfabHelper.PlayFabID,
+            instanceIds = barriersCurrentlySelected.ToArray()
+        });
     }
 
 }

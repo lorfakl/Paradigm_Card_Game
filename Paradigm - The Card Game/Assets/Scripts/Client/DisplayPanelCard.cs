@@ -29,8 +29,8 @@ public class DisplayPanelCard : MonoBehaviour
     private Image cardArt;
     private bool isDefaultBorderActive = true;
     private bool canBeSelected = true;
-    public delegate void HasBeenSelected(object sender, bool isSelected);
-    public static event HasBeenSelected HasBeenSelectedEvent; //for multiplayer this cant be static
+    public delegate void HasBeenSelected(object sender, CardSO c);
+    public event HasBeenSelected HasBeenSelectedEvent; //for multiplayer this cant be static
 
     private void Awake()
     {
@@ -39,6 +39,22 @@ public class DisplayPanelCard : MonoBehaviour
         defaultBorderSprite = borderImageReference.sprite;
         cardArt = gameObject.GetComponent<Image>();
         CardSelectionOverlayForNetwork.IsDoneChoosing += SetSelectionMode;
+    }
+
+    void Start()
+    {
+        if (cardButton != null)
+        {
+            print("Adding Button Listener on Card");
+            //cardButton.onClick.AddListener(TestButton);
+        }
+
+        cardData = queueCardTransferSO.GetQueueCard();
+        print(cardData.Name);
+    }
+
+    void Update()
+    {
 
     }
 
@@ -54,36 +70,23 @@ public class DisplayPanelCard : MonoBehaviour
         }
     }
 
-    void Start()
+    public void TestButton()
     {
-        if (cardButton != null)
-        {
-            cardButton.onClick.AddListener(TestButton);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void TestButton()
-    {
-        if(canBeSelected)
+        print("Button Card was clicked");
+        if (canBeSelected)
         {
             if (isDefaultBorderActive)
             {
                 borderImageReference.sprite = selectedBorderSprite;
                 isDefaultBorderActive = false;
-                HasBeenSelectedEvent.Invoke(this, true);
+                HasBeenSelectedEvent.Invoke(this, cardData);
 
             }
             else
             {
                 borderImageReference.sprite = defaultBorderSprite;
                 isDefaultBorderActive = true;
-                HasBeenSelectedEvent.Invoke(this, false);
+                HasBeenSelectedEvent.Invoke(this, cardData);
             }
         }
         

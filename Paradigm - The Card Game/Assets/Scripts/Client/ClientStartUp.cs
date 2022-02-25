@@ -15,6 +15,10 @@ public class ClientStartUp : MonoBehaviour
 {
 
     UnityNetworkClient _nm;
+
+    [SerializeField]
+    bool localTesting;
+
     [SerializeField]
     TMP_Text connStat;
 
@@ -89,9 +93,13 @@ public class ClientStartUp : MonoBehaviour
     [Client]
     private void OnConnected()
     {
-        connStat.text = "Connected to Server";
-        serverStat.text = NetworkClient.serverIp.ToString();
-        Utilities.HelperFunctions.Log("Connected");
+        if(!localTesting)
+        {
+            connStat.text = "Connected to Server";
+            serverStat.text = NetworkClient.serverIp.ToString();
+            Utilities.HelperFunctions.Log("Connected");
+        }
+        
         
         //HelperFunctions.Log("Sending Count");
         //NetworkClient.connection.Send(new CountMessage());
@@ -116,10 +124,14 @@ public class ClientStartUp : MonoBehaviour
 
     private void OnDisconnected(int? code)
     {
-        if(connStat != null)
+        if(!localTesting)
         {
-            connStat.text = "Disconnected!";
+            if (connStat != null)
+            {
+                connStat.text = "Disconnected!";
+            }
         }
+        
         
         //_messageWindow.Message.text = "You were disconnected from the server";
         //_messageWindow.gameObject.SetActive(true);

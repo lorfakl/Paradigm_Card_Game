@@ -85,6 +85,7 @@ public class ServerSideBarrierSelect : NetworkBehaviour
 
     private void OnServerReceivedClientBarrierSelectionTimeout(NetworkConnection conn, ClientBarrierSelectionTimeout msg)
     {
+
         SelectBarriersForClient(msg.playFadId);
         FinalizeBarrierSelection(msg.playFadId);
     }

@@ -3,23 +3,20 @@ using Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 
 public class CardSelectionOverlayForNetwork : MonoBehaviour
 {
-    //This script is for use any time the player needs to select Cards from a list
-    //It should get the cards from somewhere, Likely a location object
-    //It should display those cards, allow the player to select them and send the selected cards back to the sender
-    public GameObject cardPrefab;
-    //public Camera uiCamera;
-
-    private GameObject display;
-    //private GameObject mainCamera;
+    
+ 
     private Transform parent;
     private Transform canvas;
+    private Camera mainCamera;
     private Vector3 position = new Vector3();
-    private List<GameObject> objectsCreated = new List<GameObject>();
+    private readonly List<GameObject> objectsCreated = new List<GameObject>();
+    private readonly Dictionary<string, CardSO> cardsSelected = new Dictionary<string, CardSO>();
     private int currentlySelectedCards = 0;
     private int maxCardsToSelect = 0;
     private bool hasHitMaxCards = false;
@@ -28,26 +25,42 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     public static event NotifyDoneChoosing IsDoneChoosing; //for multiplayer this cant be static
 
     [SerializeField]
+    private GameObject cardPrefab;
+
+    [SerializeField]
+    private GameObject display;
+
+    [SerializeField]
     private MultiCardTransferSO cardTransferFromSource;
+
+    [SerializeField]
+    private MultiCardTransferSO cardTransferToSource;
 
     [SerializeField]
     private QueueCardTransferSO cardTransferToDestination;
 
+    public int MaxCardsToSelect
+    {
+        get { return maxCardsToSelect; }
+        set { maxCardsToSelect = value; }
+    }
 
     //Private Functions
     private void Awake()
     {
-        display = this.gameObject;
+        //display = this.gameObject;
         parent = display.transform;
         cardTransferFromSource.dataTransferReadyEvent.AddListener(DisplayCards);
-
+        mainCamera = Camera.main;
     }
 
     private void Start()
     {
-        canvas = gameObject.transform.parent.parent;
+        canvas = gameObject.transform;
         Canvas canvasComp = canvas.gameObject.GetComponent<Canvas>();
-        canvasComp.renderMode = RenderMode.WorldSpace;
+        /*canvasComp.renderMode = RenderMode.WorldSpace;
+        canvasComp.worldCamera = mainCamera;
+        gameObject.transform.position = mainCamera.transform.position;*/
 
         canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
 
@@ -61,7 +74,7 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     private void DisplayCards(List<CardSO> cardDataToDisplay)
     {
         //print("Do we ever call DisplayCards?");
-        maxCardsToSelect = cardDataToDisplay.Count;
+        
         cardTransferToDestination.SetQueueDataToListener(cardDataToDisplay);
         
         try
@@ -85,7 +98,7 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     private void CreateCard()
     {
         GameObject cardObject = Instantiate(cardPrefab, parent) as GameObject;
-        DisplayPanelCard.HasBeenSelectedEvent += CountCurrentlySelectedCards;
+        cardObject.GetComponent<DisplayPanelCard>().HasBeenSelectedEvent += CountCurrentlySelectedCards;
 
         objectsCreated.Add(cardObject);
         
@@ -96,37 +109,40 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     private void ScaleCard(GameObject c)
     {
         RectTransform rectTrans = c.GetComponent<RectTransform>();
-        rectTrans.localScale += new Vector3(30, 30, 0);
+        //rectTrans.localScale += new Vector3(30, 30, 0);
     }
 
     private void StopSelecting()
     {
         //IsDoneChoosing.Invoke();
+        print("Button Pressed");
     }
 
-    private void CountCurrentlySelectedCards(object sender, bool hasBeenSelected)
+    private void CountCurrentlySelectedCards(object sender, CardSO c)
     {
-        if(hasBeenSelected)
-        {
-            currentlySelectedCards++;
-            print("Currently Selected Cards: " + currentlySelectedCards);
-            print("Max Selected Cards: " + maxCardsToSelect);
-
-            if (currentlySelectedCards == maxCardsToSelect)
-            {
-                if(!hasHitMaxCards)
-                {
-                    IsDoneChoosing.Invoke(this, true);
-                }
-                
-            }
-        }
-        else
+        if(cardsSelected.ContainsKey(c.InstanceId))
         {
             currentlySelectedCards--;
             print("Currently Selected Cards: " + currentlySelectedCards);
             print("Max Selected Cards: " + maxCardsToSelect);
+            cardsSelected.Remove(c.InstanceId);
             IsDoneChoosing.Invoke(this, false);
         }
+        else
+        {
+            currentlySelectedCards++;
+            print("Currently Selected Cards: " + currentlySelectedCards);
+            print("Max Selected Cards: " + maxCardsToSelect);
+            cardsSelected.Add(c.InstanceId, c);
+            if (currentlySelectedCards == maxCardsToSelect)
+            {
+                if (!hasHitMaxCards)
+                {
+                    IsDoneChoosing.Invoke(this, true);
+                }
+            }
+        }
+
+        cardTransferToSource.SendListDataToListener(cardsSelected.Values.ToList());
     }
 }

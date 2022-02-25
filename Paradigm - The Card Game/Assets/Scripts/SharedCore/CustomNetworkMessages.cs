@@ -28,7 +28,14 @@ namespace CustomNetworkMessages
     public struct ClientBarrierSelectionTimeout : NetworkMessage
     {
         public string playFadId;
+        public string[] instanceIds;
     }
+
+    public struct ClientCurrentCardSelection : NetworkMessage
+    {
+        public string[] instanceIds;
+    }
+
     #endregion
 
 

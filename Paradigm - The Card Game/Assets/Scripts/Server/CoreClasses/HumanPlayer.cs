@@ -20,7 +20,7 @@ public class HumanPlayer : Player, IPlayable
     {
         this.type = PlayerType.MainHuman;
         GameObject timer = GameObject.FindGameObjectWithTag("timer");
-        timerText = timer.GetComponent<Text>();
+        //timerText = timer.GetComponent<Text>();
     }
 
     public HumanPlayer(string playFabID) : base(playFabID)
