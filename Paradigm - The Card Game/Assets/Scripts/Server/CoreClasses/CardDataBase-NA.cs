@@ -68,7 +68,7 @@ namespace DataBase
 #if UNITY_SERVER
             string conn = "URI=file:" + System.IO.Directory.GetCurrentDirectory() + "\\CardDataBase.db"; //get database file path
 #else
-            string conn = "URI=file:" + Application.dataPath + "/CardDataBase.db";
+            string conn = "URI=file:" + Application.persistentDataPath + "/CardDataBase.db";
 #endif
             HelperFunctions.Log("Database local scope file path" + conn);
             HelperFunctions.Log("Database global scope file path" + dbConnString);

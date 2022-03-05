@@ -26,6 +26,7 @@ public class UnityNetworkClient : NetworkManager
     {
         base.Start();
         this.StartClient();
+        NetworkClient.ready = true;
     }
 
 

@@ -95,9 +95,13 @@ public class ClientStartUp : MonoBehaviour
     {
         if(!localTesting)
         {
-            connStat.text = "Connected to Server";
-            serverStat.text = NetworkClient.serverIp.ToString();
-            Utilities.HelperFunctions.Log("Connected");
+            if(connStat != null && serverStat != null)
+            {
+                connStat.text = "Connected to Server";
+                serverStat.text = NetworkClient.serverIp.ToString();
+                Utilities.HelperFunctions.Log("Connected");
+            }
+            
         }
         
         

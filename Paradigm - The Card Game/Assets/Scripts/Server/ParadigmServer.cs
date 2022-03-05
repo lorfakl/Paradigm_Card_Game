@@ -163,7 +163,7 @@ public class ParadigmServer : NetworkManager
         base.OnServerDisconnect(conn);
         var uconn = Connections.Find(c => c.ConnectionId == conn.connectionId);
 
-        WriteConnectionEvent(uconn, PlayfabHelper.CustomEventNames.pd_player_disconnected_server);
+        
         HelperFunctions.Log(uconn.PlayFabId + " has disconnected from " + uconn.ServerId);
 
         if (uconn != null)
@@ -172,9 +172,13 @@ public class ParadigmServer : NetworkManager
             {
                 OnPlayerRemoved.Invoke(uconn.PlayFabId);
             }
+
+            ConnectedPlayers.Remove(uconn.ConnectedPlayer);
             Connections.Remove(uconn);
+
         }
-        
+
+        WriteConnectionEvent(uconn, PlayfabHelper.CustomEventNames.pd_player_disconnected_server);
     }
     #endregion
 

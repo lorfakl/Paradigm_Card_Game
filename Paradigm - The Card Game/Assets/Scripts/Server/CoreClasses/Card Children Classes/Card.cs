@@ -276,7 +276,12 @@ public abstract class Card
     {
         HelperFunctions.RaiseNewEvent(this, new GameAction(MoveAction.None,NonMoveAction.Initiate), EventType.LegalCheck, this);
     }
-//To be defined MUCH later
-        
+    //To be defined MUCH later
+
+    public override string ToString()
+    {
+        return Name + "\n" + ID.ToString() + "\n" + InstanceID.ToString();
+    }
+
 }
 

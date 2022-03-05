@@ -20,7 +20,7 @@ public class BarrierSelectManager : NetworkBehaviour
     public GameObject clientSideBarrierObject;
     public Canvas sceneCanvas;
 
-    public static List<ClientCardInfo> clientDeckContent;
+    public static List<ClientCardInfo> clientDeckContent = new List<ClientCardInfo>();
 
     private ServerSideBarrierSelect ServerSideBarrierSelect
     {
@@ -50,17 +50,19 @@ public class BarrierSelectManager : NetworkBehaviour
     {
         Instance = this;
 
+
     }
 
     void Start()
     {
+        
         HelperFunctions.Log("Is start not called");
         if (isServer)
         {
             HelperFunctions.Log("This is the Server");
             ConvertCardsToCardShells();
 
-            StartCoroutine(BreakTimer());
+            //StartCoroutine(BreakTimer());
 
             ServerSideBarrierSelect = this.gameObject.AddComponent<ServerSideBarrierSelect>();
         }
@@ -145,18 +147,39 @@ public class BarrierSelectManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void UpdateSelectedBarriersCmd(string playFabID, string instanceID, NetworkConnectionToClient sender = null)
+    public void UpdateSelectedBarriersCmd(string playFabID, string instanceID, NetworkConnectionToClient sender = null)
     {
-        ServerSideBarrierSelect.UpdateClientBarriers(playFabID, instanceID);
+        if(isServerOnly)
+        {
+            ServerSideBarrierSelect.UpdateClientBarriers(playFabID, instanceID);
+        }
+        else
+        {
+            return;
+        }
+        
     }
 
     [Command(requiresAuthority = false)]
     public void RequestDeckContentsCmd(string pfId, NetworkConnectionToClient sender = null)
     {
-        HelperFunctions.Log("Client: " + pfId + " requested Deck contents");
-        ParadigmServerConnection psc = ParadigmServer.Instance.Connections.Find(c => c.PlayFabId == pfId);
-        HelperFunctions.Log("Any Deck items on the Server? " + psc.PlayerInfo.Locations[ValidLocations.Deck].Count);
-        SendDeckContentsRpc(psc.Connection, psc.PlayerInfo.Locations[ValidLocations.Deck].ToArray());
+        if(isServerOnly)
+        {
+            HelperFunctions.Log("Client: " + pfId + " requested Deck contents");
+            ParadigmServerConnection psc = ParadigmServer.Instance.Connections.Find(c => c.PlayFabId == pfId);
+            HelperFunctions.Log("Any Deck items on the Server? " + psc.PlayerInfo.Locations[ValidLocations.Deck].Count);
+            SendDeckContentsRpc(psc.Connection, psc.PlayerInfo.Locations[ValidLocations.Deck].ToArray());
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void ReceiveClientBarrierSelections(string pfId, string[] instanceIds, NetworkConnectionToClient sender = null)
+    {
+
     }
 
     #endregion

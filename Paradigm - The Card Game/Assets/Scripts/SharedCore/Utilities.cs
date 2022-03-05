@@ -293,8 +293,6 @@ namespace Utilities
                 {
                     Print(pInfo.Name + ": " + val);
                 }
-                    
-
             }
         }
         #endregion
@@ -364,7 +362,8 @@ namespace Utilities
             pd_player_completed_bs,
             pd_all_players_completed_bs,
             pd_all_clients_connected,
-            pd_server_scene_change
+            pd_server_scene_change,
+            pd_server_made_barrier_selects
         }
         #endregion
         private static PlayfabHelper _instance;

@@ -36,6 +36,12 @@ namespace CustomNetworkMessages
         public string[] instanceIds;
     }
 
+    public struct ClientRecievedCardsFromServer : NetworkMessage
+    {
+        public string pfID;
+        public int cardsRecieved;
+    }
+
     #endregion
 
 

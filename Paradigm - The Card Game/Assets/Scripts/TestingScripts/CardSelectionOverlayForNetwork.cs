@@ -14,14 +14,17 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     private Transform parent;
     private Transform canvas;
     private Camera mainCamera;
+    private Text buttonText;
+    private Color defaultBtnClr;
     private Vector3 position = new Vector3();
     private readonly List<GameObject> objectsCreated = new List<GameObject>();
     private readonly Dictionary<string, CardSO> cardsSelected = new Dictionary<string, CardSO>();
     private int currentlySelectedCards = 0;
     private int maxCardsToSelect = 0;
     private bool hasHitMaxCards = false;
+    private bool isSelecting = true;
 
-    public delegate void NotifyDoneChoosing(object sender, bool canContinueSelecting);
+    public delegate void NotifyDoneChoosing(object sender, bool isDoneSelecting);
     public static event NotifyDoneChoosing IsDoneChoosing; //for multiplayer this cant be static
 
     [SerializeField]
@@ -29,6 +32,9 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
 
     [SerializeField]
     private GameObject display;
+
+    [SerializeField]
+    private Button readyBtn;
 
     [SerializeField]
     private MultiCardTransferSO cardTransferFromSource;
@@ -62,7 +68,9 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
         canvasComp.worldCamera = mainCamera;
         gameObject.transform.position = mainCamera.transform.position;*/
 
-        canvas.Find("Button").GetComponent<Button>().onClick.AddListener(StopSelecting);
+        readyBtn.onClick.AddListener(StopSelecting);
+        buttonText = readyBtn.GetComponentInChildren<Text>();
+        defaultBtnClr = buttonText.color;
 
     }
 
@@ -115,34 +123,57 @@ public class CardSelectionOverlayForNetwork : MonoBehaviour
     private void StopSelecting()
     {
         //IsDoneChoosing.Invoke();
+        if(buttonText.color == defaultBtnClr)
+        {
+            buttonText.color = Color.red;
+            buttonText.fontStyle = FontStyle.Bold;
+            isSelecting = false;
+        }
+        else
+        {
+            buttonText.color = defaultBtnClr;
+            buttonText.fontStyle = FontStyle.Normal;
+            isSelecting = true;
+        }
+        
         print("Button Pressed");
     }
 
     private void CountCurrentlySelectedCards(object sender, CardSO c)
     {
-        if(cardsSelected.ContainsKey(c.InstanceId))
+        if(isSelecting)
         {
-            currentlySelectedCards--;
-            print("Currently Selected Cards: " + currentlySelectedCards);
-            print("Max Selected Cards: " + maxCardsToSelect);
-            cardsSelected.Remove(c.InstanceId);
-            IsDoneChoosing.Invoke(this, false);
-        }
-        else
-        {
-            currentlySelectedCards++;
-            print("Currently Selected Cards: " + currentlySelectedCards);
-            print("Max Selected Cards: " + maxCardsToSelect);
-            cardsSelected.Add(c.InstanceId, c);
-            if (currentlySelectedCards == maxCardsToSelect)
+            if (cardsSelected.ContainsKey(c.InstanceId))
             {
-                if (!hasHitMaxCards)
+                currentlySelectedCards--;
+                print("Currently Selected Cards: " + currentlySelectedCards);
+                print("Max Selected Cards: " + maxCardsToSelect);
+                cardsSelected.Remove(c.InstanceId);
+                IsDoneChoosing.Invoke(this, false);
+            }
+            else
+            {
+                currentlySelectedCards++;
+                print("Currently Selected Cards: " + currentlySelectedCards);
+                print("Max Selected Cards: " + maxCardsToSelect);
+                cardsSelected.Add(c.InstanceId, c);
+                if (currentlySelectedCards == maxCardsToSelect)
                 {
-                    IsDoneChoosing.Invoke(this, true);
+                    if (!hasHitMaxCards)
+                    {
+                        IsDoneChoosing.Invoke(this, true);
+                    }
                 }
             }
+
+            cardTransferToSource.SendListDataToListener(cardsSelected.Values.ToList());
         }
 
-        cardTransferToSource.SendListDataToListener(cardsSelected.Values.ToList());
+        if (currentlySelectedCards == 12)
+        {
+            IsDoneChoosing.Invoke(this, true);
+            StopSelecting();
+        }
+
     }
 }

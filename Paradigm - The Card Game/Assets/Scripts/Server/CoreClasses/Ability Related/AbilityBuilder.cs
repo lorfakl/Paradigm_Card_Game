@@ -57,7 +57,7 @@ namespace Builder
 #if UNITY_SERVER
                 string path = System.IO.Directory.GetCurrentDirectory() + "\\JSONAbilityLanguage.json";
 #else
-                string path = Application.dataPath + "/JSONAbilityLanguage.json";
+                string path = Application.persistentDataPath + "/JSONAbilityLanguage.json";
 #endif
 
                 StreamReader read = new StreamReader(path);

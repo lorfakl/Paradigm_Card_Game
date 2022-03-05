@@ -50,7 +50,7 @@ public class DisplayPanelCard : MonoBehaviour
         }
 
         cardData = queueCardTransferSO.GetQueueCard();
-        print(cardData.Name);
+        print(cardData.Name + " " + cardData.InstanceId);
     }
 
     void Update()
