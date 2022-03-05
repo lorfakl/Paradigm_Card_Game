@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Test script for the Scene Testcardspacing
+/// Steps up all the initial requirements for testing Decks, 
+/// </summary>
 public class TestingCardSpacing : MonoBehaviour
 {
 

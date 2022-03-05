@@ -53,6 +53,6 @@ public class ResponsePromptScript : MonoBehaviour
 
     public void SetPromptText(string s)
     {
-        prmptText.text = s + " Initate an Ability?";
+        //prmptText.text = s + " Initate an Ability?"; //this fails because there is no TMP_Text Component on the go
     }
 }

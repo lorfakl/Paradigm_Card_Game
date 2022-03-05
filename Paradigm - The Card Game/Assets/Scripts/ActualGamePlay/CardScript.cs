@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 public class CardScript : MonoBehaviour {
@@ -20,6 +21,7 @@ public class CardScript : MonoBehaviour {
     private bool hasScrolled;
     private bool isSetModeCalled;
     private bool hasBeenPlayed = false;
+    public Text cardName;
 
     public Card Card { get{ return cardData; } }
     /*Dont know if there will be more than 2 modes

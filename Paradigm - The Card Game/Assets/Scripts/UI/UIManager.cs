@@ -52,6 +52,9 @@ public class UIManager : MonoBehaviour
     public UIScriptableObject attackUIEffects;
     public UIScriptableObject StackUIEffects;
 
+    [Header("Actual UI Elements")]
+    public Button attckBtn;
+
     #endregion
 
     #region Private Fields
